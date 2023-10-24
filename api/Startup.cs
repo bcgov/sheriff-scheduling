@@ -72,7 +72,7 @@ namespace CAS.API
             services.AddDataProtection()
                 .PersistKeysToDbContext<CourtAdminDbContext>()
                 .UseXmlEncryptor(s => new AesGcmXmlEncryptor(s))
-                .SetApplicationName("SS");
+                .SetApplicationName("CAS");
 
             services.AddAuthorizationAndAuthentication(CurrentEnvironment, Configuration);
 
