@@ -81,7 +81,7 @@ build-api() {
     -e "DOTNET_STARTUP_PROJECT=./api/api.csproj" \
     '..' \
     'registry.redhat.io/rhel8/dotnet-50' \
-    'ss-api'
+    'cas-api'
   echo -e "===================================================================================================="
 }
 
@@ -112,14 +112,14 @@ build-web() {
      -e "WEB_BASE_HREF=${WEB_BASE_HREF-/court-admin-scheduling/}" \
     '../web' \
     'centos/nodejs-10-centos7:10' \
-    'ss-web-artifacts'
+    'cas-web-artifacts'
   echo -e "===================================================================================================="
 
   echo -e "\n\n===================================================================================================="
   echo -e "Building the cas-web image using Docker ..."
   echo -e "----------------------------------------------------------------------------------------------------"
   docker build \
-    -t 'ss-web' \
+    -t 'cas-web' \
     -f './vue-on-nginx/Dockerfile' './vue-on-nginx/'
   echo -e "===================================================================================================="
 }
@@ -143,7 +143,7 @@ build-web-dev() {
     -e "DEV_MODE=true" \
     '../web' \
     'centos/nodejs-10-centos7:10' \
-    'ss-web-dev'
+    'cas-web-dev'
   echo -e "===================================================================================================="
 }
 
