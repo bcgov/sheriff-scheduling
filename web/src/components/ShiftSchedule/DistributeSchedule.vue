@@ -5,7 +5,7 @@
 
         <b-card id="pdf" v-if="isDistributeDataMounted" class="container" no-body>
             
-            <div class="ss-header">
+            <div class="cas-header">
                 <div class="row m-0">
                     <div style="width:45%" >
                         <div class="row m-0">                           
@@ -37,7 +37,7 @@
                 <template #overlay>
                     <loading-spinner :inline="true"/>
                 </template> 
-                <div v-for="page,inx in courtAdminPages" :key="'pdf-'+inx" class="ss-body">   
+                <div v-for="page,inx in courtAdminPages" :key="'pdf-'+inx" class="cas-body">   
                     <weekly-schedule :key="updateTable" :fields="fields"  :courtAdminSchedules="courtAdminSchedules.slice(page.start,page.end)" v-if="weekView" />
                     <daily-schedule :key="updateDailyTable" :dailyCourtAdminSchedules="dailyCourtAdminSchedules.slice(page.start,page.end)" v-else/>
 

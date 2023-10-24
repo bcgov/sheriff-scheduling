@@ -336,14 +336,14 @@ Vue.filter('printPdf', function(html, pageFooterLeft, pageFooterRight){
                 }
             }`+
             `@media print{
-                div.ss-header {
+                div.cas-header {
 					position: fixed;
 					top: 0in;
                     bottom: 1.5in;
 					width:100%; 
 					display:inline-block;
 				}
-                div.ss-body {
+                div.cas-body {
                     margin-top: 6rem;
                 }                
                 .new-page{

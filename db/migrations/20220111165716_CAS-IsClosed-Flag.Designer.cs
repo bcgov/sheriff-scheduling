@@ -11,7 +11,7 @@ using CAS.DB.models;
 namespace CAS.DB.Migrations
 {
     [DbContext(typeof(CourtAdminDbContext))]
-    [Migration("20220111165716_SS-IsClosed-Flag")]
+    [Migration("20220111165716_CAS-IsClosed-Flag")]
     partial class CASIsClosedFlag
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
