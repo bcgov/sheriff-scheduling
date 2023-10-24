@@ -35,7 +35,7 @@
     
 
     @Component
-    export default class ExpireSheriffProfile extends Vue {
+    export default class ExpireCourtAdminProfile extends Vue {
 
         @Prop({required: true})
         userID!: string;
@@ -61,14 +61,14 @@
         }
 
         get expiryTitle(){
-            if(this.expireChecked) return 'Expire a Sheriff';else return 'Activate a Sheriff'
+            if(this.expireChecked) return 'Expire a CourtAdmin';else return 'Activate a CourtAdmin'
         }
 
         public changeProfileExpiryStatus(){
             Vue.nextTick().then(()=>{
 
                 this.expireStatusError = false;
-                const url ='api/sheriff/'+this.userID+ (this.expireChecked? '/disable' : '/enable');                
+                const url ='api/courtAdmin/'+this.userID+ (this.expireChecked? '/disable' : '/enable');                
                 this.showExpireWarning = false;
                 this.$http.put(url)
                     .then(response => {

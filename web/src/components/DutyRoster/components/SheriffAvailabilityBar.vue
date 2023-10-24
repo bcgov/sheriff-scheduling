@@ -1,5 +1,5 @@
 <template>
-    <div v-if="dataReady" class="gridsheriff" :style="{gridTemplateColumns: gridTemplateStyle}">                
+    <div v-if="dataReady" class="gridcourtAdmin" :style="{gridTemplateColumns: gridTemplateStyle}">                
         <div class="grid" v-for="i in barLength" :key="i" :style="{backgroundColor: '#F1FEF1', gridColumnStart: i,gridColumnEnd:(i+1), gridRow:'1/2'}"></div>
         <div 
             v-for="(block,index) in findAvailabilitySlots(availability)"
@@ -23,10 +23,10 @@
     import { myTeamShiftInfoType, dutiesDetailInfoType} from '@/types/DutyRoster';
     
     @Component
-    export default class SheriffAvailabilityBar extends Vue {
+    export default class CourtAdminAvailabilityBar extends Vue {
 
         @Prop({required: true})
-        sheriffInfo!: myTeamShiftInfoType;
+        courtAdminInfo!: myTeamShiftInfoType;
 
         @Prop({required: true})
         dutyBlock!: any;
@@ -52,7 +52,7 @@
             
             if(this.weekView){                
                 const dutyDate=this.dutyBlock.dutyDate.slice(0,10)
-                this.dutiesDetail = this.sheriffInfo.dutiesDetail.filter(
+                this.dutiesDetail = this.courtAdminInfo.dutiesDetail.filter(
                     duty => {
                         if(duty.startTime)
                             return duty.startTime.slice(0,10)==dutyDate
@@ -62,10 +62,10 @@
                 )                
             }
             else{
-                this.dutiesDetail = this.sheriffInfo.dutiesDetail;
+                this.dutiesDetail = this.courtAdminInfo.dutiesDetail;
             }
             
-            this.availability = this.sheriffInfo.availability;
+            this.availability = this.courtAdminInfo.availability;
             
         }
 
@@ -135,7 +135,7 @@
 
 <style scoped lang="scss">
 
-    .gridsheriff {        
+    .gridcourtAdmin {        
         display:grid;
         grid-template-columns: repeat(96, 1.04%);
         grid-template-rows: repeat(1,1rem);

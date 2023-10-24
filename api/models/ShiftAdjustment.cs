@@ -6,7 +6,7 @@ namespace CAS.API.models
     {
         public bool Equals(ShiftAdjustment other)
         {
-            return SheriffId.Equals(other.SheriffId) && Date.Equals(other.Date) && Timezone == other.Timezone;
+            return CourtAdminId.Equals(other.CourtAdminId) && Date.Equals(other.Date) && Timezone == other.Timezone;
         }
 
         public override bool Equals(object obj)
@@ -19,10 +19,10 @@ namespace CAS.API.models
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(SheriffId, Date, Timezone);
+            return HashCode.Combine(CourtAdminId, Date, Timezone);
         }
 
-        public Guid SheriffId { get; set; }
+        public Guid CourtAdminId { get; set; }
         public DateTimeOffset Date { get; set; }
         public string Timezone { get; set; }
     }

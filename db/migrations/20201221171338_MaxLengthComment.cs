@@ -18,7 +18,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Note",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "character varying(200)",
                 maxLength: 200,
                 nullable: true,
@@ -28,7 +28,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Comment",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "character varying(200)",
                 maxLength: 200,
                 nullable: true,
@@ -38,7 +38,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Comment",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "character varying(200)",
                 maxLength: 200,
                 nullable: true,
@@ -48,7 +48,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Comment",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "character varying(200)",
                 maxLength: 200,
                 nullable: true,
@@ -91,7 +91,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Note",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "text",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -101,7 +101,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Comment",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "text",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -111,7 +111,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Comment",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "text",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -121,7 +121,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Comment",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "text",
                 nullable: true,
                 oldClrType: typeof(string),

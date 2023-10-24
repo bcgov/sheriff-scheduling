@@ -330,7 +330,7 @@
             if (this.trainingDeleteReason.length) {
                 this.confirmDelete = false;
                 this.trainingError = false;
-                const url = 'api/sheriff/training?id='+this.trainingToDelete.id+'&expiryReason='+this.trainingDeleteReason;
+                const url = 'api/courtAdmin/training?id='+this.trainingToDelete.id+'&expiryReason='+this.trainingDeleteReason;
                 this.$http.delete(url)
                     .then(response => {
                         const index = this.assignedTrainings.findIndex(assignedtraining=>{if(assignedtraining.id == this.trainingToDelete.id) return true;})
@@ -365,9 +365,9 @@
 
         public saveTraining(body, iscreate, overrideConflicts){
                 this.trainingError   = false; 
-                body['sheriffId']= this.userToEdit.id;
+                body['courtAdminId']= this.userToEdit.id;
                 const method = iscreate? 'post' :'put';            
-                const url = overrideConflicts?'api/sheriff/training?overrideConflicts=true':'api/sheriff/training'  
+                const url = overrideConflicts?'api/courtAdmin/training?overrideConflicts=true':'api/courtAdmin/training'  
                 const options = { method: method, url:url, data:body}
                
                 this.$http(options)
@@ -438,7 +438,7 @@
                 id: addedTrainingInfo.id,
                 trainingType: addedTrainingInfo.trainingType,
                 trainingTypeId: addedTrainingInfo.trainingTypeId,
-                sheriffId : addedTrainingInfo.sheriffId,
+                courtAdminId : addedTrainingInfo.courtAdminId,
                 startDate: moment(addedTrainingInfo.startDate).tz(this.timezone).format(),
                 endDate: moment(addedTrainingInfo.endDate).tz(this.timezone).format(),
                 expiryDate: addedTrainingInfo.trainingCertificationExpiry,

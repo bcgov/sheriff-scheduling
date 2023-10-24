@@ -9,8 +9,8 @@ namespace CAS.API.models.dto.generated
         public int Id { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
-        public SheriffDto Sheriff { get; set; }
-        public Guid SheriffId { get; set; }
+        public CourtAdminDto CourtAdmin { get; set; }
+        public Guid CourtAdminId { get; set; }
         public ICollection<DutySlotDto> DutySlots { get; set; }
         public AssignmentDto AnticipatedAssignment { get; set; }
         public int? AnticipatedAssignmentId { get; set; }

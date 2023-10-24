@@ -4,7 +4,7 @@ using CAS.DB.models.courtAdmin;
 
 namespace CAS.DB.configuration
 {
-    public class SheriffTrainingConfiguration : BaseEntityConfiguration<CourtAdminTraining>
+    public class CourtAdminTrainingConfiguration : BaseEntityConfiguration<CourtAdminTraining>
     {
         public override void Configure(EntityTypeBuilder<CourtAdminTraining> builder)
         {

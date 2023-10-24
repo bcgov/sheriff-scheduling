@@ -69,12 +69,12 @@ namespace CAS.DB.Migrations
                 table: "RolePermission");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffAwayLocation_User_CreatedById",
-                table: "SheriffAwayLocation");
+                name: "FK_CourtAdminAwayLocation_User_CreatedById",
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffAwayLocation_User_UpdatedById",
-                table: "SheriffAwayLocation");
+                name: "FK_CourtAdminAwayLocation_User_UpdatedById",
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_User_User_CreatedById",
@@ -330,16 +330,16 @@ namespace CAS.DB.Migrations
                 onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_User_CreatedById",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_User_CreatedById",
+                table: "CourtAdminAwayLocation",
                 column: "CreatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_User_UpdatedById",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_User_UpdatedById",
+                table: "CourtAdminAwayLocation",
                 column: "UpdatedById",
                 principalTable: "User",
                 principalColumn: "Id",
@@ -449,12 +449,12 @@ namespace CAS.DB.Migrations
                 table: "RolePermission");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffAwayLocation_User_CreatedById",
-                table: "SheriffAwayLocation");
+                name: "FK_CourtAdminAwayLocation_User_CreatedById",
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffAwayLocation_User_UpdatedById",
-                table: "SheriffAwayLocation");
+                name: "FK_CourtAdminAwayLocation_User_UpdatedById",
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_User_User_CreatedById",
@@ -706,16 +706,16 @@ namespace CAS.DB.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_User_CreatedById",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_User_CreatedById",
+                table: "CourtAdminAwayLocation",
                 column: "CreatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_User_UpdatedById",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_User_UpdatedById",
+                table: "CourtAdminAwayLocation",
                 column: "UpdatedById",
                 principalTable: "User",
                 principalColumn: "Id",

@@ -4,12 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CAS.DB.Migrations
 {
-    public partial class SheriffActingRank : Migration
+    public partial class CourtAdminActingRank : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "SheriffActingRank",
+                name: "CourtAdminActingRank",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -24,27 +24,27 @@ namespace CAS.DB.Migrations
                     EndDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     ExpiryReason = table.Column<string>(type: "text", nullable: true),
-                    SheriffId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CourtAdminId = table.Column<Guid>(type: "uuid", nullable: false),
                     Comment = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Timezone = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SheriffActingRank", x => x.Id);
+                    table.PrimaryKey("PK_CourtAdminActingRank", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SheriffActingRank_User_CreatedById",
+                        name: "FK_CourtAdminActingRank_User_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SheriffActingRank_User_SheriffId",
-                        column: x => x.SheriffId,
+                        name: "FK_CourtAdminActingRank_User_CourtAdminId",
+                        column: x => x.CourtAdminId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SheriffActingRank_User_UpdatedById",
+                        name: "FK_CourtAdminActingRank_User_UpdatedById",
                         column: x => x.UpdatedById,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -52,25 +52,25 @@ namespace CAS.DB.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffActingRank_CreatedById",
-                table: "SheriffActingRank",
+                name: "IX_CourtAdminActingRank_CreatedById",
+                table: "CourtAdminActingRank",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffActingRank_SheriffId",
-                table: "SheriffActingRank",
-                column: "SheriffId");
+                name: "IX_CourtAdminActingRank_CourtAdminId",
+                table: "CourtAdminActingRank",
+                column: "CourtAdminId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffActingRank_UpdatedById",
-                table: "SheriffActingRank",
+                name: "IX_CourtAdminActingRank_UpdatedById",
+                table: "CourtAdminActingRank",
                 column: "UpdatedById");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "SheriffActingRank");
+                name: "CourtAdminActingRank");
         }
     }
 }

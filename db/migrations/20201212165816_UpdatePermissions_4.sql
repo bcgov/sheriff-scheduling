@@ -3,25 +3,25 @@ declare
 	SystemUserId uuid; 
 	AdministratorId integer;
 	ManagerId integer;
-	SheriffId integer;
+	CourtAdminId integer;
 BEGIN
 	SystemUserId := '00000000-0000-0000-0000-000000000001';
 
 	SELECT "Id" INTO AdministratorId FROM "Role" WHERE "Name" = 'Administrator';
 	SELECT "Id" INTO ManagerId FROM "Role" WHERE "Name" = 'Manager';
-	SELECT "Id" INTO SheriffId FROM "Role" WHERE "Name" = 'Sheriff';
+	SELECT "Id" INTO CourtAdminId FROM "Role" WHERE "Name" = 'CourtAdmin';
 
 	DELETE FROM "RolePermission" WHERE "RoleId" = AdministratorId;
 	DELETE FROM "RolePermission" WHERE "RoleId" = ManagerId;
-	DELETE FROM "RolePermission" WHERE "RoleId" = SheriffId;
+	DELETE FROM "RolePermission" WHERE "RoleId" = CourtAdminId;
 
-	-- Sheriff
-	INSERT INTO "RolePermission" ("CreatedById","CreatedOn","UpdatedById","UpdatedOn","RoleId","PermissionId") VALUES (SystemUserId,now(),NULL,NULL, SheriffId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'Login')),
-	(SystemUserId,now(),NULL,NULL, SheriffId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewOwnProfile')),
-	(SystemUserId,now(),NULL,NULL, SheriffId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewShifts')),
-	(SystemUserId,now(),NULL,NULL, SheriffId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewDistributeSchedule')),
-	(SystemUserId,now(),NULL,NULL, SheriffId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewAssignedLocation')),
-	(SystemUserId,now(),NULL,NULL, SheriffId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewHomeLocation'));
+	-- CourtAdmin
+	INSERT INTO "RolePermission" ("CreatedById","CreatedOn","UpdatedById","UpdatedOn","RoleId","PermissionId") VALUES (SystemUserId,now(),NULL,NULL, CourtAdminId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'Login')),
+	(SystemUserId,now(),NULL,NULL, CourtAdminId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewOwnProfile')),
+	(SystemUserId,now(),NULL,NULL, CourtAdminId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewShifts')),
+	(SystemUserId,now(),NULL,NULL, CourtAdminId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewDistributeSchedule')),
+	(SystemUserId,now(),NULL,NULL, CourtAdminId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewAssignedLocation')),
+	(SystemUserId,now(),NULL,NULL, CourtAdminId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'ViewHomeLocation'));
 
 	-- Manager
 	INSERT INTO "RolePermission" ("CreatedById","CreatedOn","UpdatedById","UpdatedOn","RoleId","PermissionId") VALUES (SystemUserId,now(),NULL,NULL, ManagerId, (SELECT "Id" FROM "Permission" WHERE "Name" = 'Login')),

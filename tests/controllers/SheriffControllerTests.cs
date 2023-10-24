@@ -20,31 +20,31 @@ using CAS.API.services.scheduling;
 
 namespace tests.controllers
 {
-    public class SheriffControllerTests : WrapInTransactionScope
+    public class CourtAdminControllerTests : WrapInTransactionScope
     {
         #region Variables
-        private readonly SheriffController _controller;
+        private readonly CourtAdminController _controller;
 
         #endregion Variables
 
-        public SheriffControllerTests() : base(false)
+        public CourtAdminControllerTests() : base(false)
         {
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
             var httpContextAccessor = new HttpContextAccessor {HttpContext = HttpResponseTest.SetupHttpContext()};
 
-            var sheriffService = new CourtAdminService(Db, environment.Configuration, httpContextAccessor);
-            var shiftService = new ShiftService(Db,sheriffService, environment.Configuration);
+            var courtAdminService = new CourtAdminService(Db, environment.Configuration, httpContextAccessor);
+            var shiftService = new ShiftService(Db,courtAdminService, environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration, shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
-            _controller = new SheriffController(sheriffService, dutyRosterService, shiftService,new UserService(Db), environment.Configuration, Db)
+            _controller = new CourtAdminController(courtAdminService, dutyRosterService, shiftService,new UserService(Db), environment.Configuration, Db)
             {
                 ControllerContext = HttpResponseTest.SetupMockControllerContext()
             };
         }
 
         [Fact]
-        public async Task CreateSheriff()
+        public async Task CreateCourtAdmin()
         {
-            var newSheriff = new CourtAdmin
+            var newCourtAdmin = new CourtAdmin
             {
                 FirstName = "Ted",
                 LastName = "Tums",
@@ -56,19 +56,19 @@ namespace tests.controllers
                 HomeLocationId = null
             };
 
-            var sheriffDto = newSheriff.Adapt<SheriffWithIdirDto>();
-            //Debug.Write(JsonConvert.SerializeObject(sheriffDto));
+            var courtAdminDto = newCourtAdmin.Adapt<CourtAdminWithIdirDto>();
+            //Debug.Write(JsonConvert.SerializeObject(courtAdminDto));
 
-            var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddSheriff(sheriffDto));
-            var sheriffResponse = response.Adapt<CourtAdmin>();
+            var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddCourtAdmin(courtAdminDto));
+            var courtAdminResponse = response.Adapt<CourtAdmin>();
 
-            Assert.NotNull(await Db.CourtAdmin.FindAsync(sheriffResponse.Id));
+            Assert.NotNull(await Db.CourtAdmin.FindAsync(courtAdminResponse.Id));
         }
 
         [Fact]
-        public async Task CreateSheriffSameIdir()
+        public async Task CreateCourtAdminSameIdir()
         {
-            var newSheriff = new CourtAdmin
+            var newCourtAdmin = new CourtAdmin
             {
                 FirstName = "Ted",
                 LastName = "Tums",
@@ -80,24 +80,24 @@ namespace tests.controllers
                 HomeLocationId = null
             };
 
-            var sheriffDto = newSheriff.Adapt<SheriffWithIdirDto>();
-            //Debug.Write(JsonConvert.SerializeObject(sheriffDto));
+            var courtAdminDto = newCourtAdmin.Adapt<CourtAdminWithIdirDto>();
+            //Debug.Write(JsonConvert.SerializeObject(courtAdminDto));
 
-            var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddSheriff(sheriffDto));
-            var sheriffResponse = response.Adapt<CourtAdmin>();
+            var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddCourtAdmin(courtAdminDto));
+            var courtAdminResponse = response.Adapt<CourtAdmin>();
 
-            Assert.NotNull(await Db.CourtAdmin.FindAsync(sheriffResponse.Id));
+            Assert.NotNull(await Db.CourtAdmin.FindAsync(courtAdminResponse.Id));
 
-            newSheriff.BadgeNumber = "554";
-            sheriffDto = newSheriff.Adapt<SheriffWithIdirDto>();
-            //Debug.Write(JsonConvert.SerializeObject(sheriffDto));
+            newCourtAdmin.BadgeNumber = "554";
+            courtAdminDto = newCourtAdmin.Adapt<CourtAdminWithIdirDto>();
+            //Debug.Write(JsonConvert.SerializeObject(courtAdminDto));
 
             BusinessLayerException ble = null;
             try
             {
                 response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(
-                    await _controller.AddSheriff(sheriffDto));
-                sheriffResponse = response.Adapt<CourtAdmin>();
+                    await _controller.AddCourtAdmin(courtAdminDto));
+                courtAdminResponse = response.Adapt<CourtAdmin>();
             }
             catch (Exception e)
             {
@@ -110,26 +110,26 @@ namespace tests.controllers
 
 
         [Fact]
-        public async Task FindSheriff()
+        public async Task FindCourtAdmin()
         {
-            var sheriffObject = await CreateSheriffUsingDbContext();
+            var courtAdminObject = await CreateCourtAdminUsingDbContext();
 
-            var controllerResult = await _controller.GetSheriffForTeam(sheriffObject.Id);
+            var controllerResult = await _controller.GetCourtAdminForTeam(courtAdminObject.Id);
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
-            var sheriffResponse = response.Adapt<CourtAdmin>();
+            var courtAdminResponse = response.Adapt<CourtAdmin>();
 
-            //Compare Sheriff and Sheriff Object.
-            Assert.Equal(sheriffObject.FirstName, sheriffResponse.FirstName);
-            Assert.Equal(sheriffObject.LastName, sheriffResponse.LastName);
-            Assert.Equal(sheriffObject.BadgeNumber, sheriffResponse.BadgeNumber);
-            Assert.Equal(sheriffObject.Email, sheriffResponse.Email);
-            Assert.Equal(sheriffObject.Gender, sheriffResponse.Gender);
+            //Compare CourtAdmin and CourtAdmin Object.
+            Assert.Equal(courtAdminObject.FirstName, courtAdminResponse.FirstName);
+            Assert.Equal(courtAdminObject.LastName, courtAdminResponse.LastName);
+            Assert.Equal(courtAdminObject.BadgeNumber, courtAdminResponse.BadgeNumber);
+            Assert.Equal(courtAdminObject.Email, courtAdminResponse.Email);
+            Assert.Equal(courtAdminObject.Gender, courtAdminResponse.Gender);
         }
 
         [Fact]
-        public async Task UpdateSheriff()
+        public async Task UpdateCourtAdmin()
         {
-            var sheriffObject = await CreateSheriffUsingDbContext();
+            var courtAdminObject = await CreateCourtAdminUsingDbContext();
 
             var newLocation = new Location { Name = "5", Id = 50005 , AgencyId = "645646464646464"};
             await Db.Location.AddAsync(newLocation);
@@ -139,47 +139,47 @@ namespace tests.controllers
 
             Detach();
 
-            var updateSheriff = sheriffObject.Adapt<SheriffWithIdirDto>();
-            updateSheriff.FirstName = "Al";
-            updateSheriff.LastName = "Hoyne";
-            updateSheriff.BadgeNumber = "55";
-            updateSheriff.Email = "hey@hey.com";
-            updateSheriff.Gender = Gender.Other;
+            var updateCourtAdmin = courtAdminObject.Adapt<CourtAdminWithIdirDto>();
+            updateCourtAdmin.FirstName = "Al";
+            updateCourtAdmin.LastName = "Hoyne";
+            updateCourtAdmin.BadgeNumber = "55";
+            updateCourtAdmin.Email = "hey@hey.com";
+            updateCourtAdmin.Gender = Gender.Other;
 
             //This object is only used for fetching.
-            //updateSheriff.HomeLocation = new LocationDto { Name = "Als place2", Id = 5};
-            updateSheriff.HomeLocationId = newLocation.Id;
+            //updateCourtAdmin.HomeLocation = new LocationDto { Name = "Als place2", Id = 5};
+            updateCourtAdmin.HomeLocationId = newLocation.Id;
 
             Detach();
 
-            var controllerResult = await _controller.UpdateSheriff(updateSheriff);
+            var controllerResult = await _controller.UpdateCourtAdmin(updateCourtAdmin);
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
-            var sheriffResponse = response.Adapt<CourtAdmin>();
+            var courtAdminResponse = response.Adapt<CourtAdmin>();
 
-            Assert.Equal(updateSheriff.FirstName, sheriffResponse.FirstName);
-            Assert.Equal(updateSheriff.LastName, sheriffResponse.LastName);
-            Assert.Equal(updateSheriff.BadgeNumber, sheriffResponse.BadgeNumber);
-            Assert.Equal(updateSheriff.Email, sheriffResponse.Email);
-            Assert.Equal(updateSheriff.Gender, sheriffResponse.Gender);
+            Assert.Equal(updateCourtAdmin.FirstName, courtAdminResponse.FirstName);
+            Assert.Equal(updateCourtAdmin.LastName, courtAdminResponse.LastName);
+            Assert.Equal(updateCourtAdmin.BadgeNumber, courtAdminResponse.BadgeNumber);
+            Assert.Equal(updateCourtAdmin.Email, courtAdminResponse.Email);
+            Assert.Equal(updateCourtAdmin.Gender, courtAdminResponse.Gender);
 
             //Shouldn't be able to update any of the navigation properties here.
-            Assert.Empty(sheriffResponse.AwayLocation);
-            Assert.Empty(sheriffResponse.Training);
-            Assert.Empty(sheriffResponse.Leave);
+            Assert.Empty(courtAdminResponse.AwayLocation);
+            Assert.Empty(courtAdminResponse.Training);
+            Assert.Empty(courtAdminResponse.Leave);
             //Set to invalid location, should be null.
             //WE didn't set the HomeLocationId here. 
-            Assert.NotNull(sheriffResponse.HomeLocation);
+            Assert.NotNull(courtAdminResponse.HomeLocation);
 
             Detach();
 
-            updateSheriff.HomeLocationId = newLocation2.Id;
-            updateSheriff.HomeLocation = newLocation2.Adapt<LocationDto>();
-            controllerResult = await _controller.UpdateSheriff(updateSheriff);
+            updateCourtAdmin.HomeLocationId = newLocation2.Id;
+            updateCourtAdmin.HomeLocation = newLocation2.Adapt<LocationDto>();
+            controllerResult = await _controller.UpdateCourtAdmin(updateCourtAdmin);
             response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
             Detach();
 
-            var controllerResult2 = await _controller.GetSheriffForTeam(sheriffResponse.Id);
+            var controllerResult2 = await _controller.GetCourtAdminForTeam(courtAdminResponse.Id);
             var response2 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
             Assert.NotNull(response2.HomeLocation);
             Assert.Equal(newLocation2.Id, response.HomeLocation.Id);
@@ -188,10 +188,10 @@ namespace tests.controllers
 
 
         [Fact]
-        public async Task AddUpdateRemoveSheriffAwayLocation()
+        public async Task AddUpdateRemoveCourtAdminAwayLocation()
         {
             //Test permissions?
-            var sheriffObject = await CreateSheriffUsingDbContext();
+            var courtAdminObject = await CreateCourtAdminUsingDbContext();
 
             var newLocation = new Location { Name = "New PLace", AgencyId = "545325345353"};
             await Db.Location.AddAsync(newLocation);
@@ -199,61 +199,61 @@ namespace tests.controllers
             await Db.Location.AddAsync(newLocation2);
             await Db.SaveChangesAsync();
 
-            var sheriffAwayLocation = new SheriffAwayLocationDto
+            var courtAdminAwayLocation = new CourtAdminAwayLocationDto
             {
-                SheriffId =  sheriffObject.Id,
+                CourtAdminId =  courtAdminObject.Id,
                 LocationId = newLocation.Id,
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddHours(3)
             };
 
             //Add
-            var controllerResult = await _controller.AddSheriffAwayLocation(sheriffAwayLocation);
+            var controllerResult = await _controller.AddCourtAdminAwayLocation(courtAdminAwayLocation);
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
-            Assert.Equal(sheriffAwayLocation.LocationId, response.Location.Id);
-            Assert.Equal(sheriffAwayLocation.SheriffId, response.SheriffId);
-            Assert.Equal(sheriffAwayLocation.StartDate, response.StartDate);
-            Assert.Equal(sheriffAwayLocation.EndDate, response.EndDate);
+            Assert.Equal(courtAdminAwayLocation.LocationId, response.Location.Id);
+            Assert.Equal(courtAdminAwayLocation.CourtAdminId, response.CourtAdminId);
+            Assert.Equal(courtAdminAwayLocation.StartDate, response.StartDate);
+            Assert.Equal(courtAdminAwayLocation.EndDate, response.EndDate);
 
             Detach();
 
-            var controllerResult2 = await _controller.GetSheriffForTeam(sheriffObject.Id);
+            var controllerResult2 = await _controller.GetCourtAdminForTeam(courtAdminObject.Id);
             var response2 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult2);
 
             Assert.True(response2.AwayLocation.Count == 1);
 
-            var updateSheriffAwayLocation = sheriffAwayLocation.Adapt<SheriffAwayLocationDto>();
-            updateSheriffAwayLocation.StartDate = DateTime.UtcNow.AddDays(5);
-            updateSheriffAwayLocation.EndDate = DateTime.UtcNow.AddDays(5);
-            updateSheriffAwayLocation.LocationId = newLocation2.Id;
-            updateSheriffAwayLocation.Id = response.Id;
+            var updateCourtAdminAwayLocation = courtAdminAwayLocation.Adapt<CourtAdminAwayLocationDto>();
+            updateCourtAdminAwayLocation.StartDate = DateTime.UtcNow.AddDays(5);
+            updateCourtAdminAwayLocation.EndDate = DateTime.UtcNow.AddDays(5);
+            updateCourtAdminAwayLocation.LocationId = newLocation2.Id;
+            updateCourtAdminAwayLocation.Id = response.Id;
 
             Detach();
 
             //Update
-            var controllerResult3 = await _controller.UpdateSheriffAwayLocation(updateSheriffAwayLocation);
+            var controllerResult3 = await _controller.UpdateCourtAdminAwayLocation(updateCourtAdminAwayLocation);
             var response3 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult3);
 
-            Assert.Equal(response3.StartDate, updateSheriffAwayLocation.StartDate);
-            Assert.Equal(response3.EndDate, updateSheriffAwayLocation.EndDate);
-            Assert.Equal(response3.SheriffId, updateSheriffAwayLocation.SheriffId);
+            Assert.Equal(response3.StartDate, updateCourtAdminAwayLocation.StartDate);
+            Assert.Equal(response3.EndDate, updateCourtAdminAwayLocation.EndDate);
+            Assert.Equal(response3.CourtAdminId, updateCourtAdminAwayLocation.CourtAdminId);
 
             Detach();
 
             //Remove
-            var controllerResult4 = await _controller.RemoveSheriffAwayLocation(response.Id, "hello");
+            var controllerResult4 = await _controller.RemoveCourtAdminAwayLocation(response.Id, "hello");
             HttpResponseTest.CheckForNoContentResponse(controllerResult4);
 
-            var controllerResult6 = await _controller.GetSheriffForTeam(sheriffObject.Id);
+            var controllerResult6 = await _controller.GetCourtAdminForTeam(courtAdminObject.Id);
             var response6 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult6);
             Assert.Empty(response6.AwayLocation);
         }
 
         [Fact]
-        public async Task AddUpdateRemoveSheriffLeave()
+        public async Task AddUpdateRemoveCourtAdminLeave()
         {
-            var sheriffObject = await CreateSheriffUsingDbContext();
+            var courtAdminObject = await CreateCourtAdminUsingDbContext();
             var newLocation = new Location { Name = "New PLace", AgencyId = "gfgdf43535345"};
             await Db.Location.AddAsync(newLocation);
 
@@ -279,61 +279,61 @@ namespace tests.controllers
             await Db.SaveChangesAsync();
 
 
-            var entity = new SheriffLeaveDto
+            var entity = new CourtAdminLeaveDto
             {
                 LeaveTypeId = lookupCode.Id,
-                SheriffId = sheriffObject.Id,
+                CourtAdminId = courtAdminObject.Id,
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddHours(3)
             };
 
             //Add
-            var controllerResult = await _controller.AddSheriffLeave(entity);
+            var controllerResult = await _controller.AddCourtAdminLeave(entity);
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
             Assert.Equal(entity.LeaveTypeId, response.LeaveType.Id);
-            Assert.Equal(entity.SheriffId, response.SheriffId);
+            Assert.Equal(entity.CourtAdminId, response.CourtAdminId);
             Assert.Equal(entity.StartDate, response.StartDate);
             Assert.Equal(entity.EndDate, response.EndDate);
 
-            var controllerResult2 = await _controller.GetSheriffForTeam(sheriffObject.Id);
+            var controllerResult2 = await _controller.GetCourtAdminForTeam(courtAdminObject.Id);
             var response2 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult2);
 
             Assert.True(response2.Leave.Count == 1);
 
             Detach();
 
-            var updateSheriffLeave = entity.Adapt<SheriffLeaveDto>();
-            updateSheriffLeave.StartDate = DateTime.UtcNow.AddDays(5);
-            updateSheriffLeave.EndDate = DateTime.UtcNow.AddDays(5);
-            //updateSheriffLeave.LeaveTypeId = lookupCode2.Id;
+            var updateCourtAdminLeave = entity.Adapt<CourtAdminLeaveDto>();
+            updateCourtAdminLeave.StartDate = DateTime.UtcNow.AddDays(5);
+            updateCourtAdminLeave.EndDate = DateTime.UtcNow.AddDays(5);
+            //updateCourtAdminLeave.LeaveTypeId = lookupCode2.Id;
            
-            updateSheriffLeave.LeaveType = lookupCode2.Adapt<LookupCodeDto>();
-            updateSheriffLeave.LeaveTypeId = lookupCode2.Id;
-            updateSheriffLeave.Id = response.Id;
+            updateCourtAdminLeave.LeaveType = lookupCode2.Adapt<LookupCodeDto>();
+            updateCourtAdminLeave.LeaveTypeId = lookupCode2.Id;
+            updateCourtAdminLeave.Id = response.Id;
 
             //Update
-            var controllerResult3 = await _controller.UpdateSheriffLeave(updateSheriffLeave);
+            var controllerResult3 = await _controller.UpdateCourtAdminLeave(updateCourtAdminLeave);
             var response3 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult3);
 
-            Assert.Equal(response3.StartDate, updateSheriffLeave.StartDate);
-            Assert.Equal(response3.EndDate, updateSheriffLeave.EndDate);
-            Assert.Equal(response3.SheriffId, updateSheriffLeave.SheriffId);
-            Assert.Equal(response3.LeaveTypeId, updateSheriffLeave.LeaveTypeId);
+            Assert.Equal(response3.StartDate, updateCourtAdminLeave.StartDate);
+            Assert.Equal(response3.EndDate, updateCourtAdminLeave.EndDate);
+            Assert.Equal(response3.CourtAdminId, updateCourtAdminLeave.CourtAdminId);
+            Assert.Equal(response3.LeaveTypeId, updateCourtAdminLeave.LeaveTypeId);
 
             //Remove
-            var controllerResult4 = await _controller.RemoveSheriffLeave(updateSheriffLeave.Id, "expired");
+            var controllerResult4 = await _controller.RemoveCourtAdminLeave(updateCourtAdminLeave.Id, "expired");
             HttpResponseTest.CheckForNoContentResponse(controllerResult4);
 
-            var controllerResult5 = await _controller.GetSheriffForTeam(sheriffObject.Id);
+            var controllerResult5 = await _controller.GetCourtAdminForTeam(courtAdminObject.Id);
             var response5 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult5);
             Assert.Empty(response5.Leave);
         }
        
         [Fact]
-        public async Task AddUpdateRemoveSheriffTraining()
+        public async Task AddUpdateRemoveCourtAdminTraining()
         {
-            var sheriffObject = await CreateSheriffUsingDbContext();
+            var courtAdminObject = await CreateCourtAdminUsingDbContext();
 
             var newLocation = new Location { Name = "New PLace", AgencyId = "zfddf2342"};
             await Db.Location.AddAsync(newLocation);
@@ -360,49 +360,49 @@ namespace tests.controllers
             await Db.SaveChangesAsync();
 
 
-            var entity = new SheriffTrainingDto
+            var entity = new CourtAdminTrainingDto
             {
                 TrainingTypeId = lookupCode.Id,
-                SheriffId = sheriffObject.Id,
+                CourtAdminId = courtAdminObject.Id,
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddHours(3)
             };
 
             //Add
-            var controllerResult = await _controller.AddSheriffTraining(entity);
+            var controllerResult = await _controller.AddCourtAdminTraining(entity);
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
             Detach();
 
-            var updateSheriffTraining = entity.Adapt<SheriffTrainingDto>();
-            updateSheriffTraining.StartDate = DateTime.UtcNow.AddDays(5);
-            updateSheriffTraining.EndDate = DateTime.UtcNow.AddDays(5);
-            updateSheriffTraining.TrainingTypeId = lookupCode2.Id;
-            updateSheriffTraining.TrainingType = lookupCode2.Adapt<LookupCodeDto>();
-            updateSheriffTraining.Id = response.Id;
+            var updateCourtAdminTraining = entity.Adapt<CourtAdminTrainingDto>();
+            updateCourtAdminTraining.StartDate = DateTime.UtcNow.AddDays(5);
+            updateCourtAdminTraining.EndDate = DateTime.UtcNow.AddDays(5);
+            updateCourtAdminTraining.TrainingTypeId = lookupCode2.Id;
+            updateCourtAdminTraining.TrainingType = lookupCode2.Adapt<LookupCodeDto>();
+            updateCourtAdminTraining.Id = response.Id;
 
             //Update
-            var controllerResult3 = await _controller.UpdateSheriffTraining(updateSheriffTraining);
+            var controllerResult3 = await _controller.UpdateCourtAdminTraining(updateCourtAdminTraining);
             var response3 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult3);
 
-            Assert.Equal(response3.StartDate, updateSheriffTraining.StartDate);
-            Assert.Equal(response3.EndDate, updateSheriffTraining.EndDate);
-            Assert.Equal(response3.SheriffId, updateSheriffTraining.SheriffId);
-            Assert.Equal(response3.TrainingTypeId, updateSheriffTraining.TrainingTypeId);
+            Assert.Equal(response3.StartDate, updateCourtAdminTraining.StartDate);
+            Assert.Equal(response3.EndDate, updateCourtAdminTraining.EndDate);
+            Assert.Equal(response3.CourtAdminId, updateCourtAdminTraining.CourtAdminId);
+            Assert.Equal(response3.TrainingTypeId, updateCourtAdminTraining.TrainingTypeId);
 
             //Remove
-            var controllerResult4 = await _controller.RemoveSheriffTraining(updateSheriffTraining.Id, "expired");
+            var controllerResult4 = await _controller.RemoveCourtAdminTraining(updateCourtAdminTraining.Id, "expired");
             HttpResponseTest.CheckForNoContentResponse(controllerResult4);
 
-            var controllerResult5 = await _controller.GetSheriffForTeam(sheriffObject.Id);
+            var controllerResult5 = await _controller.GetCourtAdminForTeam(courtAdminObject.Id);
             var response5 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult5);
             Assert.Empty(response5.Training);
         }
 
         [Fact]
-        public async Task SheriffOverrideConflictRemove()
+        public async Task CourtAdminOverrideConflictRemove()
         {
-            var sheriffObject = await CreateSheriffUsingDbContext();
+            var courtAdminObject = await CreateCourtAdminUsingDbContext();
 
             var newLocation = new Location { Name = "New PLace", AgencyId = "zfddf2342" };
             await Db.Location.AddAsync(newLocation);
@@ -418,7 +418,7 @@ namespace tests.controllers
                 EndDate = endDate,
                 LocationId = newLocation.Id,
                 Timezone = "America/Vancouver",
-                SheriffId = sheriffObject.Id
+                CourtAdminId = courtAdminObject.Id
             };
 
             Db.Shift.Add(shift);
@@ -434,7 +434,7 @@ namespace tests.controllers
 
             var dutySlot = new DutySlot
             {
-                SheriffId = sheriffObject.Id,
+                CourtAdminId = courtAdminObject.Id,
                 LocationId = newLocation.Id,
                 StartDate = startDate,
                 EndDate = endDate,
@@ -453,10 +453,10 @@ namespace tests.controllers
 
             await Db.SaveChangesAsync();
 
-            var entity = new SheriffLeaveDto
+            var entity = new CourtAdminLeaveDto
             {
                 LeaveTypeId = lookupCode.Id,
-                SheriffId = sheriffObject.Id,
+                CourtAdminId = courtAdminObject.Id,
                 StartDate = startDate,
                 EndDate = endDate
             };
@@ -464,33 +464,33 @@ namespace tests.controllers
             Assert.True(Db.Shift.Any(s => s.ExpiryDate == null && s.Id == shift.Id));
             Assert.True(Db.DutySlot.Any(ds => ds.ExpiryDate == null && ds.Id == dutySlot.Id));
 
-            await _controller.AddSheriffLeave(entity, true);
+            await _controller.AddCourtAdminLeave(entity, true);
 
             Assert.False(Db.Shift.Any(s => s.ExpiryDate == null && s.Id == shift.Id));
             Assert.False(Db.DutySlot.Any(ds => ds.ExpiryDate == null && ds.Id == dutySlot.Id ));
         }
 
         [Fact]
-        public async Task SheriffEventTimeTest()
+        public async Task CourtAdminEventTimeTest()
         {
-            await SheriffEventTimeTestHelper("2025-01-01", "2025-01-02", "2024-12-31");
+            await CourtAdminEventTimeTestHelper("2025-01-01", "2025-01-02", "2024-12-31");
         }
 
         [Fact]
-        public async Task SheriffEventTimeTestDSTStart()
+        public async Task CourtAdminEventTimeTestDSTStart()
         {
-            await SheriffEventTimeTestHelper("2025-03-08", "2025-03-09", "2025-03-07");
+            await CourtAdminEventTimeTestHelper("2025-03-08", "2025-03-09", "2025-03-07");
         }
 
         [Fact]
-        public async Task SheriffEventTimeTestDSTEnd()
+        public async Task CourtAdminEventTimeTestDSTEnd()
         {
-            await SheriffEventTimeTestHelper("2025-11-02", "2025-11-03", "2025-11-01");
+            await CourtAdminEventTimeTestHelper("2025-11-02", "2025-11-03", "2025-11-01");
         }
 
-        private async Task SheriffEventTimeTestHelper(string awayLocationDate, string trainingDate, string trainingDate2)
+        private async Task CourtAdminEventTimeTestHelper(string awayLocationDate, string trainingDate, string trainingDate2)
         {
-            var sheriffObject = await CreateSheriffUsingDbContext();
+            var courtAdminObject = await CreateCourtAdminUsingDbContext();
 
             var newLocation = new Location { Name = "New PLace", AgencyId = "zfddf2342" };
             await Db.Location.AddAsync(newLocation);
@@ -498,46 +498,46 @@ namespace tests.controllers
             await Db.Location.AddAsync(edmontonTimezoneLocation);
             await Db.SaveChangesAsync();
 
-            var sheriffAwayLocation = new CourtAdminAwayLocation
+            var courtAdminAwayLocation = new CourtAdminAwayLocation
             {
                 Timezone = "America/Vancouver",
                 StartDate = DateTimeOffset.Parse($"{awayLocationDate} 00:00:00 -8"),
                 EndDate = DateTimeOffset.Parse($"{awayLocationDate} 23:59:00 -8"),
-                CourtAdminId = sheriffObject.Id,
+                CourtAdminId = courtAdminObject.Id,
                 LocationId = edmontonTimezoneLocation.Id
             };
 
-            var result0 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddSheriffAwayLocation(sheriffAwayLocation.Adapt<SheriffAwayLocationDto>()));
+            var result0 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddCourtAdminAwayLocation(courtAdminAwayLocation.Adapt<CourtAdminAwayLocationDto>()));
 
-            var sheriffTraining = new CourtAdminTraining
+            var courtAdminTraining = new CourtAdminTraining
             {
                 Timezone = "America/Edmonton",
                 StartDate = DateTimeOffset.Parse($"{trainingDate} 00:00:00 -7"),
                 EndDate = DateTimeOffset.Parse($"{trainingDate} 23:59:00 -7"),
-                CourtAdminId = sheriffObject.Id
+                CourtAdminId = courtAdminObject.Id
             };
 
-            HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddSheriffTraining(sheriffTraining.Adapt<SheriffTrainingDto>()));
+            HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddCourtAdminTraining(courtAdminTraining.Adapt<CourtAdminTrainingDto>()));
 
-            var sheriffTraining2 = new CourtAdminTraining
+            var courtAdminTraining2 = new CourtAdminTraining
             {
                 Timezone = "America/Edmonton",
                 StartDate = DateTimeOffset.Parse($"{trainingDate2} 00:00:00 -7"),
                 EndDate = DateTimeOffset.Parse($"{trainingDate2} 23:59:00 -7"),
-                CourtAdminId = sheriffObject.Id
+                CourtAdminId = courtAdminObject.Id
             };
 
             HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(
-                await _controller.AddSheriffTraining(sheriffTraining2.Adapt<SheriffTrainingDto>()));
+                await _controller.AddCourtAdminTraining(courtAdminTraining2.Adapt<CourtAdminTrainingDto>()));
         }
 
 
         #region Helpers
 
 
-        private async Task<CourtAdmin> CreateSheriffUsingDbContext()
+        private async Task<CourtAdmin> CreateCourtAdminUsingDbContext()
         {
-            var newSheriff = new CourtAdmin
+            var newCourtAdmin = new CourtAdmin
             {
                 FirstName = "Ted",
                 LastName = "Tums",
@@ -549,18 +549,18 @@ namespace tests.controllers
                 HomeLocation =  new Location { Name = "Teds Place", AgencyId = "5555555435353535353535353"},
             };
 
-            await Db.CourtAdmin.AddAsync(newSheriff);
+            await Db.CourtAdmin.AddAsync(newCourtAdmin);
             await Db.SaveChangesAsync();
 
             Detach();
             
-            return newSheriff;
+            return newCourtAdmin;
         }
 
 
-        private async Task<CourtAdminAwayLocation> CreateSheriffAwayLocationUsingDbContext()
+        private async Task<CourtAdminAwayLocation> CreateCourtAdminAwayLocationUsingDbContext()
         {
-            var sheriffObject = await CreateSheriffUsingDbContext();
+            var courtAdminObject = await CreateCourtAdminUsingDbContext();
 
             var newLocation = new Location { Name = "New PLace" };
             await Db.Location.AddAsync(newLocation);
@@ -568,20 +568,20 @@ namespace tests.controllers
 
             Detach();
 
-            var sheriffAwayLocation = new CourtAdminAwayLocation
+            var courtAdminAwayLocation = new CourtAdminAwayLocation
             {
                 LocationId = newLocation.Id,
-                CourtAdminId = sheriffObject.Id,
+                CourtAdminId = courtAdminObject.Id,
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddHours(3)
             };
 
-            await Db.SheriffAwayLocation.AddAsync(sheriffAwayLocation);
+            await Db.CourtAdminAwayLocation.AddAsync(courtAdminAwayLocation);
             await Db.SaveChangesAsync();
 
             Detach();
 
-            return sheriffAwayLocation;
+            return courtAdminAwayLocation;
         }
 
         //Upload Photo

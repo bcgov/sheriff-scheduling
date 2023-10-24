@@ -30,8 +30,8 @@
     <Compile Remove="migrations\20200929193313_t3.Designer.cs" />
     <Compile Remove="migrations\20200929212354_PermissionSeedData.cs" />
     <Compile Remove="migrations\20200929212354_PermissionSeedData.Designer.cs" />
-    <Compile Remove="migrations\20200930002122_sheriffRankSeed.cs" />
-    <Compile Remove="migrations\20200930002122_sheriffRankSeed.Designer.cs" />
+    <Compile Remove="migrations\20200930002122_courtAdminRankSeed.cs" />
+    <Compile Remove="migrations\20200930002122_courtAdminRankSeed.Designer.cs" />
     <Compile Remove="migrations\20200930005546_updateUser.cs" />
     <Compile Remove="migrations\20200930005546_updateUser.Designer.cs" />
     <Compile Remove="migrations\20200930011847_Data.cs" />

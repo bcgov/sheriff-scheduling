@@ -17,15 +17,15 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.DropColumn(
                 name: "RowVersion",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropColumn(
                 name: "RowVersion",
-                table: "SheriffLeave");
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropColumn(
                 name: "RowVersion",
-                table: "SheriffAwayLocation");
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.DropColumn(
                 name: "RowVersion",
@@ -71,21 +71,21 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AddColumn<uint>(
                 name: "xmin",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "xid",
                 nullable: false,
                 defaultValue: 0u);
 
             migrationBuilder.AddColumn<uint>(
                 name: "xmin",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "xid",
                 nullable: false,
                 defaultValue: 0u);
 
             migrationBuilder.AddColumn<uint>(
                 name: "xmin",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "xid",
                 nullable: false,
                 defaultValue: 0u);
@@ -243,15 +243,15 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.DropColumn(
                 name: "xmin",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropColumn(
                 name: "xmin",
-                table: "SheriffLeave");
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropColumn(
                 name: "xmin",
-                table: "SheriffAwayLocation");
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.DropColumn(
                 name: "xmin",
@@ -297,21 +297,21 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AddColumn<byte[]>(
                 name: "RowVersion",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "bytea",
                 rowVersion: true,
                 nullable: true);
 
             migrationBuilder.AddColumn<byte[]>(
                 name: "RowVersion",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "bytea",
                 rowVersion: true,
                 nullable: true);
 
             migrationBuilder.AddColumn<byte[]>(
                 name: "RowVersion",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "bytea",
                 rowVersion: true,
                 nullable: true);

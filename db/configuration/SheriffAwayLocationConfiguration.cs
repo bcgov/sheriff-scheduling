@@ -5,7 +5,7 @@ using CAS.DB.models.courtAdmin;
 
 namespace CAS.DB.configuration
 {
-    public class SheriffAwayLocationConfiguration : BaseEntityConfiguration<CourtAdminAwayLocation>
+    public class CourtAdminAwayLocationConfiguration : BaseEntityConfiguration<CourtAdminAwayLocation>
     {
         public override void Configure(EntityTypeBuilder<CourtAdminAwayLocation> builder)
         {

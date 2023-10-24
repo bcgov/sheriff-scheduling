@@ -12,7 +12,7 @@ namespace CAS.DB.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "Code", "CreatedOn" },
-                values: new object[] { "Chief Sheriff", new DateTimeOffset(new DateTime(2020, 10, 16, 16, 11, 34, 565, DateTimeKind.Unspecified).AddTicks(9407), new TimeSpan(0, 0, 0, 0, 0)) });
+                values: new object[] { "Chief CourtAdmin", new DateTimeOffset(new DateTime(2020, 10, 16, 16, 11, 34, 565, DateTimeKind.Unspecified).AddTicks(9407), new TimeSpan(0, 0, 0, 0, 0)) });
 
             migrationBuilder.UpdateData(
                 table: "LookupCode",
@@ -54,7 +54,7 @@ namespace CAS.DB.Migrations
                 keyColumn: "Id",
                 keyValue: 7,
                 columns: new[] { "Code", "CreatedOn" },
-                values: new object[] { "Deputy Sheriff", new DateTimeOffset(new DateTime(2020, 10, 16, 16, 11, 34, 566, DateTimeKind.Unspecified).AddTicks(2266), new TimeSpan(0, 0, 0, 0, 0)) });
+                values: new object[] { "Deputy CourtAdmin", new DateTimeOffset(new DateTime(2020, 10, 16, 16, 11, 34, 566, DateTimeKind.Unspecified).AddTicks(2266), new TimeSpan(0, 0, 0, 0, 0)) });
 
             migrationBuilder.UpdateData(
                 table: "LookupCode",

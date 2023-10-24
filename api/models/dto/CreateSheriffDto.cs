@@ -2,7 +2,7 @@
 
 namespace CAS.API.models.dto
 {
-    public class SheriffWithIdirDto : SheriffDto
+    public class CourtAdminWithIdirDto : CourtAdminDto
     {
         public string IdirName { get; set; }
     }

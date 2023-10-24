@@ -5,7 +5,7 @@ using CAS.DB.models.courtAdmin;
 
 namespace CAS.DB.configuration
 {
-    public class SheriffActingRankConfiguration : BaseEntityConfiguration<CourtAdminActingRank>
+    public class CourtAdminActingRankConfiguration : BaseEntityConfiguration<CourtAdminActingRank>
     {
         public override void Configure(EntityTypeBuilder<CourtAdminActingRank> builder)
         {

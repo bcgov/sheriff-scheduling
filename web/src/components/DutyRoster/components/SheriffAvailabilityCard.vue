@@ -1,8 +1,8 @@
 <template>
-    <div :class="{'gridsheriff':true, 'fullview':fullview}" :style="pdfView?'':{gridTemplateColumns: 'repeat(96, '+zoomLevel*2.0833/100+'%)'}">
+    <div :class="{'gridcourtAdmin':true, 'fullview':fullview}" :style="pdfView?'':{gridTemplateColumns: 'repeat(96, '+zoomLevel*2.0833/100+'%)'}">
         <div class="grid" v-for="i in 96" :key="i" :style="{backgroundColor: '#F1FEF1', gridColumnStart: i,gridColumnEnd:(i+1), gridRow:'1/2'}"></div>
         <div 
-            v-for="(block,index) in sheriffInfo.availabilityDetail"
+            v-for="(block,index) in courtAdminInfo.availabilityDetail"
             :key="index+2000"
             :style="{gridColumnStart: (1+block.startBin),gridColumnEnd:(1+block.endBin), gridRow:'1/1',  backgroundColor: block.color, fontSize:'9px', textAlign: 'center', margin:0, padding:0 }"
             v-b-tooltip.hover.bottom                             
@@ -12,7 +12,7 @@
                 </div>                
         </div>
         <div 
-            v-for="(block,index) in sheriffInfo.sheriff.dutiesDetail"
+            v-for="(block,index) in courtAdminInfo.courtAdmin.dutiesDetail"
             :key="index+1000"
             :style="{gridColumnStart: (1+block.startBin),gridColumnEnd:(1+block.endBin), gridRow:'1/1',  backgroundColor: block.color, fontSize:'9px', textAlign: 'center', margin:0, padding:0, color:'white' }"
             v-b-tooltip.hover.bottom                             
@@ -35,10 +35,10 @@
     import * as _ from 'underscore';
 
     @Component
-    export default class SheriffAvailabilityCard extends Vue {
+    export default class CourtAdminAvailabilityCard extends Vue {
 
         @Prop({required: true})
-        sheriffInfo!: myTeamShiftInfoType;
+        courtAdminInfo!: myTeamShiftInfoType;
 
         @Prop({required: false, default:false})
         fullview!: boolean;
@@ -61,7 +61,7 @@
 
 <style scoped lang="scss">
 
-    .gridsheriff {        
+    .gridcourtAdmin {        
         display:grid;
         grid-template-columns: repeat(96, 2.0833%);
         grid-template-rows: repeat(1,.9rem);
@@ -80,7 +80,7 @@
            
     }
 
-    .gridsheriff > * { 
+    .gridcourtAdmin > * { 
         padding: 0px 0;
         border: 1px dotted rgb(202, 202, 202);
     }

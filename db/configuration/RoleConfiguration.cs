@@ -14,7 +14,7 @@ namespace CAS.DB.configuration
             builder.HasData(
                 new Role { CreatedById = User.SystemUser, Id = 1, Name = Role.Administrator, Description = "Administrator" },
                 new Role { CreatedById = User.SystemUser, Id = 2, Name = Role.Manager, Description = "Manager" },
-                new Role { CreatedById = User.SystemUser, Id = 3, Name = Role.Sheriff, Description = "Sheriff" }
+                new Role { CreatedById = User.SystemUser, Id = 3, Name = Role.CourtAdmin, Description = "CourtAdmin" }
             );
 
             base.Configure(builder);

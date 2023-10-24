@@ -2,13 +2,13 @@
 
 namespace CAS.DB.Migrations
 {
-    public partial class UpdateSheriffTraining_AddNotice : Migration
+    public partial class UpdateCourtAdminTraining_AddNotice : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
                 name: "FirstNotice",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
@@ -18,7 +18,7 @@ namespace CAS.DB.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "FirstNotice",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
         }
     }
 }

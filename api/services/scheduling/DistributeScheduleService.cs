@@ -47,7 +47,7 @@ namespace CAS.API.services.scheduling
 
             foreach (var shift in shifts)
                 shift.DutySlots = dutySlots.Where(ds =>
-                        ds.SheriffId == shift.SheriffId && ds.StartDate < shift.EndDate && shift.StartDate < ds.EndDate)
+                        ds.CourtAdminId == shift.CourtAdminId && ds.StartDate < shift.EndDate && shift.StartDate < ds.EndDate)
                     .ToList();
 
             foreach (var shiftAvailability in shiftAvailabilities)

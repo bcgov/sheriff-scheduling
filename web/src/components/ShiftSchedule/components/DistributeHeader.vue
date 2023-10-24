@@ -59,10 +59,10 @@
                             style="height: 100%;"
                             v-model="selectedTeamMember"
                             @change="getSchedule()">
-                            <b-form-select-option :value="{sheriffId: '', name: 'All', email: ''}">All</b-form-select-option>
+                            <b-form-select-option :value="{courtAdminId: '', name: 'All', email: ''}">All</b-form-select-option>
                             <b-form-select-option
                                 v-for="member in teamMemberList"
-                                :key="member.sheriffId"                  
+                                :key="member.courtAdminId"                  
                                 :value="member">{{member.name}}
                             </b-form-select-option>                  
                         </b-form-select>
@@ -135,7 +135,7 @@
                                     v-model="recipients">
                                     <b-form-checkbox
                                         v-for="member in teamMemberList"
-                                        :key="member.sheriffId"                  
+                                        :key="member.courtAdminId"                  
                                         :value="member.email">{{member.name}}								
                                     </b-form-checkbox>
                                 </b-form-checkbox-group>
@@ -250,12 +250,12 @@
         allSelected = false;
         loadingPdf = false;
 
-        selectedTeamMember = {sheriffId: '', name: 'All', email: ''} as distributeTeamMemberInfoType;
+        selectedTeamMember = {courtAdminId: '', name: 'All', email: ''} as distributeTeamMemberInfoType;
 
         @Watch('location.id', { immediate: true })
         locationChange()
         {
-            this.selectedTeamMember = {sheriffId: '', name: 'All', email: ''};
+            this.selectedTeamMember = {courtAdminId: '', name: 'All', email: ''};
             this.showWeekViewChecked = true;       
         }
 
@@ -291,7 +291,7 @@
         public getSchedule() {            			
             Vue.nextTick(()=>{
                 this.selectedDate = this.dailyShiftRangeInfo.startDate;
-                this.$emit('change', this.showWeekViewChecked, this.selectedTeamMember.sheriffId)
+                this.$emit('change', this.showWeekViewChecked, this.selectedTeamMember.courtAdminId)
             })
         }
 

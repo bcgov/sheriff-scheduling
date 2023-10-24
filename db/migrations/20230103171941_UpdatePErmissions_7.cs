@@ -9,7 +9,7 @@ namespace CAS.DB.Migrations
             migrationBuilder.InsertData(
                 table: "Permission",
                 columns: new[] { "Id", "CreatedById", "Description", "Name", "UpdatedById", "UpdatedOn" },
-                values: new object[] { 43, null, "Generate Reports based on Sheriff's activity", "GenerateReports", null, null });
+                values: new object[] { 43, null, "Generate Reports based on CourtAdmin's activity", "GenerateReports", null, null });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -7,9 +7,9 @@ namespace CAS.DB.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("update \"SheriffAwayLocation\" set \"Timezone\" = 'America/Vancouver' where length(\"Timezone\") = 0");
-            migrationBuilder.Sql("update \"SheriffLeave\" set \"Timezone\" = 'America/Vancouver' where length(\"Timezone\") = 0");
-            migrationBuilder.Sql("update \"SheriffTraining\" set \"Timezone\" = 'America/Vancouver' where length(\"Timezone\") = 0");
+            migrationBuilder.Sql("update \"CourtAdminAwayLocation\" set \"Timezone\" = 'America/Vancouver' where length(\"Timezone\") = 0");
+            migrationBuilder.Sql("update \"CourtAdminLeave\" set \"Timezone\" = 'America/Vancouver' where length(\"Timezone\") = 0");
+            migrationBuilder.Sql("update \"CourtAdminTraining\" set \"Timezone\" = 'America/Vancouver' where length(\"Timezone\") = 0");
             migrationBuilder.Sql("update \"Shift\" set \"Timezone\" = 'America/Vancouver' where length(\"Timezone\") = 0");
             migrationBuilder.DropForeignKey(
                 name: "FK_Duty_Shift_ShiftId",

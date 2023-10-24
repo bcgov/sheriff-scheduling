@@ -12,7 +12,7 @@
 							width="177"
 							height="44"
 							alt="B.C. Government Logo"
-						/> Login To Sheriff Scheduling</b-button>
+						/> Login To CourtAdmin Scheduling</b-button>
         </b-card>
 
     </b-card>

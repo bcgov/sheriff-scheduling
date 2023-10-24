@@ -101,7 +101,7 @@ namespace CAS.API.services.scheduling
                     dutySlot.DutyId = duty.Id;
                     dutySlot.Timezone = duty.Timezone;
                     dutySlot.Duty = null;
-                    dutySlot.Sheriff = null;
+                    dutySlot.CourtAdmin = null;
                     dutySlot.Location = null;
 
                     if (savedDutySlot == null)
@@ -114,22 +114,22 @@ namespace CAS.API.services.scheduling
 
             await Db.SaveChangesAsync();
 
-            var sheriffsForDuties = duties.SelectMany(d => d.DutySlots).SelectDistinctToList(ds => ds.SheriffId);
+            var courtAdminsForDuties = duties.SelectMany(d => d.DutySlots).SelectDistinctToList(ds => ds.CourtAdminId);
             var firstDuty = duties.First();
-            await HandleShiftAdjustmentsAndOvertime(firstDuty.LocationId, firstDuty.StartDate, firstDuty.Timezone, sheriffsForDuties);
+            await HandleShiftAdjustmentsAndOvertime(firstDuty.LocationId, firstDuty.StartDate, firstDuty.Timezone, courtAdminsForDuties);
             await Db.SaveChangesAsync();
 
             return await savedDuties.ToListAsync();
         }
 
-        public async Task<Duty> MoveSheriffFromDutySlot(int fromDutySlotId, int toDutyId, DateTimeOffset? separationTime = null)
+        public async Task<Duty> MoveCourtAdminFromDutySlot(int fromDutySlotId, int toDutyId, DateTimeOffset? separationTime = null)
         {
             var fromDutySlot = await Db.DutySlot.FirstOrDefaultAsync(d => d.Id == fromDutySlotId);
             fromDutySlot.ThrowBusinessExceptionIfNull("From duty slot didn't exist.");
 
-            var fromSheriffId = fromDutySlot.SheriffId;
-            if (!fromSheriffId.HasValue)
-                throw new BusinessLayerException("No Sheriff Id provided.");
+            var fromCourtAdminId = fromDutySlot.CourtAdminId;
+            if (!fromCourtAdminId.HasValue)
+                throw new BusinessLayerException("No CourtAdmin Id provided.");
 
             var toDutySlotStart = separationTime ?? DateTimeOffset.UtcNow.ConvertToTimezone(fromDutySlot.Timezone);
             toDutySlotStart = RoundUp(toDutySlotStart, TimeSpan.FromMinutes(15));
@@ -145,25 +145,25 @@ namespace CAS.API.services.scheduling
 
             var toDutySlotEnd = toDuty.EndDate;
 
-            //Might be cut even shorter from existing DutySlots with sheriffs in them.
+            //Might be cut even shorter from existing DutySlots with courtAdmins in them.
             if (toDuty.DutySlots.Any(ds =>
-                toDutySlotStart < ds.EndDate && ds.StartDate < toDutySlotEnd && ds.SheriffId != null))
+                toDutySlotStart < ds.EndDate && ds.StartDate < toDutySlotEnd && ds.CourtAdminId != null))
             {
                 var earliestEndFromOtherSlots = toDuty.DutySlots.Where(ds =>
-                        toDutySlotStart < ds.EndDate && ds.StartDate < toDutySlotEnd && ds.SheriffId != null)
+                        toDutySlotStart < ds.EndDate && ds.StartDate < toDutySlotEnd && ds.CourtAdminId != null)
                     .Min(ds => ds.StartDate);
 
                 if (earliestEndFromOtherSlots <= toDutySlotStart)
-                    throw new BusinessLayerException("This already has a duty slot with a sheriff in it.");
+                    throw new BusinessLayerException("This already has a duty slot with a courtAdmin in it.");
 
                 toDutySlotEnd = toDutySlotEnd > earliestEndFromOtherSlots ? earliestEndFromOtherSlots : toDutySlotEnd;
             }
 
-            var maxShiftEndDate = await FindContinuousEndDateOverShifts(toDuty.LocationId, fromSheriffId.Value, toDutySlotStart, toDuty.Timezone);
+            var maxShiftEndDate = await FindContinuousEndDateOverShifts(toDuty.LocationId, fromCourtAdminId.Value, toDutySlotStart, toDuty.Timezone);
             toDutySlotEnd = toDutySlotEnd > maxShiftEndDate ? maxShiftEndDate : toDutySlotEnd;
 
             var toDutySlot = toDuty.DutySlots.FirstOrDefault(ds =>
-                toDutySlotStart < ds.EndDate && ds.StartDate < toDutySlotEnd && ds.SheriffId == null);
+                toDutySlotStart < ds.EndDate && ds.StartDate < toDutySlotEnd && ds.CourtAdminId == null);
 
             if (toDutySlot == null)
             {
@@ -174,7 +174,7 @@ namespace CAS.API.services.scheduling
                     Timezone = toDuty.Timezone,
                     StartDate = toDutySlotStart,
                     EndDate = toDutySlotEnd,
-                    SheriffId = fromSheriffId
+                    CourtAdminId = fromCourtAdminId
                 };
                 await Db.DutySlot.AddAsync(toDutySlot);
             }
@@ -182,7 +182,7 @@ namespace CAS.API.services.scheduling
             {
                 toDutySlot.StartDate = toDutySlotStart;
                 toDutySlot.EndDate = toDutySlotEnd;
-                toDutySlot.SheriffId = fromSheriffId;
+                toDutySlot.CourtAdminId = fromCourtAdminId;
             }
 
             await Db.SaveChangesAsync();
@@ -207,18 +207,18 @@ namespace CAS.API.services.scheduling
         public async Task AdjustDutySlots(List<Shift> shifts)
         {
             var shiftAdjustments = shifts.SelectToList(s => new ShiftAdjustment
-            { SheriffId = s.SheriffId, Date = s.StartDate.ConvertToTimezone(s.Timezone).DateOnly(), Timezone = s.Timezone }).Distinct().ToList();
+            { CourtAdminId = s.CourtAdminId, Date = s.StartDate.ConvertToTimezone(s.Timezone).DateOnly(), Timezone = s.Timezone }).Distinct().ToList();
 
             foreach (var shiftAdjustment in shiftAdjustments)
             {
                 var endOfDayInTimezone = shiftAdjustment.Date.TranslateDateForDaylightSavings(shiftAdjustment.Timezone, 1);
 
                 var dutySlotsForDay = await Db.DutySlot.Where(d =>
-                    d.ExpiryDate == null && d.SheriffId == shiftAdjustment.SheriffId &&
+                    d.ExpiryDate == null && d.CourtAdminId == shiftAdjustment.CourtAdminId &&
                     shiftAdjustment.Date <= d.StartDate && endOfDayInTimezone >= d.EndDate).ToListAsync();
 
                 var shiftsForDay = await Db.Shift.AsNoTracking().Where(s =>
-                    s.ExpiryDate == null && s.SheriffId == shiftAdjustment.SheriffId &&
+                    s.ExpiryDate == null && s.CourtAdminId == shiftAdjustment.CourtAdminId &&
                     shiftAdjustment.Date <= s.StartDate && endOfDayInTimezone >= s.EndDate).ToListAsync();
 
                 var shiftBuckets = shiftsForDay.GetShiftBuckets();
@@ -262,16 +262,16 @@ namespace CAS.API.services.scheduling
 
         #region Helpers
 
-        private async Task HandleShiftAdjustmentsAndOvertime(int locationId, DateTimeOffset targetDate, string timezone, IEnumerable<Guid?> sheriffsForDuties)
+        private async Task HandleShiftAdjustmentsAndOvertime(int locationId, DateTimeOffset targetDate, string timezone, IEnumerable<Guid?> courtAdminsForDuties)
         {
             var startRange = targetDate.ConvertToTimezone(timezone).DateOnly();
             var endRange = startRange.TranslateDateForDaylightSavings(timezone, hoursToShift: 24);
 
             var shiftExpansions = new List<ShiftAdjustment>();
-            foreach (var sheriff in sheriffsForDuties.Where(sheriff => sheriff != null))
+            foreach (var courtAdmin in courtAdminsForDuties.Where(courtAdmin => courtAdmin != null))
             {
                 var shiftsForDay = await Db.Shift.Where(s =>
-                    s.ExpiryDate == null && s.SheriffId == sheriff && s.LocationId == locationId && s.StartDate >= startRange && s.StartDate < endRange).ToListAsync();
+                    s.ExpiryDate == null && s.CourtAdminId == courtAdmin && s.LocationId == locationId && s.StartDate >= startRange && s.StartDate < endRange).ToListAsync();
 
                 if (shiftsForDay.Count == 0) continue;
                 var referenceShift = shiftsForDay.First();
@@ -279,36 +279,36 @@ namespace CAS.API.services.scheduling
                 var earliestShift = shiftsForDay.FirstOrDefault(s => s.StartDate == shiftsForDay.Min(s2 => s2.StartDate));
                 var latestShift = shiftsForDay.FirstOrDefault(s => s.EndDate == shiftsForDay.Max(s2 => s2.EndDate));
 
-                var dutySlotsForSheriffOnDay = await Db.DutySlot.Where(s =>
-                    s.ExpiryDate == null && s.SheriffId == sheriff && s.LocationId == locationId && s.StartDate >= startRange && s.StartDate < endRange).ToListAsync();
+                var dutySlotsForCourtAdminOnDay = await Db.DutySlot.Where(s =>
+                    s.ExpiryDate == null && s.CourtAdminId == courtAdmin && s.LocationId == locationId && s.StartDate >= startRange && s.StartDate < endRange).ToListAsync();
 
-                var earliestDutySlot = dutySlotsForSheriffOnDay.FirstOrDefault(ds => ds.StartDate == dutySlotsForSheriffOnDay.Min(ds2 => ds2.StartDate));
-                var latestDutySlot = dutySlotsForSheriffOnDay.FirstOrDefault(ds => ds.EndDate == dutySlotsForSheriffOnDay.Max(ds2 => ds2.EndDate));
+                var earliestDutySlot = dutySlotsForCourtAdminOnDay.FirstOrDefault(ds => ds.StartDate == dutySlotsForCourtAdminOnDay.Min(ds2 => ds2.StartDate));
+                var latestDutySlot = dutySlotsForCourtAdminOnDay.FirstOrDefault(ds => ds.EndDate == dutySlotsForCourtAdminOnDay.Max(ds2 => ds2.EndDate));
 
                 if (latestShift!.EndDate < latestDutySlot?.EndDate)
                 {
                     await Db.Shift.AddAsync(new Shift
                     {
-                        SheriffId = sheriff.Value,
+                        CourtAdminId = courtAdmin.Value,
                         Timezone = referenceShift.Timezone,
                         LocationId = referenceShift.LocationId,
                         StartDate = latestShift.EndDate,
                         EndDate = latestDutySlot.EndDate
                     });
-                    shiftExpansions.Add(new ShiftAdjustment { SheriffId = sheriff.Value, Date = earliestDutySlot.StartDate, Timezone = earliestShift.Timezone });
+                    shiftExpansions.Add(new ShiftAdjustment { CourtAdminId = courtAdmin.Value, Date = earliestDutySlot.StartDate, Timezone = earliestShift.Timezone });
                 }
 
                 if (earliestShift!.StartDate > earliestDutySlot?.StartDate)
                 {
                     await Db.Shift.AddAsync(new Shift
                     {
-                        SheriffId = sheriff.Value,
+                        CourtAdminId = courtAdmin.Value,
                         Timezone = referenceShift.Timezone,
                         LocationId = referenceShift.LocationId,
                         StartDate = earliestDutySlot.StartDate,
                         EndDate = earliestShift.StartDate
                     });
-                    shiftExpansions.Add(new ShiftAdjustment { SheriffId = sheriff.Value, Date = earliestDutySlot.StartDate, Timezone = earliestShift.Timezone });
+                    shiftExpansions.Add(new ShiftAdjustment { CourtAdminId = courtAdmin.Value, Date = earliestDutySlot.StartDate, Timezone = earliestShift.Timezone });
                 }
             }
 
@@ -317,8 +317,8 @@ namespace CAS.API.services.scheduling
 
             foreach (var shiftExpansion in shiftExpansions.Distinct())
             {
-                await ShiftService.CalculateOvertimeHoursForSheriffOnDay(
-                    shiftExpansion.SheriffId, shiftExpansion.Date,
+                await ShiftService.CalculateOvertimeHoursForCourtAdminOnDay(
+                    shiftExpansion.CourtAdminId, shiftExpansion.Date,
                     shiftExpansion.Timezone);
             }
         }
@@ -332,7 +332,7 @@ namespace CAS.API.services.scheduling
             var overlappingDutySlots = await OverlappingDutySlots(locationId, duties);
             if (overlappingDutySlots.Any())
             {
-                var message = overlappingDutySlots.Select(ol => ConflictingSheriffAndDutySlot(ol.Sheriff, ol)).ToList()
+                var message = overlappingDutySlots.Select(ol => ConflictingCourtAdminAndDutySlot(ol.CourtAdmin, ol)).ToList()
                     .ToStringWithPipes();
                 throw new BusinessLayerException(message);
             }
@@ -343,18 +343,18 @@ namespace CAS.API.services.scheduling
             var dutySlots = duties.SelectMany(s => s.DutySlots).ToList();
             if (dutySlots.Any(a =>
                 dutySlots.Any(b => {
-                    return (a.SheriffId != null && b.SheriffId != null && !AreDutiesEqual(a, b) && b.StartDate < a.EndDate && a.StartDate < b.EndDate && a.SheriffId == b.SheriffId);
+                    return (a.CourtAdminId != null && b.CourtAdminId != null && !AreDutiesEqual(a, b) && b.StartDate < a.EndDate && a.StartDate < b.EndDate && a.CourtAdminId == b.CourtAdminId);
                 })))
                 throw new BusinessLayerException($"{nameof(DutySlot)} provided overlap with themselves.");
 
-            var sheriffIds = dutySlots.Select(ts => ts.SheriffId).Where(sId => sId != null).Distinct().ToList();
+            var courtAdminIds = dutySlots.Select(ts => ts.CourtAdminId).Where(sId => sId != null).Distinct().ToList();
 
             var conflictingDutySlots = new List<DutySlot>();
             foreach (var ts in dutySlots)
             {
                 conflictingDutySlots.AddRange(await Db.DutySlot.AsNoTracking()
-                    .Include(s => s.Sheriff)
-                    .In(sheriffIds, ds => ds.SheriffId)
+                    .Include(s => s.CourtAdmin)
+                    .In(courtAdminIds, ds => ds.CourtAdminId)
                     .Where(s =>
                         s.ExpiryDate == null &&
                         s.LocationId == locationId &&
@@ -364,7 +364,7 @@ namespace CAS.API.services.scheduling
 
             conflictingDutySlots = conflictingDutySlots.Distinct().WhereToList(s =>
                 dutySlots.Any(ts =>
-                    ts.ExpiryDate == null && s.Id != ts.Id && ts.StartDate < s.EndDate && s.StartDate < ts.EndDate && ts.SheriffId == s.SheriffId) &&
+                    ts.ExpiryDate == null && s.Id != ts.Id && ts.StartDate < s.EndDate && s.StartDate < ts.EndDate && ts.CourtAdminId == s.CourtAdminId) &&
                 dutySlots.All(ts => ts.Id != s.Id)
             );
 
@@ -374,7 +374,7 @@ namespace CAS.API.services.scheduling
         private bool AreDutiesEqual(DutySlot a, DutySlot b)
         {
             return (
-             (b.SheriffId == a.SheriffId) &&
+             (b.CourtAdminId == a.CourtAdminId) &&
              (a.StartDate == b.StartDate) &&
              (a.EndDate == b.EndDate) &&
              (a.Id == b.Id) &&
@@ -387,7 +387,7 @@ namespace CAS.API.services.scheduling
             return new DateTimeOffset((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks, dt.Offset);
         }
 
-        private async Task<DateTimeOffset> FindContinuousEndDateOverShifts(int locationId, Guid sheriffId, DateTimeOffset targetDate, string timezone)
+        private async Task<DateTimeOffset> FindContinuousEndDateOverShifts(int locationId, Guid courtAdminId, DateTimeOffset targetDate, string timezone)
         {
             var startRange = targetDate.ConvertToTimezone(timezone);
             var endRange = startRange.DateOnly().TranslateDateForDaylightSavings(timezone, hoursToShift: 24);
@@ -395,7 +395,7 @@ namespace CAS.API.services.scheduling
             var shifts = await Db.Shift.AsNoTracking().Where(s =>
                 s.ExpiryDate == null &&
                 s.LocationId == locationId &&
-                s.SheriffId == sheriffId &&
+                s.CourtAdminId == courtAdminId &&
                 s.EndDate >= startRange &&
                 s.StartDate < endRange)
                 .ToListAsync();
@@ -406,8 +406,8 @@ namespace CAS.API.services.scheduling
 
         #region String Helpers
 
-        private static string ConflictingSheriffAndDutySlot(CourtAdmin sheriff, DutySlot dutySlot)
-            => $"Conflict - {nameof(CourtAdmin)}: {sheriff?.LastName}, {sheriff?.FirstName} - Existing {nameof(DutySlot)} conflicts: {dutySlot.StartDate.ConvertToTimezone(dutySlot.Timezone).PrintFormatDateTime(dutySlot.Timezone)} to {dutySlot.EndDate.ConvertToTimezone(dutySlot.Timezone).PrintFormatDateTime(dutySlot.Timezone)}";
+        private static string ConflictingCourtAdminAndDutySlot(CourtAdmin courtAdmin, DutySlot dutySlot)
+            => $"Conflict - {nameof(CourtAdmin)}: {courtAdmin?.LastName}, {courtAdmin?.FirstName} - Existing {nameof(DutySlot)} conflicts: {dutySlot.StartDate.ConvertToTimezone(dutySlot.Timezone).PrintFormatDateTime(dutySlot.Timezone)} to {dutySlot.EndDate.ConvertToTimezone(dutySlot.Timezone).PrintFormatDateTime(dutySlot.Timezone)}";
 
         #endregion String Helpers
 

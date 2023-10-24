@@ -27,7 +27,7 @@
 				<b-navbar-nav v-if="activetab!='Day'">
 					<h3 style="width:8rem; margin-bottom: 0px;" class="text-white ml-2 mr-auto font-weight-normal"></h3>
 				</b-navbar-nav>
-				<b-navbar-nav :class="{'custom-navbar':true, 'full-view':sheriffFullview}">
+				<b-navbar-nav :class="{'custom-navbar':true, 'full-view':courtAdminFullview}">
                     <b-col class="my-1">
                         <b-row :style="activetab=='Day'?'width:17.75rem':'width:25.6rem'">
                             <b-button style=" height: 2rem;" size="sm" variant="secondary" @click="previousDateRange" class="my-0 mx-1"><b-icon-chevron-left /></b-button>
@@ -68,7 +68,7 @@
 							/>
 					</b-tabs>
 				</b-navbar-nav>
-				<b-navbar-nav v-if="!sheriffFullview">
+				<b-navbar-nav v-if="!courtAdminFullview">
 					<b-tabs nav-wrapper-class = "bg-primary text-dark my-1 p-0"
 							active-nav-item-class="text-uppercase font-weight-bold text-warning bg-primary"                     
 							pills							
@@ -83,14 +83,14 @@
 							/>
 					</b-tabs>
 				</b-navbar-nav>
-				<b-navbar-nav v-if="sheriffFullview">
+				<b-navbar-nav v-if="courtAdminFullview">
 					<b-button
 						v-b-tooltip.hover.noninteractive
-						title="Print Sheriff Duties"							
+						title="Print CourtAdmin Duties"							
 						style="max-height: 40px;" 
 						size="sm"
 						variant="white"						
-						@click="printSheriffDuties()" 
+						@click="printCourtAdminDuties()" 
 						class="my-1 mr-3">
 						<b-icon icon="printer-fill" font-scale="2.0" variant="white"/>
 					</b-button>						
@@ -372,16 +372,16 @@
 		public userDetails!: userInfoType;
 
 		@dutyState.State
-        public sheriffFullview!: boolean;
+        public courtAdminFullview!: boolean;
 		
 		@dutyState.Action
         public UpdateDisplayFuelGauge!: (newDisplayFuelGauge: boolean) => void
         
         @dutyState.Action
-        public UpdateSheriffFullview!: (newSheriffFullview) => void
+        public UpdateCourtAdminFullview!: (newCourtAdminFullview) => void
 
 		@dutyState.Action
-        public UpdatePrintSheriffFullview!: (newPrintSheriffFullview: boolean) => void;
+        public UpdatePrintCourtAdminFullview!: (newPrintCourtAdminFullview: boolean) => void;
 
 		@dutyState.State
         public zoomLevel!: number;
@@ -782,10 +782,10 @@
 		public tabMyTeamChanged(tabInfo){
 			this.activeMyTeamTab = tabInfo;
 			if(tabInfo == this.tabsMyTeamToggle[0]){                
-                this.UpdateSheriffFullview(false)
+                this.UpdateCourtAdminFullview(false)
 			}			
 			else{
-                this.UpdateSheriffFullview(true)
+                this.UpdateCourtAdminFullview(true)
 				this.UpdateDisplayFuelGauge(false)
 			}			
 		}
@@ -847,8 +847,8 @@
 			return value.slice(0,100);
 		}
 
-		public printSheriffDuties(){
-			this.UpdatePrintSheriffFullview(true);
+		public printCourtAdminDuties(){
+			this.UpdatePrintCourtAdminFullview(true);
 		}
 
 		public zoomInOut(percent){

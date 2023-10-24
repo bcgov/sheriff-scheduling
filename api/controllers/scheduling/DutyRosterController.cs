@@ -95,15 +95,15 @@ namespace CAS.API.controllers.scheduling
             return NoContent();
         }
 
-        [HttpPut("moveSheriff")]
+        [HttpPut("moveCourtAdmin")]
         [PermissionClaimAuthorize(perm: Permission.EditDuties)]
-        public async Task<ActionResult<DutyDto>> MoveSheriffFromDutySlot(int fromDutySlotId, int toDutyId, DateTimeOffset? separationTime = null)
+        public async Task<ActionResult<DutyDto>> MoveCourtAdminFromDutySlot(int fromDutySlotId, int toDutyId, DateTimeOffset? separationTime = null)
         {
             var duty = await DutyRosterService.GetDutyByDutySlot(fromDutySlotId);
             if (duty == null) return NotFound();
             if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, duty.LocationId)) return Forbid();
 
-            duty = await DutyRosterService.MoveSheriffFromDutySlot(fromDutySlotId, toDutyId, separationTime);
+            duty = await DutyRosterService.MoveCourtAdminFromDutySlot(fromDutySlotId, toDutyId, separationTime);
             return Ok(duty.Adapt<DutyDto>());
         }
 

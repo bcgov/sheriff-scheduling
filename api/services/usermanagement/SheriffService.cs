@@ -20,7 +20,7 @@ using CAS.DB.models.courtAdmin;
 namespace CAS.API.services.usermanagement
 {
     /// <summary>
-    /// Since the Sheriff is a derived class of User, this should handle the Sheriff side of things.
+    /// Since the CourtAdmin is a derived class of User, this should handle the CourtAdmin side of things.
     /// </summary>
     public class CourtAdminService
     {
@@ -164,12 +164,12 @@ namespace CAS.API.services.usermanagement
             return savedCourtAdmin;
         }
 
-        public async Task UpdateSheriffHomeLocation(Guid id, int locationId)
+        public async Task UpdateCourtAdminHomeLocation(Guid id, int locationId)
         {
-            var savedSheriff = await Db.CourtAdmin.FindAsync(id);
-            savedSheriff.ThrowBusinessExceptionIfNull($"{nameof(CourtAdmin)} with the id: {id} could not be found. ");
-            savedSheriff.HomeLocation = await Db.Location.FindAsync(locationId);
-            savedSheriff.HomeLocation.ThrowBusinessExceptionIfNull($"{nameof(Location)} with the id: {locationId} could not be found. ");
+            var savedCourtAdmin = await Db.CourtAdmin.FindAsync(id);
+            savedCourtAdmin.ThrowBusinessExceptionIfNull($"{nameof(CourtAdmin)} with the id: {id} could not be found. ");
+            savedCourtAdmin.HomeLocation = await Db.Location.FindAsync(locationId);
+            savedCourtAdmin.HomeLocation.ThrowBusinessExceptionIfNull($"{nameof(Location)} with the id: {locationId} could not be found. ");
             await Db.SaveChangesAsync();
         }
 
@@ -177,32 +177,32 @@ namespace CAS.API.services.usermanagement
 
         #region CourtAdmin Event
 
-        public async Task<T> GetSheriffEvent<T>(int id) where T : CourtAdminEvent =>
+        public async Task<T> GetCourtAdminEvent<T>(int id) where T : CourtAdminEvent =>
             await Db.Set<T>().AsNoTracking().FirstOrDefaultAsync(sal => sal.Id == id);
 
         #endregion CourtAdmin Event
 
         #region CourtAdmin Location
 
-        public async Task<CourtAdminAwayLocation> AddSheriffAwayLocation(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminAwayLocation awayLocation, bool overrideConflicts)
+        public async Task<CourtAdminAwayLocation> AddCourtAdminAwayLocation(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminAwayLocation awayLocation, bool overrideConflicts)
         {
             ValidateStartAndEndDates(awayLocation.StartDate, awayLocation.EndDate);
-            await ValidateSheriffExists(awayLocation.CourtAdminId);
+            await ValidateCourtAdminExists(awayLocation.CourtAdminId);
             await ValidateNoOverlapAsync(dutyRosterService, shiftService, awayLocation, overrideConflicts);
 
             awayLocation.Location = await Db.Location.FindAsync(awayLocation.LocationId);
             awayLocation.CourtAdmin = await Db.CourtAdmin.FindAsync(awayLocation.CourtAdminId);
-            await Db.SheriffAwayLocation.AddAsync(awayLocation);
+            await Db.CourtAdminAwayLocation.AddAsync(awayLocation);
             await Db.SaveChangesAsync();
             return awayLocation;
         }
 
-        public async Task<CourtAdminAwayLocation> UpdateSheriffAwayLocation(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminAwayLocation awayLocation, bool overrideConflicts)
+        public async Task<CourtAdminAwayLocation> UpdateCourtAdminAwayLocation(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminAwayLocation awayLocation, bool overrideConflicts)
         {
             ValidateStartAndEndDates(awayLocation.StartDate, awayLocation.EndDate);
-            await ValidateSheriffExists(awayLocation.CourtAdminId);
+            await ValidateCourtAdminExists(awayLocation.CourtAdminId);
 
-            var savedAwayLocation = await Db.SheriffAwayLocation.FindAsync(awayLocation.Id);
+            var savedAwayLocation = await Db.CourtAdminAwayLocation.FindAsync(awayLocation.Id);
             savedAwayLocation.ThrowBusinessExceptionIfNull($"{nameof(CourtAdminAwayLocation)} with the id: {awayLocation.Id} could not be found. ");
 
             if (savedAwayLocation.ExpiryDate.HasValue)
@@ -218,13 +218,13 @@ namespace CAS.API.services.usermanagement
             return savedAwayLocation;
         }
 
-        public async Task RemoveSheriffAwayLocation(int id, string expiryReason)
+        public async Task RemoveCourtAdminAwayLocation(int id, string expiryReason)
         {
-            var sheriffAwayLocation = await Db.SheriffAwayLocation.FindAsync(id);
-            sheriffAwayLocation.ThrowBusinessExceptionIfNull(
+            var courtAdminAwayLocation = await Db.CourtAdminAwayLocation.FindAsync(id);
+            courtAdminAwayLocation.ThrowBusinessExceptionIfNull(
                 $"{nameof(CourtAdminAwayLocation)} with the id: {id} could not be found. ");
-            sheriffAwayLocation.ExpiryDate = DateTimeOffset.UtcNow;
-            sheriffAwayLocation.ExpiryReason = expiryReason;
+            courtAdminAwayLocation.ExpiryDate = DateTimeOffset.UtcNow;
+            courtAdminAwayLocation.ExpiryReason = expiryReason;
             await Db.SaveChangesAsync();
         }
 
@@ -232,31 +232,31 @@ namespace CAS.API.services.usermanagement
 
         #region CourtAdmin Acting Rank
 
-        public async Task<CourtAdminActingRank> AddSheriffActingRank(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminActingRank actingRank, bool overrideConflicts)
+        public async Task<CourtAdminActingRank> AddCourtAdminActingRank(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminActingRank actingRank, bool overrideConflicts)
         {
             ValidateStartAndEndDates(actingRank.StartDate, actingRank.EndDate);
-            await ValidateSheriffExists(actingRank.CourtAdminId);
+            await ValidateCourtAdminExists(actingRank.CourtAdminId);
 
-            await ValidateSheriffActingRankExists(actingRank);
+            await ValidateCourtAdminActingRankExists(actingRank);
 
             actingRank.CourtAdmin = await Db.CourtAdmin.FindAsync(actingRank.CourtAdminId);
-            await Db.SheriffActingRank.AddAsync(actingRank);
+            await Db.CourtAdminActingRank.AddAsync(actingRank);
             await Db.SaveChangesAsync();
             return actingRank;
         }
 
-        public async Task<CourtAdminActingRank> UpdateSheriffActingRank(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminActingRank actingRank, bool overrideConflicts)
+        public async Task<CourtAdminActingRank> UpdateCourtAdminActingRank(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminActingRank actingRank, bool overrideConflicts)
         {
             ValidateStartAndEndDates(actingRank.StartDate, actingRank.EndDate);
-            await ValidateSheriffExists(actingRank.CourtAdminId);
+            await ValidateCourtAdminExists(actingRank.CourtAdminId);
 
-            var savedActingRank = await Db.SheriffActingRank.FindAsync(actingRank.Id);
+            var savedActingRank = await Db.CourtAdminActingRank.FindAsync(actingRank.Id);
             savedActingRank.ThrowBusinessExceptionIfNull($"{nameof(CourtAdminActingRank)} with the id: {actingRank.Id} could not be found. ");
 
             if (savedActingRank.ExpiryDate.HasValue)
                 throw new BusinessLayerException($"{nameof(CourtAdminActingRank)} with the id: {actingRank.Id} has been expired");
 
-            await ValidateSheriffActingRankExists(actingRank);
+            await ValidateCourtAdminActingRankExists(actingRank);
 
             Db.Entry(savedActingRank).CurrentValues.SetValues(actingRank);
             Db.Entry(savedActingRank).Property(x => x.CourtAdminId).IsModified = false;
@@ -266,13 +266,13 @@ namespace CAS.API.services.usermanagement
             return savedActingRank;
         }
 
-        public async Task RemoveSheriffActingRank(int id, string expiryReason)
+        public async Task RemoveCourtAdminActingRank(int id, string expiryReason)
         {
-            var sheriffActingRank = await Db.SheriffActingRank.FindAsync(id);
-            sheriffActingRank.ThrowBusinessExceptionIfNull(
+            var courtAdminActingRank = await Db.CourtAdminActingRank.FindAsync(id);
+            courtAdminActingRank.ThrowBusinessExceptionIfNull(
                 $"{nameof(CourtAdminActingRank)} with the id: {id} could not be found. ");
-            sheriffActingRank.ExpiryDate = DateTimeOffset.UtcNow;
-            sheriffActingRank.ExpiryReason = expiryReason;
+            courtAdminActingRank.ExpiryDate = DateTimeOffset.UtcNow;
+            courtAdminActingRank.ExpiryReason = expiryReason;
             await Db.SaveChangesAsync();
         }
 
@@ -280,34 +280,34 @@ namespace CAS.API.services.usermanagement
 
         #region CourtAdmin Leave
 
-        public async Task<CourtAdminLeave> AddSheriffLeave(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminLeave sheriffLeave, bool overrideConflicts)
+        public async Task<CourtAdminLeave> AddCourtAdminLeave(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminLeave courtAdminLeave, bool overrideConflicts)
         {
-            ValidateStartAndEndDates(sheriffLeave.StartDate, sheriffLeave.EndDate);
-            await ValidateSheriffExists(sheriffLeave.CourtAdminId);
-            await ValidateNoOverlapAsync(dutyRosterService, shiftService, sheriffLeave, overrideConflicts);
+            ValidateStartAndEndDates(courtAdminLeave.StartDate, courtAdminLeave.EndDate);
+            await ValidateCourtAdminExists(courtAdminLeave.CourtAdminId);
+            await ValidateNoOverlapAsync(dutyRosterService, shiftService, courtAdminLeave, overrideConflicts);
 
-            sheriffLeave.LeaveType = await Db.LookupCode.FindAsync(sheriffLeave.LeaveTypeId);
-            sheriffLeave.CourtAdmin = await Db.CourtAdmin.FindAsync(sheriffLeave.CourtAdminId);
-            await Db.SheriffLeave.AddAsync(sheriffLeave);
+            courtAdminLeave.LeaveType = await Db.LookupCode.FindAsync(courtAdminLeave.LeaveTypeId);
+            courtAdminLeave.CourtAdmin = await Db.CourtAdmin.FindAsync(courtAdminLeave.CourtAdminId);
+            await Db.CourtAdminLeave.AddAsync(courtAdminLeave);
             await Db.SaveChangesAsync();
-            return sheriffLeave;
+            return courtAdminLeave;
         }
 
-        public async Task<CourtAdminLeave> UpdateSheriffLeave(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminLeave sheriffLeave, bool overrideConflicts)
+        public async Task<CourtAdminLeave> UpdateCourtAdminLeave(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminLeave courtAdminLeave, bool overrideConflicts)
         {
-            ValidateStartAndEndDates(sheriffLeave.StartDate, sheriffLeave.EndDate);
-            await ValidateSheriffExists(sheriffLeave.CourtAdminId);
+            ValidateStartAndEndDates(courtAdminLeave.StartDate, courtAdminLeave.EndDate);
+            await ValidateCourtAdminExists(courtAdminLeave.CourtAdminId);
 
-            var savedLeave = await Db.SheriffLeave.FindAsync(sheriffLeave.Id);
+            var savedLeave = await Db.CourtAdminLeave.FindAsync(courtAdminLeave.Id);
             savedLeave.ThrowBusinessExceptionIfNull(
-                $"{nameof(CourtAdminLeave)} with the id: {sheriffLeave.Id} could not be found. ");
+                $"{nameof(CourtAdminLeave)} with the id: {courtAdminLeave.Id} could not be found. ");
 
             if (savedLeave.ExpiryDate.HasValue)
-                throw new BusinessLayerException($"{nameof(CourtAdminLeave)} with the id: {sheriffLeave.Id} has been expired");
+                throw new BusinessLayerException($"{nameof(CourtAdminLeave)} with the id: {courtAdminLeave.Id} has been expired");
 
-            await ValidateNoOverlapAsync(dutyRosterService, shiftService, sheriffLeave, overrideConflicts, sheriffLeave.Id);
+            await ValidateNoOverlapAsync(dutyRosterService, shiftService, courtAdminLeave, overrideConflicts, courtAdminLeave.Id);
 
-            Db.Entry(savedLeave).CurrentValues.SetValues(sheriffLeave);
+            Db.Entry(savedLeave).CurrentValues.SetValues(courtAdminLeave);
             Db.Entry(savedLeave).Property(x => x.CourtAdminId).IsModified = false;
             Db.Entry(savedLeave).Property(x => x.ExpiryDate).IsModified = false;
             Db.Entry(savedLeave).Property(x => x.ExpiryReason).IsModified = false;
@@ -316,13 +316,13 @@ namespace CAS.API.services.usermanagement
             return savedLeave;
         }
 
-        public async Task RemoveSheriffLeave(int id, string expiryReason)
+        public async Task RemoveCourtAdminLeave(int id, string expiryReason)
         {
-            var sheriffLeave = await Db.SheriffLeave.FindAsync(id);
-            sheriffLeave.ThrowBusinessExceptionIfNull(
-                $"{nameof(CourtAdminLeave)} with the id: {sheriffLeave.Id} could not be found. ");
-            sheriffLeave.ExpiryDate = DateTimeOffset.UtcNow;
-            sheriffLeave.ExpiryReason = expiryReason;
+            var courtAdminLeave = await Db.CourtAdminLeave.FindAsync(id);
+            courtAdminLeave.ThrowBusinessExceptionIfNull(
+                $"{nameof(CourtAdminLeave)} with the id: {courtAdminLeave.Id} could not be found. ");
+            courtAdminLeave.ExpiryDate = DateTimeOffset.UtcNow;
+            courtAdminLeave.ExpiryReason = expiryReason;
             await Db.SaveChangesAsync();
         }
 
@@ -330,50 +330,50 @@ namespace CAS.API.services.usermanagement
 
         #region CourtAdmin Training
 
-        public async Task<List<CourtAdmin>> GetSheriffsTraining()
+        public async Task<List<CourtAdmin>> GetCourtAdminsTraining()
         {
             var daysPrevious = int.Parse(Configuration.GetNonEmptyValue("DaysInPastToIncludeAwayLocationAndTraining"));
             var minDateForAwayAndTraining = DateTimeOffset.UtcNow.AddDays(-daysPrevious);
             var sevenDaysFromNow = DateTimeOffset.UtcNow.AddDays(7);
                         
-            var sheriffQuery = Db.CourtAdmin.AsNoTracking()
+            var courtAdminQuery = Db.CourtAdmin.AsNoTracking()
                 .AsSplitQuery()
                 .ApplyPermissionFilters(User, minDateForAwayAndTraining, sevenDaysFromNow, Db)
                 .Include(s => s.Training.Where(t => t.ExpiryDate == null))
                 .ThenInclude(t => t.TrainingType)
                 .Where(t => t.Training.Count > 0);
 
-            return await sheriffQuery.ToListAsync();
+            return await courtAdminQuery.ToListAsync();
         }
 
-        public async Task<CourtAdminTraining> AddSheriffTraining(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminTraining sheriffTraining, bool overrideConflicts)
+        public async Task<CourtAdminTraining> AddCourtAdminTraining(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminTraining courtAdminTraining, bool overrideConflicts)
         {
-            ValidateStartAndEndDates(sheriffTraining.StartDate, sheriffTraining.EndDate);
-            await ValidateSheriffExists(sheriffTraining.CourtAdminId);
-            await ValidateNoOverlapAsync(dutyRosterService, shiftService, sheriffTraining, overrideConflicts);
+            ValidateStartAndEndDates(courtAdminTraining.StartDate, courtAdminTraining.EndDate);
+            await ValidateCourtAdminExists(courtAdminTraining.CourtAdminId);
+            await ValidateNoOverlapAsync(dutyRosterService, shiftService, courtAdminTraining, overrideConflicts);
 
-            sheriffTraining.CourtAdmin = await Db.CourtAdmin.FindAsync(sheriffTraining.CourtAdminId);
-            sheriffTraining.TrainingType = await Db.LookupCode.FindAsync(sheriffTraining.TrainingTypeId);
-            await Db.SheriffTraining.AddAsync(sheriffTraining);
+            courtAdminTraining.CourtAdmin = await Db.CourtAdmin.FindAsync(courtAdminTraining.CourtAdminId);
+            courtAdminTraining.TrainingType = await Db.LookupCode.FindAsync(courtAdminTraining.TrainingTypeId);
+            await Db.CourtAdminTraining.AddAsync(courtAdminTraining);
             await Db.SaveChangesAsync();
-            return sheriffTraining;
+            return courtAdminTraining;
         }
 
-        public async Task<CourtAdminTraining> UpdateSheriffTraining(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminTraining sheriffTraining, bool overrideConflicts)
+        public async Task<CourtAdminTraining> UpdateCourtAdminTraining(DutyRosterService dutyRosterService, ShiftService shiftService, CourtAdminTraining courtAdminTraining, bool overrideConflicts)
         {
-            ValidateStartAndEndDates(sheriffTraining.StartDate, sheriffTraining.EndDate);
-            await ValidateSheriffExists(sheriffTraining.CourtAdminId);
+            ValidateStartAndEndDates(courtAdminTraining.StartDate, courtAdminTraining.EndDate);
+            await ValidateCourtAdminExists(courtAdminTraining.CourtAdminId);
 
-            var savedTraining = await Db.SheriffTraining.FindAsync(sheriffTraining.Id);
+            var savedTraining = await Db.CourtAdminTraining.FindAsync(courtAdminTraining.Id);
             savedTraining.ThrowBusinessExceptionIfNull(
-                $"{nameof(CourtAdminTraining)} with the id: {sheriffTraining.Id} could not be found. ");
+                $"{nameof(CourtAdminTraining)} with the id: {courtAdminTraining.Id} could not be found. ");
 
             if (savedTraining.ExpiryDate.HasValue)
-                throw new BusinessLayerException($"{nameof(CourtAdminTraining)} with the id: {sheriffTraining.Id} has been expired");
+                throw new BusinessLayerException($"{nameof(CourtAdminTraining)} with the id: {courtAdminTraining.Id} has been expired");
 
-            await ValidateNoOverlapAsync(dutyRosterService, shiftService, sheriffTraining, overrideConflicts, sheriffTraining.Id);
+            await ValidateNoOverlapAsync(dutyRosterService, shiftService, courtAdminTraining, overrideConflicts, courtAdminTraining.Id);
 
-            Db.Entry(savedTraining).CurrentValues.SetValues(sheriffTraining);
+            Db.Entry(savedTraining).CurrentValues.SetValues(courtAdminTraining);
             Db.Entry(savedTraining).Property(x => x.CourtAdminId).IsModified = false;
             Db.Entry(savedTraining).Property(x => x.ExpiryDate).IsModified = false;
             Db.Entry(savedTraining).Property(x => x.ExpiryReason).IsModified = false;
@@ -382,13 +382,13 @@ namespace CAS.API.services.usermanagement
             return savedTraining;
         }
 
-        public async Task RemoveSheriffTraining(int id, string expiryReason)
+        public async Task RemoveCourtAdminTraining(int id, string expiryReason)
         {
-            var sheriffTraining = await Db.SheriffTraining.FindAsync(id);
-            sheriffTraining.ThrowBusinessExceptionIfNull(
+            var courtAdminTraining = await Db.CourtAdminTraining.FindAsync(id);
+            courtAdminTraining.ThrowBusinessExceptionIfNull(
                 $"{nameof(CourtAdminTraining)} with the id: {id} could not be found. ");
-            sheriffTraining.ExpiryDate = DateTimeOffset.UtcNow;
-            sheriffTraining.ExpiryReason = expiryReason;
+            courtAdminTraining.ExpiryDate = DateTimeOffset.UtcNow;
+            courtAdminTraining.ExpiryReason = expiryReason;
             await Db.SaveChangesAsync();
         }
 
@@ -398,15 +398,15 @@ namespace CAS.API.services.usermanagement
 
         #region Validation
 
-        private async Task CheckForBlankOrDuplicateIdirName(string idirName, Guid? excludeSheriffId = null)
+        private async Task CheckForBlankOrDuplicateIdirName(string idirName, Guid? excludeCourtAdminId = null)
         {
             if (string.IsNullOrEmpty(idirName))
                 throw new BusinessLayerException($"Missing {nameof(idirName)}.");
 
-            var existingSheriffWithIdir = await Db.CourtAdmin.FirstOrDefaultAsync(s => s.IdirName.ToLower() == idirName.ToLower() && s.Id != excludeSheriffId);
-            if (existingSheriffWithIdir != null)
+            var existingCourtAdminWithIdir = await Db.CourtAdmin.FirstOrDefaultAsync(s => s.IdirName.ToLower() == idirName.ToLower() && s.Id != excludeCourtAdminId);
+            if (existingCourtAdminWithIdir != null)
                 throw new BusinessLayerException(
-                    $"Sheriff {existingSheriffWithIdir.LastName}, {existingSheriffWithIdir.FirstName} has IDIR name: {existingSheriffWithIdir.IdirName}");
+                    $"CourtAdmin {existingCourtAdminWithIdir.LastName}, {existingCourtAdminWithIdir.FirstName} has IDIR name: {existingCourtAdminWithIdir.IdirName}");
         }
 
         private async Task CheckForBlankOrDuplicateBadgeNumber(string badgeNumber)
@@ -414,10 +414,10 @@ namespace CAS.API.services.usermanagement
             if (string.IsNullOrEmpty(badgeNumber))
                 throw new BusinessLayerException($"Missing {nameof(badgeNumber)}.");
 
-            var existingSheriffWithBadge = await Db.CourtAdmin.FirstOrDefaultAsync(s => s.BadgeNumber == badgeNumber);
-            if (existingSheriffWithBadge != null)
+            var existingCourtAdminWithBadge = await Db.CourtAdmin.FirstOrDefaultAsync(s => s.BadgeNumber == badgeNumber);
+            if (existingCourtAdminWithBadge != null)
                 throw new BusinessLayerException(
-                    $"Sheriff {existingSheriffWithBadge.LastName}, {existingSheriffWithBadge.FirstName} already has badge number: {badgeNumber}");
+                    $"CourtAdmin {existingCourtAdminWithBadge.LastName}, {existingCourtAdminWithBadge.FirstName} already has badge number: {badgeNumber}");
         }
 
         private void ValidateStartAndEndDates(DateTimeOffset startDate, DateTimeOffset endDate)
@@ -425,15 +425,15 @@ namespace CAS.API.services.usermanagement
             if (startDate >= endDate) throw new BusinessLayerException("The from cannot be on or after the to. ");
         }
 
-        private async Task ValidateSheriffExists(Guid sheriffId)
+        private async Task ValidateCourtAdminExists(Guid courtAdminId)
         {
-            if (!await Db.CourtAdmin.AsNoTracking().AnyAsync(s => s.Id == sheriffId))
-                throw new BusinessLayerException($"Sheriff with id: {sheriffId} does not exist.");
+            if (!await Db.CourtAdmin.AsNoTracking().AnyAsync(s => s.Id == courtAdminId))
+                throw new BusinessLayerException($"CourtAdmin with id: {courtAdminId} does not exist.");
         }
 
-        private async Task ValidateSheriffActingRankExists(CourtAdminActingRank actingRank)
+        private async Task ValidateCourtAdminActingRankExists(CourtAdminActingRank actingRank)
         {
-            var conflictingRanks = await Db.SheriffActingRank.AsNoTracking().Where(sal =>
+            var conflictingRanks = await Db.CourtAdminActingRank.AsNoTracking().Where(sal =>
                      sal.Id != actingRank.Id &&
                      sal.CourtAdminId == actingRank.CourtAdminId &&
                     (sal.StartDate < actingRank.EndDate && actingRank.StartDate < sal.EndDate) &&
@@ -451,24 +451,24 @@ namespace CAS.API.services.usermanagement
 
         private async Task ValidateNoOverlapAsync<T>(DutyRosterService dutyRosterService, ShiftService shiftService, T data, bool overrideConflicts, int? updateOnlyId = null) where T : CourtAdminEvent
         {
-            var sheriffEventConflicts = new List<CourtAdminEvent>
+            var courtAdminEventConflicts = new List<CourtAdminEvent>
             {
-                await LookForSheriffEventConflictAsync(Db.SheriffLeave, data, updateOnlyId),
-                await LookForSheriffEventConflictAsync(Db.SheriffTraining, data, updateOnlyId),
-                await LookForSheriffEventConflictAsync(Db.SheriffAwayLocation, data, updateOnlyId)
+                await LookForCourtAdminEventConflictAsync(Db.CourtAdminLeave, data, updateOnlyId),
+                await LookForCourtAdminEventConflictAsync(Db.CourtAdminTraining, data, updateOnlyId),
+                await LookForCourtAdminEventConflictAsync(Db.CourtAdminAwayLocation, data, updateOnlyId)
             }.WhereToList(se => se != null);
 
             var shiftConflicts = await Db.Shift.AsNoTracking().Include(d => d.Location)
                 .Where(sal =>
-                sal.SheriffId == data.CourtAdminId && (sal.StartDate < data.EndDate && data.StartDate < sal.EndDate) &&
+                sal.CourtAdminId == data.CourtAdminId && (sal.StartDate < data.EndDate && data.StartDate < sal.EndDate) &&
                 sal.ExpiryDate == null).ToListAsync();
 
-            sheriffEventConflicts = AllowDifferentTimezonesCloseTimeGap(sheriffEventConflicts, data);
+            courtAdminEventConflicts = AllowDifferentTimezonesCloseTimeGap(courtAdminEventConflicts, data);
 
             if (!overrideConflicts)
-                DisplayConflicts(data.CourtAdminId, sheriffEventConflicts, shiftConflicts);
+                DisplayConflicts(data.CourtAdminId, courtAdminEventConflicts, shiftConflicts);
             else
-                await OverrideConflicts(data, dutyRosterService, shiftService, sheriffEventConflicts, shiftConflicts);
+                await OverrideConflicts(data, dutyRosterService, shiftService, courtAdminEventConflicts, shiftConflicts);
         }
 
         /// <summary>
@@ -477,10 +477,10 @@ namespace CAS.API.services.usermanagement
         /// The two overlap, because the EndDate for away location in PST is 00:59:00 MST.
         /// This same scenario could happen moving backwards in time. 00:00:00 in -7 is 23:00:00 in -8.
         /// </summary>
-        private List<CourtAdminEvent> AllowDifferentTimezonesCloseTimeGap<T>(List<CourtAdminEvent> sheriffEventConflicts, T data) where T : CourtAdminEvent
+        private List<CourtAdminEvent> AllowDifferentTimezonesCloseTimeGap<T>(List<CourtAdminEvent> courtAdminEventConflicts, T data) where T : CourtAdminEvent
         {
-            if (sheriffEventConflicts.All(sec => sec.Timezone == data.Timezone))
-                return sheriffEventConflicts;
+            if (courtAdminEventConflicts.All(sec => sec.Timezone == data.Timezone))
+                return courtAdminEventConflicts;
 
             data.StartDate = data.StartDate.ConvertToTimezone(data.Timezone);
             data.EndDate = data.EndDate.ConvertToTimezone(data.Timezone);
@@ -493,34 +493,34 @@ namespace CAS.API.services.usermanagement
                 ? data.EndDate.TranslateDateForDaylightSavings(data.Timezone, hoursToShift: -1)
                 : data.EndDate;
 
-            sheriffEventConflicts = sheriffEventConflicts.WhereToList(sec => sec.StartDate < newEndDate && newStartDate < sec.EndDate);
+            courtAdminEventConflicts = courtAdminEventConflicts.WhereToList(sec => sec.StartDate < newEndDate && newStartDate < sec.EndDate);
 
-            return sheriffEventConflicts;
+            return courtAdminEventConflicts;
         }
 
-        private void DisplayConflicts(Guid sheriffId, List<CourtAdminEvent> sheriffEventConflicts, List<Shift> shiftConflicts)
+        private void DisplayConflicts(Guid courtAdminId, List<CourtAdminEvent> courtAdminEventConflicts, List<Shift> shiftConflicts)
         {
             DateTimeOffset startDate;
             string startDateFormatted;
             string endDateFormatted;
             var conflictErrors = new List<(DateTimeOffset start, string message)>();
 
-            foreach (var eventConflict in sheriffEventConflicts)
+            foreach (var eventConflict in courtAdminEventConflicts)
             {
-                if (eventConflict is CourtAdminAwayLocation sheriffAwayLocation)
+                if (eventConflict is CourtAdminAwayLocation courtAdminAwayLocation)
                 {
                     //Calculate the start and end date for the away location.
                     var awayLocationTimezone = Db.Location.AsNoTracking()
-                        .FirstOrDefault(al => al.Id == sheriffAwayLocation.LocationId)?.Timezone;
-                    startDate = sheriffAwayLocation.StartDate.ConvertToTimezone(awayLocationTimezone);
+                        .FirstOrDefault(al => al.Id == courtAdminAwayLocation.LocationId)?.Timezone;
+                    startDate = courtAdminAwayLocation.StartDate.ConvertToTimezone(awayLocationTimezone);
                     startDateFormatted = startDate.PrintFormatDateTime(awayLocationTimezone);
-                    endDateFormatted = sheriffAwayLocation.EndDate.ConvertToTimezone(awayLocationTimezone)
+                    endDateFormatted = courtAdminAwayLocation.EndDate.ConvertToTimezone(awayLocationTimezone)
                         .PrintFormatDateTime(awayLocationTimezone);
                 }
                 else
                 {
                     //Calculate the start and end date for the user's home location id.
-                    var homeLocationId = Db.CourtAdmin.AsNoTracking().FirstOrDefault(s => s.Id == sheriffId)
+                    var homeLocationId = Db.CourtAdmin.AsNoTracking().FirstOrDefault(s => s.Id == courtAdminId)
                         ?.HomeLocationId;
                     var homeLocationTimezone = Db.Location.AsNoTracking()
                         .FirstOrDefault(al => al.Id == homeLocationId.Value)?.Timezone;
@@ -548,28 +548,28 @@ namespace CAS.API.services.usermanagement
                     .ToStringWithPipes());
         }
 
-        private async Task OverrideConflicts<T>(T data, DutyRosterService dutyRosterService, ShiftService shiftService, List<CourtAdminEvent> sheriffEventConflicts, List<Shift> shiftConflicts) where T : CourtAdminEvent
+        private async Task OverrideConflicts<T>(T data, DutyRosterService dutyRosterService, ShiftService shiftService, List<CourtAdminEvent> courtAdminEventConflicts, List<Shift> shiftConflicts) where T : CourtAdminEvent
         {
-            foreach (var eventConflict in sheriffEventConflicts)
+            foreach (var eventConflict in courtAdminEventConflicts)
             {
                 switch (eventConflict)
                 {
                     case CourtAdminAwayLocation _:
-                        var sheriffAwayLocation = Db.SheriffAwayLocation.First(sl => sl.Id == eventConflict.Id);
-                        sheriffAwayLocation.ExpiryDate = DateTimeOffset.UtcNow;
-                        sheriffAwayLocation.ExpiryReason = "OVERRIDE";
+                        var courtAdminAwayLocation = Db.CourtAdminAwayLocation.First(sl => sl.Id == eventConflict.Id);
+                        courtAdminAwayLocation.ExpiryDate = DateTimeOffset.UtcNow;
+                        courtAdminAwayLocation.ExpiryReason = "OVERRIDE";
                         break;
 
                     case CourtAdminTraining _:
-                        var sheriffTraining = Db.SheriffTraining.First(sl => sl.Id == eventConflict.Id);
-                        sheriffTraining.ExpiryDate = DateTimeOffset.UtcNow;
-                        sheriffTraining.ExpiryReason = "OVERRIDE";
+                        var courtAdminTraining = Db.CourtAdminTraining.First(sl => sl.Id == eventConflict.Id);
+                        courtAdminTraining.ExpiryDate = DateTimeOffset.UtcNow;
+                        courtAdminTraining.ExpiryReason = "OVERRIDE";
                         break;
 
                     case CourtAdminLeave _:
-                        var sheriffLeave = Db.SheriffLeave.First(sl => sl.Id == eventConflict.Id);
-                        sheriffLeave.ExpiryDate = DateTimeOffset.UtcNow;
-                        sheriffLeave.ExpiryReason = "OVERRIDE";
+                        var courtAdminLeave = Db.CourtAdminLeave.First(sl => sl.Id == eventConflict.Id);
+                        courtAdminLeave.ExpiryDate = DateTimeOffset.UtcNow;
+                        courtAdminLeave.ExpiryReason = "OVERRIDE";
                         break;
                 }
             }
@@ -579,7 +579,7 @@ namespace CAS.API.services.usermanagement
 
         #endregion Overlap Detection && Override
 
-        private async Task<T1> LookForSheriffEventConflictAsync<T1, T2>(DbSet<T1> dbSet, T2 data, int? updateOnlyId = null) where T1 : CourtAdminEvent where T2 : CourtAdminEvent
+        private async Task<T1> LookForCourtAdminEventConflictAsync<T1, T2>(DbSet<T1> dbSet, T2 data, int? updateOnlyId = null) where T1 : CourtAdminEvent where T2 : CourtAdminEvent
         {
             return await dbSet.AsNoTracking().FirstOrDefaultAsync(sal =>
                 sal.CourtAdminId == data.CourtAdminId && (sal.StartDate < data.EndDate && data.StartDate < sal.EndDate) &&

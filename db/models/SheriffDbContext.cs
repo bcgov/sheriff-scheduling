@@ -40,10 +40,10 @@ namespace CAS.DB.models
         public virtual DbSet<LookupSortOrder> LookupSortOrder { get; set; }
         public virtual DbSet<Region> Region { get; set; }
         public virtual DbSet<CourtAdmin> CourtAdmin { get; set; }
-        public virtual DbSet<CourtAdminLeave> SheriffLeave { get; set; }
-        public virtual DbSet<CourtAdminAwayLocation> SheriffAwayLocation { get; set; }
-        public virtual DbSet<CourtAdminActingRank> SheriffActingRank { get; set; }
-        public virtual DbSet<CourtAdminTraining> SheriffTraining { get; set; }
+        public virtual DbSet<CourtAdminLeave> CourtAdminLeave { get; set; }
+        public virtual DbSet<CourtAdminAwayLocation> CourtAdminAwayLocation { get; set; }
+        public virtual DbSet<CourtAdminActingRank> CourtAdminActingRank { get; set; }
+        public virtual DbSet<CourtAdminTraining> CourtAdminTraining { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserRole> UserRole { get; set; }
         public virtual DbSet<Permission> Permission { get; set; }

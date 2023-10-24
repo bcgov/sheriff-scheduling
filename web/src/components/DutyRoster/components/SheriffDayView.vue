@@ -25,7 +25,7 @@
                 </template>
 
                 <template v-slot:cell(availability)="data" >
-                    <court-admin-availability-card class="m-0 p-0" :sheriffInfo="data.item" :fullview="true" />
+                    <court-admin-availability-card class="m-0 p-0" :courtAdminInfo="data.item" :fullview="true" />
                 </template>
 
                 <template v-slot:head(name) > 
@@ -34,7 +34,7 @@
 
                     <template v-slot:cell(name)="data" >
                     <div
-                        :id="'gauge--'+data.item.sheriff.sheriffId"                                                                                                 
+                        :id="'gauge--'+data.item.courtAdmin.courtAdminId"                                                                                                 
                         style="height:2rem; font-size:14px; line-height: 1rem; text-transform: capitalize; margin:0; padding:0.5rem 0 0 0.25rem"
                         class="text-primary"
                         v-b-tooltip.hover.right                            
@@ -63,7 +63,7 @@
         </div>
 
 
-        <b-modal size="xl" v-model="printSheriffFullview" footer-class="d-none" header-class="bg-primary text-light" title-class="h2" title="Print Duties">            
+        <b-modal size="xl" v-model="printCourtAdminFullview" footer-class="d-none" header-class="bg-primary text-light" title-class="h2" title="Print Duties">            
             
             <duty-pdf-view :myTeamMembers="myTeamMembers"/>
 
@@ -77,7 +77,7 @@
 
 <script lang="ts">
     import { Component, Vue, Watch } from 'vue-property-decorator';
-    import SheriffAvailabilityCard from './SheriffAvailabilityCard.vue'
+    import CourtAdminAvailabilityCard from './CourtAdminAvailabilityCard.vue'
     import { myTeamShiftInfoType, dutiesDetailInfoType} from '@/types/DutyRoster';
     import { userInfoType } from '@/types/common';
 
@@ -92,21 +92,21 @@
 
     @Component({
         components: {
-            SheriffAvailabilityCard,
+            CourtAdminAvailabilityCard,
             DutyPdfView
         }
     })
-    export default class SheriffDayView extends Vue {
+    export default class CourtAdminDayView extends Vue {
        
         @dutyState.State
         public shiftAvailabilityInfo!: myTeamShiftInfoType[];
 
    
         @dutyState.State
-        public printSheriffFullview!: boolean;
+        public printCourtAdminFullview!: boolean;
 
         @dutyState.Action
-        public UpdatePrintSheriffFullview!: (newPrintSheriffFullview: boolean) => void;
+        public UpdatePrintCourtAdminFullview!: (newPrintCourtAdminFullview: boolean) => void;
         
         @dutyState.State
         public zoomLevel!: number;
@@ -126,13 +126,13 @@
         @Watch('shiftAvailabilityInfo')
         shiftAvailability() 
         {
-            this.extractSheriffAvailability()
+            this.extractCourtAdminAvailability()
         }
 
         mounted()
         {             
             this.hasPermissionToAddAssignDuty = this.userDetails.permissions.includes("CreateAndAssignDuties");
-            this.extractSheriffAvailability() 
+            this.extractCourtAdminAvailability() 
         }
 
         dutyColors = [
@@ -144,17 +144,17 @@
             {name:'free',   colorCode:'#e6d9e2'}            
         ]
 
-        public extractSheriffAvailability(){
+        public extractCourtAdminAvailability(){
             this.myTeamMembers = [];
-            for(const sheriff of this.shiftAvailabilityInfo){
-                // console.log(sheriff.availability)
-                //this.findIsland(sheriff.availability)
+            for(const courtAdmin of this.shiftAvailabilityInfo){
+                // console.log(courtAdmin.availability)
+                //this.findIsland(courtAdmin.availability)
                 this.myTeamMembers.push({                     
-                    name: Vue.filter('truncate')(sheriff.lastName,10) + ', '+ sheriff.firstName.charAt(0).toUpperCase(),
-                    fullName: sheriff.firstName + ' ' + sheriff.lastName,
-                    availability: this.sumOfArrayElements(sheriff.availability),
-                    sheriff: sheriff,
-                    availabilityDetail: this.findAvailabilitySlots(sheriff.availability)
+                    name: Vue.filter('truncate')(courtAdmin.lastName,10) + ', '+ courtAdmin.firstName.charAt(0).toUpperCase(),
+                    fullName: courtAdmin.firstName + ' ' + courtAdmin.lastName,
+                    availability: this.sumOfArrayElements(courtAdmin.availability),
+                    courtAdmin: courtAdmin,
+                    availabilityDetail: this.findAvailabilitySlots(courtAdmin.availability)
                 })
             }
             // this.myTeamMembers=[...this.myTeamMembers, ...this.myTeamMembers,...this.myTeamMembers]
@@ -220,7 +220,7 @@
         }
 
         public closePrint(){
-            this.UpdatePrintSheriffFullview(false);
+            this.UpdatePrintCourtAdminFullview(false);
         }
 
     }

@@ -15,19 +15,19 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "ExpiryReason",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "ExpiryReason",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "ExpiryReason",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "text",
                 nullable: true);
 
@@ -404,15 +404,15 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ExpiryReason",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropColumn(
                 name: "ExpiryReason",
-                table: "SheriffLeave");
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropColumn(
                 name: "ExpiryReason",
-                table: "SheriffAwayLocation");
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.UpdateData(
                 table: "LookupCode",

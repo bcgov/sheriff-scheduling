@@ -2,13 +2,13 @@
 
 namespace CAS.DB.Migrations
 {
-    public partial class AddNoteToSheriffTraining : Migration
+    public partial class AddNoteToCourtAdminTraining : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
                 name: "Note",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "text",
                 nullable: true);
         }
@@ -17,7 +17,7 @@ namespace CAS.DB.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Note",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
         }
     }
 }

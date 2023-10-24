@@ -31,7 +31,7 @@ namespace CAS.API.infrastructure.authorization
             var homeRegionId = db.Location.AsNoTracking().Where(s => viewRegion).FirstOrDefault(l => l.Id == homeLocationId)?.RegionId;
             var locationsWithinRegion = db.Location.AsNoTracking().Where(l => viewRegion && l.RegionId == homeRegionId).SelectToList(l => l.Id);
 
-            var assignedLocationIds = db.SheriffAwayLocation.AsNoTracking().Where(sal =>
+            var assignedLocationIds = db.CourtAdminAwayLocation.AsNoTracking().Where(sal =>
                     viewAssignedLocation && sal.CourtAdminId == currentUserId &&
                     !(sal.StartDate > end || start > sal.EndDate) && sal.ExpiryDate == null)
                 .SelectDistinctToList(s => s.LocationId);
@@ -60,7 +60,7 @@ namespace CAS.API.infrastructure.authorization
                 return query;
 
             //Not sure if we want to put some sort of time limit on this. 
-            var assignedLocationIds = db.SheriffAwayLocation.AsNoTracking().Where(sal => sal.CourtAdminId == currentUserId
+            var assignedLocationIds = db.CourtAdminAwayLocation.AsNoTracking().Where(sal => sal.CourtAdminId == currentUserId
                                                                                          && sal.ExpiryDate == null).Select(s => s.LocationId).Distinct().ToList();
             return query.Where(loc =>
                 (viewRegion && currentUserRegionId.HasValue && loc.RegionId == currentUserRegionId) ||
@@ -87,7 +87,7 @@ namespace CAS.API.infrastructure.authorization
             if (currentUser.HasPermission(Permission.ViewAssignedLocation))
             {
                 //Not sure if we want to put some sort of time limit on this. 
-                var assignedLocationIds = db.SheriffAwayLocation.AsNoTracking().Where(sal => sal.CourtAdminId == currentUserId
+                var assignedLocationIds = db.CourtAdminAwayLocation.AsNoTracking().Where(sal => sal.CourtAdminId == currentUserId
                     && sal.ExpiryDate == null).Select(s => s.LocationId).Distinct().ToList();
                 if (assignedLocationIds.Contains(locationId))
                     return true;

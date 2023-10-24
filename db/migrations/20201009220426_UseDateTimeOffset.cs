@@ -47,7 +47,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "UpdatedOn",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -55,7 +55,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "StartDate",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -63,7 +63,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "ExpiryDate",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -71,7 +71,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "EndDate",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -79,14 +79,14 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone");
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "UpdatedOn",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -94,7 +94,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "StartDate",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -102,7 +102,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "ExpiryDate",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -110,7 +110,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "EndDate",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -118,14 +118,14 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone");
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "UpdatedOn",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -133,7 +133,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "StartDate",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -141,7 +141,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "ExpiryDate",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -149,7 +149,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "EndDate",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 nullable: true,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone",
@@ -157,7 +157,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp without time zone");
@@ -601,7 +601,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedOn",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -609,7 +609,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "StartDate",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -617,7 +617,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ExpiryDate",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -625,7 +625,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "EndDate",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -633,14 +633,14 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedOn",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "timestamp without time zone",
                 nullable: false,
                 oldClrType: typeof(DateTimeOffset));
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedOn",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -648,7 +648,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "StartDate",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -656,7 +656,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ExpiryDate",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -664,7 +664,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "EndDate",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -672,14 +672,14 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedOn",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "timestamp without time zone",
                 nullable: false,
                 oldClrType: typeof(DateTimeOffset));
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedOn",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -687,7 +687,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "StartDate",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -695,7 +695,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ExpiryDate",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -703,7 +703,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "EndDate",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "timestamp without time zone",
                 nullable: true,
                 oldClrType: typeof(DateTimeOffset),
@@ -711,7 +711,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedOn",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "timestamp without time zone",
                 nullable: false,
                 oldClrType: typeof(DateTimeOffset));

@@ -275,7 +275,7 @@
         }
 
         public loadHistoricRoles(){
-            const url = '/api/audit/rolehistory?sheriffId='+ this.userToEdit.id;
+            const url = '/api/audit/rolehistory?courtAdminId='+ this.userToEdit.id;
             this.$http.get(url)
                 .then(response => {
                     if(response.data){
@@ -341,7 +341,7 @@
             this.roleError = false; 
             body[0]['userId']= this.userToEdit.id;
             const method = 'put';   
-            const url = 'api/sheriff/assignroles';
+            const url = 'api/courtAdmin/assignroles';
             const options = { method: method, url:url, data:body} 
             this.$http(options)
                 .then(response => {
@@ -412,7 +412,7 @@
                     "roleId": this.roleToDelete.value,
                     "expiryReason": this.roleDeleteReason                        
                 }]
-                const url = 'api/sheriff/unassignroles' ;
+                const url = 'api/courtAdmin/unassignroles' ;
                 this.$http.put(url, body)
                     .then(response => {
                         this.updateDeletedRole();

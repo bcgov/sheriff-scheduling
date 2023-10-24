@@ -1,5 +1,5 @@
 import { assignmentCardWeekInfoType } from '@/types/DutyRoster';
-import { shiftRangeInfoType, sheriffAvailabilityInfoType, distributeTeamMemberInfoType, selectShiftInfoType } from '@/types/ShiftSchedule';
+import { shiftRangeInfoType, courtAdminAvailabilityInfoType, distributeTeamMemberInfoType, selectShiftInfoType } from '@/types/ShiftSchedule';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 
 @Module({
@@ -8,7 +8,7 @@ import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 class AssignmentScheduleInformation extends VuexModule {
 
   public assignmentRangeInfo = {} as shiftRangeInfoType;
-  public sheriffsAvailabilityInfo = [] as sheriffAvailabilityInfoType[];
+  public courtAdminsAvailabilityInfo = [] as courtAdminAvailabilityInfoType[];
   public selectedShifts = [] as selectShiftInfoType[];
   public teamMemberList = [] as distributeTeamMemberInfoType[];
 
@@ -27,12 +27,12 @@ class AssignmentScheduleInformation extends VuexModule {
   }
 
   @Mutation
-  public setSheriffsAvailabilityInfo(sheriffsAvailabilityInfo): void {   
-    this.sheriffsAvailabilityInfo = sheriffsAvailabilityInfo
+  public setCourtAdminsAvailabilityInfo(courtAdminsAvailabilityInfo): void {   
+    this.courtAdminsAvailabilityInfo = courtAdminsAvailabilityInfo
   }
   @Action
-  public UpdateSheriffsAvailabilityInfo(newSheriffsAvailabilityInfo): void {
-    this.context.commit('setSheriffsAvailabilityInfo', newSheriffsAvailabilityInfo)
+  public UpdateCourtAdminsAvailabilityInfo(newCourtAdminsAvailabilityInfo): void {
+    this.context.commit('setCourtAdminsAvailabilityInfo', newCourtAdminsAvailabilityInfo)
   }
 
   @Mutation

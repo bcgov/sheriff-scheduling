@@ -16,7 +16,7 @@ namespace CAS.DB.configuration
 
             builder.HasOne(d => d.AnticipatedAssignment).WithMany().OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(d => d.Sheriff).WithMany().OnDelete(DeleteBehavior.SetNull);
+            builder.HasOne(d => d.CourtAdmin).WithMany().OnDelete(DeleteBehavior.SetNull);
 
             builder.HasIndex(b => new { b.StartDate, b.EndDate });
 

@@ -7,7 +7,7 @@ import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 })
 class CommonInformation extends VuexModule {
 
-  public commonInfo: commonInfoType = {sheriffRankList: []};
+  public commonInfo: commonInfoType = {courtAdminRankList: []};
 
   public regionList: regionInfoType[] = [];
 

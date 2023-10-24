@@ -18,12 +18,12 @@ export interface teamMemberJsonType {
      email : string;
      homeLocationId : number;
      homeLocation : userLocationJsonType;
-     activeRoles : sheriffRoleJsonType[];
-     roles : sheriffRoleJsonType[];
+     activeRoles : courtAdminRoleJsonType[];
+     roles : courtAdminRoleJsonType[];
      concurrencyToken : number;      
 }
 
-export interface sheriffRoleJsonType {
+export interface courtAdminRoleJsonType {
   role : roleJsonType;
   effectiveDate : string;
   expiryDate : string;
@@ -91,7 +91,7 @@ export interface awayLocationsJsontype {
     endDate : string;
     expiryDate : string;
     isFullDay : boolean;
-    sheriffId : string;
+    courtAdminId : string;
     concurrencyToken : number ;
     comment?: string; 
 }
@@ -103,7 +103,7 @@ export interface actingRankJsontype {
   endDate : string;
   expiryDate? : string;
   isFullDay? : boolean;
-  sheriffId : string;
+  courtAdminId : string;
   timezone: string;
   concurrencyToken? : number ;
   comment?: string; 
@@ -119,7 +119,7 @@ export interface trainingJsontype {
     expiryDate : string;
     expiryReason: string;    
     trainingCertificationExpiry :string;
-    sheriffId : string;
+    courtAdminId : string;
     concurrencyToken : number;
     comment?: string;
     note?: string;
@@ -142,7 +142,7 @@ export interface leaveJsontype {
   endDate : string;
   expiryDate : string;
   comment : string;
-  sheriffId : string;
+  courtAdminId : string;
   concurrencyToken : number; 
 }
 

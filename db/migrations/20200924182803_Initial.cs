@@ -48,7 +48,7 @@ namespace CAS.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SheriffAwayLocation",
+                name: "CourtAdminAwayLocation",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -62,11 +62,11 @@ namespace CAS.DB.Migrations
                     StartDate = table.Column<DateTime>(nullable: true),
                     EndDate = table.Column<DateTime>(nullable: true),
                     IsFullDay = table.Column<bool>(nullable: false),
-                    SheriffId = table.Column<Guid>(nullable: true)
+                    CourtAdminId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SheriffAwayLocation", x => x.Id);
+                    table.PrimaryKey("PK_CourtAdminAwayLocation", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -221,7 +221,7 @@ namespace CAS.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SheriffLeave",
+                name: "CourtAdminLeave",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -235,31 +235,31 @@ namespace CAS.DB.Migrations
                     StartDate = table.Column<DateTime>(nullable: true),
                     EndDate = table.Column<DateTime>(nullable: true),
                     IsFullDay = table.Column<bool>(nullable: false),
-                    SheriffId = table.Column<Guid>(nullable: true)
+                    CourtAdminId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SheriffLeave", x => x.Id);
+                    table.PrimaryKey("PK_CourtAdminLeave", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SheriffLeave_User_CreatedById",
+                        name: "FK_CourtAdminLeave_User_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SheriffLeave_LookupCode_LeaveTypeId",
+                        name: "FK_CourtAdminLeave_LookupCode_LeaveTypeId",
                         column: x => x.LeaveTypeId,
                         principalTable: "LookupCode",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SheriffLeave_User_SheriffId",
-                        column: x => x.SheriffId,
+                        name: "FK_CourtAdminLeave_User_CourtAdminId",
+                        column: x => x.CourtAdminId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SheriffLeave_User_UpdatedById",
+                        name: "FK_CourtAdminLeave_User_UpdatedById",
                         column: x => x.UpdatedById,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -267,7 +267,7 @@ namespace CAS.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SheriffTraining",
+                name: "CourtAdminTraining",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -281,31 +281,31 @@ namespace CAS.DB.Migrations
                     StartDate = table.Column<DateTime>(nullable: true),
                     EndDate = table.Column<DateTime>(nullable: true),
                     IsFullDay = table.Column<bool>(nullable: false),
-                    SheriffId = table.Column<Guid>(nullable: true)
+                    CourtAdminId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SheriffTraining", x => x.Id);
+                    table.PrimaryKey("PK_CourtAdminTraining", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SheriffTraining_User_CreatedById",
+                        name: "FK_CourtAdminTraining_User_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SheriffTraining_User_SheriffId",
-                        column: x => x.SheriffId,
+                        name: "FK_CourtAdminTraining_User_CourtAdminId",
+                        column: x => x.CourtAdminId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SheriffTraining_LookupCode_TrainingTypeId",
+                        name: "FK_CourtAdminTraining_LookupCode_TrainingTypeId",
                         column: x => x.TrainingTypeId,
                         principalTable: "LookupCode",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SheriffTraining_User_UpdatedById",
+                        name: "FK_CourtAdminTraining_User_UpdatedById",
                         column: x => x.UpdatedById,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -474,63 +474,63 @@ namespace CAS.DB.Migrations
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffAwayLocation_CreatedById",
-                table: "SheriffAwayLocation",
+                name: "IX_CourtAdminAwayLocation_CreatedById",
+                table: "CourtAdminAwayLocation",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffAwayLocation_LocationId",
-                table: "SheriffAwayLocation",
+                name: "IX_CourtAdminAwayLocation_LocationId",
+                table: "CourtAdminAwayLocation",
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffAwayLocation_SheriffId",
-                table: "SheriffAwayLocation",
-                column: "SheriffId");
+                name: "IX_CourtAdminAwayLocation_CourtAdminId",
+                table: "CourtAdminAwayLocation",
+                column: "CourtAdminId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffAwayLocation_UpdatedById",
-                table: "SheriffAwayLocation",
+                name: "IX_CourtAdminAwayLocation_UpdatedById",
+                table: "CourtAdminAwayLocation",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffLeave_CreatedById",
-                table: "SheriffLeave",
+                name: "IX_CourtAdminLeave_CreatedById",
+                table: "CourtAdminLeave",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffLeave_LeaveTypeId",
-                table: "SheriffLeave",
+                name: "IX_CourtAdminLeave_LeaveTypeId",
+                table: "CourtAdminLeave",
                 column: "LeaveTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffLeave_SheriffId",
-                table: "SheriffLeave",
-                column: "SheriffId");
+                name: "IX_CourtAdminLeave_CourtAdminId",
+                table: "CourtAdminLeave",
+                column: "CourtAdminId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffLeave_UpdatedById",
-                table: "SheriffLeave",
+                name: "IX_CourtAdminLeave_UpdatedById",
+                table: "CourtAdminLeave",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffTraining_CreatedById",
-                table: "SheriffTraining",
+                name: "IX_CourtAdminTraining_CreatedById",
+                table: "CourtAdminTraining",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffTraining_SheriffId",
-                table: "SheriffTraining",
-                column: "SheriffId");
+                name: "IX_CourtAdminTraining_CourtAdminId",
+                table: "CourtAdminTraining",
+                column: "CourtAdminId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffTraining_TrainingTypeId",
-                table: "SheriffTraining",
+                name: "IX_CourtAdminTraining_TrainingTypeId",
+                table: "CourtAdminTraining",
                 column: "TrainingTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffTraining_UpdatedById",
-                table: "SheriffTraining",
+                name: "IX_CourtAdminTraining_UpdatedById",
+                table: "CourtAdminTraining",
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
@@ -593,32 +593,32 @@ namespace CAS.DB.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_User_CreatedById",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_User_CreatedById",
+                table: "CourtAdminAwayLocation",
                 column: "CreatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_User_SheriffId",
-                table: "SheriffAwayLocation",
-                column: "SheriffId",
+                name: "FK_CourtAdminAwayLocation_User_CourtAdminId",
+                table: "CourtAdminAwayLocation",
+                column: "CourtAdminId",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_User_UpdatedById",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_User_UpdatedById",
+                table: "CourtAdminAwayLocation",
                 column: "UpdatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_Location_LocationId",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_Location_LocationId",
+                table: "CourtAdminAwayLocation",
                 column: "LocationId",
                 principalTable: "Location",
                 principalColumn: "Id",
@@ -647,13 +647,13 @@ namespace CAS.DB.Migrations
                 name: "RolePermission");
 
             migrationBuilder.DropTable(
-                name: "SheriffAwayLocation");
+                name: "CourtAdminAwayLocation");
 
             migrationBuilder.DropTable(
-                name: "SheriffLeave");
+                name: "CourtAdminLeave");
 
             migrationBuilder.DropTable(
-                name: "SheriffTraining");
+                name: "CourtAdminTraining");
 
             migrationBuilder.DropTable(
                 name: "UserRole");

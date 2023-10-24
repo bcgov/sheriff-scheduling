@@ -22,7 +22,7 @@ namespace CAS.DB.models.courtAdmin
         public byte[] Photo { get; set; }
 
         [NotMapped]
-        public string PhotoUrl => Photo?.Length > 0 ? $"/api/sheriff/getPhoto/{Id}?{LastPhotoUpdate.Ticks}" : null;
+        public string PhotoUrl => Photo?.Length > 0 ? $"/api/courtAdmin/getPhoto/{Id}?{LastPhotoUpdate.Ticks}" : null;
 
         public DateTimeOffset LastPhotoUpdate { get; set; }
     }

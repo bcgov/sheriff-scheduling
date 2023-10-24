@@ -9,8 +9,8 @@ namespace CAS.DB.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffAwayLocation_Location_LocationId",
-                table: "SheriffAwayLocation");
+                name: "FK_CourtAdminAwayLocation_Location_LocationId",
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.DropColumn(
                 name: "IsDisabled",
@@ -156,13 +156,13 @@ namespace CAS.DB.Migrations
                 columns: new[] { "Id", "Code", "CreatedById", "CreatedOn", "Description", "EffectiveDate", "ExpiryDate", "LocationId", "SortOrder", "SubCode", "Type", "UpdatedById", "UpdatedOn" },
                 values: new object[,]
                 {
-                    { 1, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(8473), "Chief Sheriff", null, null, null, null, null, 7, null, null },
+                    { 1, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(8473), "Chief CourtAdmin", null, null, null, null, null, 7, null, null },
                     { 2, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(9345), "Superintendent", null, null, null, null, null, 7, null, null },
                     { 3, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(9369), "Staff Inspector", null, null, null, null, null, 7, null, null },
                     { 4, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(9371), "Inspector", null, null, null, null, null, 7, null, null },
                     { 5, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(9372), "Staff Sergeant", null, null, null, null, null, 7, null, null },
                     { 6, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(9406), "Sergeant", null, null, null, null, null, 7, null, null },
-                    { 7, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(9408), "Deputy Sheriff", null, null, null, null, null, 7, null, null }
+                    { 7, null, null, new DateTime(2020, 9, 30, 19, 1, 26, 243, DateTimeKind.Utc).AddTicks(9408), "Deputy CourtAdmin", null, null, null, null, null, 7, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -177,7 +177,7 @@ namespace CAS.DB.Migrations
                 {
                     { 1, null, new DateTime(2020, 9, 30, 19, 1, 26, 250, DateTimeKind.Utc).AddTicks(5647), "System Administrator", "SystemAdministrator", null, null },
                     { 2, null, new DateTime(2020, 9, 30, 19, 1, 26, 250, DateTimeKind.Utc).AddTicks(6516), "Administrator", "Administrator", null, null },
-                    { 3, null, new DateTime(2020, 9, 30, 19, 1, 26, 250, DateTimeKind.Utc).AddTicks(6537), "Sheriff", "Sheriff", null, null }
+                    { 3, null, new DateTime(2020, 9, 30, 19, 1, 26, 250, DateTimeKind.Utc).AddTicks(6537), "CourtAdmin", "CourtAdmin", null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -218,8 +218,8 @@ namespace CAS.DB.Migrations
                 column: "UpdatedById");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_Location_LocationId",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_Location_LocationId",
+                table: "CourtAdminAwayLocation",
                 column: "LocationId",
                 principalTable: "Location",
                 principalColumn: "Id",
@@ -229,8 +229,8 @@ namespace CAS.DB.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffAwayLocation_Location_LocationId",
-                table: "SheriffAwayLocation");
+                name: "FK_CourtAdminAwayLocation_Location_LocationId",
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.DropTable(
                 name: "LookupSortOrder");
@@ -393,8 +393,8 @@ namespace CAS.DB.Migrations
                 nullable: true);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffAwayLocation_Location_LocationId",
-                table: "SheriffAwayLocation",
+                name: "FK_CourtAdminAwayLocation_Location_LocationId",
+                table: "CourtAdminAwayLocation",
                 column: "LocationId",
                 principalTable: "Location",
                 principalColumn: "Id",

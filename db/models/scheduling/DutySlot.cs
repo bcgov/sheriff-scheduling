@@ -28,9 +28,9 @@ namespace CAS.DB.models.scheduling
         public int DutyId { get; set; }
 
         [ExcludeFromAddAndUpdateDto]
-        public CourtAdmin Sheriff { get; set; }
+        public CourtAdmin CourtAdmin { get; set; }
 
-        public Guid? SheriffId { get; set; }
+        public Guid? CourtAdminId { get; set; }
 
         [ExcludeFromAddAndUpdateDto]
         public Location Location { get; set; }

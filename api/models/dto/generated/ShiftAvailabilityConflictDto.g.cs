@@ -7,7 +7,7 @@ namespace CAS.API.models.dto.generated
 {
     public partial class ShiftAvailabilityConflictDto
     {
-        public Guid? SheriffId { get; set; }
+        public Guid? CourtAdminId { get; set; }
         public ShiftConflictType Conflict { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
@@ -17,7 +17,7 @@ namespace CAS.API.models.dto.generated
         public string WorkSection { get; set; }
         public string Timezone { get; set; }
         public double OvertimeHours { get; set; }
-        public string SheriffEventType { get; set; }
+        public string CourtAdminEventType { get; set; }
         public string Comment { get; set; }
         public ICollection<DutySlotDto> DutySlots { get; set; }
     }

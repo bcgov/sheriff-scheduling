@@ -283,9 +283,9 @@
 
         public saveLeave(body, iscreate, overrideConflicts) {
             this.leaveError  = false; 
-            body['sheriffId']= this.userToEdit.id;
+            body['courtAdminId']= this.userToEdit.id;
             const method = iscreate? 'post' :'put';            
-            const url = overrideConflicts? 'api/sheriff/leave?overrideConflicts=true':'api/sheriff/leave'  
+            const url = overrideConflicts? 'api/courtAdmin/leave?overrideConflicts=true':'api/courtAdmin/leave'  
             const options = { method: method, url:url, data:body}
             
             this.$http(options)
@@ -426,7 +426,7 @@
             if (this.leaveDeleteReason.length) {
                 this.confirmDelete = false;
                 this.leaveError = false; 
-                const url = 'api/sheriff/leave?id='+this.leaveToDelete.id+'&expiryReason='+this.leaveDeleteReason;
+                const url = 'api/courtAdmin/leave?id='+this.leaveToDelete.id+'&expiryReason='+this.leaveDeleteReason;
                 this.$http.delete(url)
                     .then(response => {
                         const index = this.assignedLeaves.findIndex(assignedleave=>{if(assignedleave.id == this.leaveToDelete.id) return true;})

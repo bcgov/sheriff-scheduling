@@ -12,7 +12,7 @@ namespace CAS.DB.Migrations
                 table: "DutySlot");
 
             migrationBuilder.DropIndex(
-                name: "IX_DutySlot_SheriffId",
+                name: "IX_DutySlot_CourtAdminId",
                 table: "DutySlot");
 
             migrationBuilder.DropIndex(
@@ -453,9 +453,9 @@ namespace CAS.DB.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DutySlot_SheriffId",
+                name: "IX_DutySlot_CourtAdminId",
                 table: "DutySlot",
-                column: "SheriffId");
+                column: "CourtAdminId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DutySlot_ShiftId",
@@ -480,7 +480,7 @@ namespace CAS.DB.Migrations
                 table: "DutySlot");
 
             migrationBuilder.DropIndex(
-                name: "IX_DutySlot_SheriffId",
+                name: "IX_DutySlot_CourtAdminId",
                 table: "DutySlot");
 
             migrationBuilder.DropIndex(
@@ -922,9 +922,9 @@ namespace CAS.DB.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DutySlot_SheriffId",
+                name: "IX_DutySlot_CourtAdminId",
                 table: "DutySlot",
-                column: "SheriffId",
+                column: "CourtAdminId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

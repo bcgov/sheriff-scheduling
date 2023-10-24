@@ -10,8 +10,8 @@ namespace CAS.API.models.dto.generated
         public DateTimeOffset EndDate { get; set; }
         public DateTimeOffset? ExpiryDate { get; set; }
         public int DutyId { get; set; }
-        public SheriffDto Sheriff { get; set; }
-        public Guid? SheriffId { get; set; }
+        public CourtAdminDto CourtAdmin { get; set; }
+        public Guid? CourtAdminId { get; set; }
         public LocationDto Location { get; set; }
         public int LocationId { get; set; }
         public string Timezone { get; set; }

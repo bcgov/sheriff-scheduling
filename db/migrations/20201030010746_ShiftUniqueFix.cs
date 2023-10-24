@@ -12,7 +12,7 @@ namespace CAS.DB.Migrations
                 table: "Shift");
 
             migrationBuilder.DropIndex(
-                name: "IX_Shift_SheriffId",
+                name: "IX_Shift_CourtAdminId",
                 table: "Shift");
 
             migrationBuilder.UpdateData(
@@ -413,9 +413,9 @@ namespace CAS.DB.Migrations
                 column: "AnticipatedAssignmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Shift_SheriffId",
+                name: "IX_Shift_CourtAdminId",
                 table: "Shift",
-                column: "SheriffId");
+                column: "CourtAdminId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -425,7 +425,7 @@ namespace CAS.DB.Migrations
                 table: "Shift");
 
             migrationBuilder.DropIndex(
-                name: "IX_Shift_SheriffId",
+                name: "IX_Shift_CourtAdminId",
                 table: "Shift");
 
             migrationBuilder.UpdateData(
@@ -827,9 +827,9 @@ namespace CAS.DB.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Shift_SheriffId",
+                name: "IX_Shift_CourtAdminId",
                 table: "Shift",
-                column: "SheriffId",
+                column: "CourtAdminId",
                 unique: true);
         }
     }

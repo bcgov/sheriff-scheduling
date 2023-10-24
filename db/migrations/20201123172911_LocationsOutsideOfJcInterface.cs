@@ -36,7 +36,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "timestamp with time zone",
                 nullable: false,
                 defaultValueSql: "now()",
@@ -148,10 +148,10 @@ namespace CAS.DB.Migrations
                 values: new object[,]
                 {
                     { 1, "SS1", new Guid("00000000-0000-0000-0000-000000000001"), null, null, "Office of Professional Standards", null, null, "America/Vancouver", null, null },
-                    { 2, "SS2", new Guid("00000000-0000-0000-0000-000000000001"), null, null, "Sheriff Provincial Operation Centre", null, null, "America/Vancouver", null, null },
+                    { 2, "SS2", new Guid("00000000-0000-0000-0000-000000000001"), null, null, "CourtAdmin Provincial Operation Centre", null, null, "America/Vancouver", null, null },
                     { 3, "SS3", new Guid("00000000-0000-0000-0000-000000000001"), null, null, "Central Float Pool", null, null, "America/Vancouver", null, null },
                     { 4, "SS4", new Guid("00000000-0000-0000-0000-000000000001"), null, null, "ITAU", null, null, "America/Vancouver", null, null },
-                    { 5, "SS5", new Guid("00000000-0000-0000-0000-000000000001"), null, null, "Office of the Chief Sheriff", null, null, "America/Vancouver", null, null },
+                    { 5, "SS5", new Guid("00000000-0000-0000-0000-000000000001"), null, null, "Office of the Chief CourtAdmin", null, null, "America/Vancouver", null, null },
                     { 6, "4882", new Guid("00000000-0000-0000-0000-000000000001"), null, null, "South Okanagan Escort Centre", null, null, "America/Vancouver", null, null }
                 });
 
@@ -637,7 +637,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "timestamp with time zone",
                 nullable: false,
                 oldClrType: typeof(DateTimeOffset),

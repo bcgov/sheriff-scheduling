@@ -70,7 +70,7 @@ namespace tests
         }
 
         [Fact]
-        public async Task SheriffDataTask()
+        public async Task CourtAdminDataTask()
         {
             //1. ViewProvince only.
             //2. ViewRegion only.
@@ -79,10 +79,10 @@ namespace tests
             //5. None
 
             var options = new DbContextOptionsBuilder<CourtAdminDbContext>()
-                .UseInMemoryDatabase("SheriffTestDb")
+                .UseInMemoryDatabase("CourtAdminTestDb")
                 .Options;
 
-            await using var db = new MemorySheriffDbContext(options);
+            await using var db = new MemoryCourtAdminDbContext(options);
 
             await db.CourtAdmin.AddAsync(new CourtAdmin { Id = new Guid(), HomeLocation = new Location { Id = 1 } });
             await db.CourtAdmin.AddAsync(new CourtAdmin { Id = new Guid(), HomeLocation = new Location { Id = 2 } });
@@ -142,9 +142,9 @@ namespace tests
             var start = DateTimeOffset.UtcNow.Date;
             var end = start.AddDays(7);
 
-            var sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            var courtAdmins = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
-            Assert.True(sheriffs.Count == 5);
+            Assert.True(courtAdmins.Count == 5);
 
             user = SetupClaimsPrincipal(new List<Claim>
             {
@@ -153,9 +153,9 @@ namespace tests
                 new Claim(CustomClaimTypes.Permission, Permission.ViewOtherProfiles)
             });
 
-            sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            courtAdmins = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
-            Assert.True(sheriffs.Count == 1);
+            Assert.True(courtAdmins.Count == 1);
 
             user = SetupClaimsPrincipal(new List<Claim>
             {
@@ -164,9 +164,9 @@ namespace tests
                 new Claim(CustomClaimTypes.Permission, Permission.ViewOtherProfiles)
             });
 
-            sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            courtAdmins = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
-            Assert.True(sheriffs.Count == 1);
+            Assert.True(courtAdmins.Count == 1);
 
             user = SetupClaimsPrincipal(new List<Claim>
             {
@@ -175,15 +175,15 @@ namespace tests
                 new Claim(CustomClaimTypes.Permission, Permission.ViewOtherProfiles)
             });
 
-            sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            courtAdmins = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
-            Assert.True(sheriffs.Count == 1);
+            Assert.True(courtAdmins.Count == 1);
 
             user = SetupClaim();
 
-            sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            courtAdmins = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
-            Assert.Empty(sheriffs);
+            Assert.Empty(courtAdmins);
             await db.Database.EnsureDeletedAsync();
         }
 
@@ -191,16 +191,16 @@ namespace tests
         public async Task LocationDataTask()
         {
             var options = new DbContextOptionsBuilder<CourtAdminDbContext>()
-                .UseInMemoryDatabase("SheriffTestDb")
+                .UseInMemoryDatabase("CourtAdminTestDb")
                 .Options;
 
-            await using var db = new MemorySheriffDbContext(options);
+            await using var db = new MemoryCourtAdminDbContext(options);
             await db.Location.AddAsync(new Location { Id = 1 });
             await db.Location.AddAsync(new Location { Id = 2 });
             await db.Location.AddAsync(new Location { Id = 4, Region = new Region { Id = 1 } });
             await db.Location.AddAsync(new Location { Id = 3, RegionId = 1 });
             await db.Location.AddAsync(new Location { Id = 5 });
-            await db.SheriffAwayLocation.AddAsync(new CourtAdminAwayLocation
+            await db.CourtAdminAwayLocation.AddAsync(new CourtAdminAwayLocation
             {
                 Id = 1,
                 LocationId = 5,

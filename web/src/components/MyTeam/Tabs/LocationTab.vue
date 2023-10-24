@@ -239,7 +239,7 @@
             if (this.locationDeleteReason.length) {
                 this.confirmDelete = false;
                 this.locationError = false; 
-                const url = 'api/sheriff/awaylocation?id='+this.locationToDelete.id+'&expiryReason='+this.locationDeleteReason;
+                const url = 'api/courtAdmin/awaylocation?id='+this.locationToDelete.id+'&expiryReason='+this.locationDeleteReason;
                 this.$http.delete(url)
                     .then(response => {
                         //console.log(response)
@@ -289,9 +289,9 @@
 
         public saveAwayLocation(body, iscreate, overrideConflicts){
             this.locationError  = false;                        
-            body['sheriffId']= this.userToEdit.id;
+            body['courtAdminId']= this.userToEdit.id;
             const method = iscreate? 'post' :'put';
-            const url = overrideConflicts?'api/sheriff/awaylocation?overrideConflicts=true':'api/sheriff/awaylocation'  
+            const url = overrideConflicts?'api/courtAdmin/awaylocation?overrideConflicts=true':'api/courtAdmin/awaylocation'  
             const options = { method: method, url:url, data:body}
             this.$http(options)
                 .then(response => {                    
@@ -362,7 +362,7 @@
             const assignedAwayLocation: awayLocationInfoType =
             {
                 id: addedLocationInfo.id,
-                sheriffId : addedLocationInfo.sheriffId,    
+                courtAdminId : addedLocationInfo.courtAdminId,    
                 locationId: addedLocationInfo.locationId,
                 startDate: moment(addedLocationInfo.startDate).tz(timezone).format(),
                 endDate: moment(addedLocationInfo.endDate).tz(timezone).format(), 

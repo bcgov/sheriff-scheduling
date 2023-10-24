@@ -238,7 +238,7 @@
             if (this.rankDeleteReason.length) {
                 this.confirmDelete = false;
                 this.rankError = false; 
-                const url = 'api/sheriff/actingrank?id='+this.rankToDelete.id+'&expiryReason='+this.rankDeleteReason;
+                const url = 'api/courtAdmin/actingrank?id='+this.rankToDelete.id+'&expiryReason='+this.rankDeleteReason;
                 this.$http.delete(url)
                     .then(response => {
                         //console.log(response)
@@ -278,9 +278,9 @@
 
         public saveRank(body, iscreate, overrideConflicts){
             this.rankError  = false;                        
-            body['sheriffId']= this.userToEdit.id;
+            body['courtAdminId']= this.userToEdit.id;
             const method = iscreate? 'post' :'put';
-            const url = overrideConflicts?'api/sheriff/actingrank?overrideConflicts=true':'api/sheriff/actingrank'  
+            const url = overrideConflicts?'api/courtAdmin/actingrank?overrideConflicts=true':'api/courtAdmin/actingrank'  
             const options = { method: method, url:url, data:body}
             this.$http(options)
                 .then(response => {                    
@@ -318,7 +318,7 @@
             const assignedActingRank: actingRankJsontype =
             {
                 id: addedRankInfo.id,
-                sheriffId : addedRankInfo.sheriffId,    
+                courtAdminId : addedRankInfo.courtAdminId,    
                 rank: addedRankInfo.rank,
                 timezone: timezone,
                 startDate: moment(addedRankInfo.startDate).tz(timezone).format(),

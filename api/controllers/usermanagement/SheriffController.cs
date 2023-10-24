@@ -24,11 +24,11 @@ namespace CAS.API.controllers.usermanagement
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SheriffController : UserController
+    public class CourtAdminController : UserController
     {
-        public const string CouldNotFindSheriffError = "Couldn't find sheriff.";
-        public const string CouldNotFindSheriffEventError = "Couldn't find sheriff event.";
-        private CourtAdminService SheriffService { get; }
+        public const string CouldNotFindCourtAdminError = "Couldn't find courtAdmin.";
+        public const string CouldNotFindCourtAdminEventError = "Couldn't find courtAdmin event.";
+        private CourtAdminService CourtAdminService { get; }
         private ShiftService ShiftService { get; }
         private DutyRosterService DutyRosterService { get; }
         private CourtAdminDbContext Db { get; }
@@ -36,9 +36,9 @@ namespace CAS.API.controllers.usermanagement
         // ReSharper disable once InconsistentNaming
         private readonly long _uploadPhotoSizeLimitKB;
 
-        public SheriffController(CourtAdminService sheriffService, DutyRosterService dutyRosterService, ShiftService shiftService, UserService userUserService, IConfiguration configuration, CourtAdminDbContext db) : base(userUserService)
+        public CourtAdminController(CourtAdminService courtAdminService, DutyRosterService dutyRosterService, ShiftService shiftService, UserService userUserService, IConfiguration configuration, CourtAdminDbContext db) : base(userUserService)
         {
-            SheriffService = sheriffService;
+            CourtAdminService = courtAdminService;
             ShiftService = shiftService;
             DutyRosterService = dutyRosterService;
             Db = db;
@@ -49,45 +49,45 @@ namespace CAS.API.controllers.usermanagement
 
         [HttpPost]
         [PermissionClaimAuthorize(perm: Permission.CreateUsers)]
-        public async Task<ActionResult<SheriffDto>> AddSheriff(SheriffWithIdirDto addSheriff)
+        public async Task<ActionResult<CourtAdminDto>> AddCourtAdmin(CourtAdminWithIdirDto addCourtAdmin)
         {
-            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, addSheriff.HomeLocationId)) return Forbid();
+            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, addCourtAdmin.HomeLocationId)) return Forbid();
 
-            var sheriff = addSheriff.Adapt<CourtAdmin>();
-            sheriff = await SheriffService.AddCourtAdmin(sheriff);
-            return Ok(sheriff.Adapt<SheriffDto>());
+            var courtAdmin = addCourtAdmin.Adapt<CourtAdmin>();
+            courtAdmin = await CourtAdminService.AddCourtAdmin(courtAdmin);
+            return Ok(courtAdmin.Adapt<CourtAdminDto>());
         }
 
         /// <summary>
-        /// This gets a general list of Sheriffs. Includes Training, AwayLocation, Leave data within 7 days.
+        /// This gets a general list of CourtAdmins. Includes Training, AwayLocation, Leave data within 7 days.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [PermissionClaimAuthorize(perm: Permission.Login)]
-        public async Task<ActionResult<SheriffDto>> GetSheriffsForTeams()
+        public async Task<ActionResult<CourtAdminDto>> GetCourtAdminsForTeams()
         {
-            var sheriffs = await SheriffService.GetFilteredCourtAdminsForTeams();
-            return Ok(sheriffs.Adapt<List<SheriffDto>>());
+            var courtAdmins = await CourtAdminService.GetFilteredCourtAdminsForTeams();
+            return Ok(courtAdmins.Adapt<List<CourtAdminDto>>());
         }
 
         /// <summary>
-        /// This call includes all SheriffAwayLocation, SheriffLeave, SheriffTraining.
+        /// This call includes all CourtAdminAwayLocation, CourtAdminLeave, CourtAdminTraining.
         /// </summary>
         /// <param name="id">Guid of the userid.</param>
-        /// <returns>SheriffDto</returns>
+        /// <returns>CourtAdminDto</returns>
         [HttpGet]
         [PermissionClaimAuthorize(perm: Permission.Login)]
         [Route("{id}")]
-        public async Task<ActionResult<SheriffWithIdirDto>> GetSheriffForTeam(Guid id)
+        public async Task<ActionResult<CourtAdminWithIdirDto>> GetCourtAdminForTeam(Guid id)
         {
-            var sheriff = await SheriffService.GetFilteredCourtAdminForTeams(id);
-            if (sheriff == null) return NotFound(CouldNotFindSheriffError);
-            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, sheriff.HomeLocationId)) return Forbid();
+            var courtAdmin = await CourtAdminService.GetFilteredCourtAdminForTeams(id);
+            if (courtAdmin == null) return NotFound(CouldNotFindCourtAdminError);
+            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, courtAdmin.HomeLocationId)) return Forbid();
 
-            var sheriffDto = sheriff.Adapt<SheriffWithIdirDto>();
+            var courtAdminDto = courtAdmin.Adapt<CourtAdminWithIdirDto>();
             //Prevent exposing Idirs to regular users.
-            sheriffDto.IdirName = User.HasPermission(Permission.EditIdir) ? sheriff.IdirName : null;
-            return Ok(sheriffDto);
+            courtAdminDto.IdirName = User.HasPermission(Permission.EditIdir) ? courtAdmin.IdirName : null;
+            return Ok(courtAdminDto);
         }
 
         /// <summary>
@@ -97,34 +97,34 @@ namespace CAS.API.controllers.usermanagement
         [HttpGet]
         [PermissionClaimAuthorize(perm: Permission.Login)]
         [Route("self")]
-        public async Task<ActionResult<SheriffDto>> GetSelfSheriff()
+        public async Task<ActionResult<CourtAdminDto>> GetSelfCourtAdmin()
         {
-            var sheriff = await SheriffService.GetFilteredCourtAdminForTeams(User.CurrentUserId());
-            if (sheriff == null) return NotFound(CouldNotFindSheriffError);
-            return Ok(sheriff.Adapt<SheriffDto>());
+            var courtAdmin = await CourtAdminService.GetFilteredCourtAdminForTeams(User.CurrentUserId());
+            if (courtAdmin == null) return NotFound(CouldNotFindCourtAdminError);
+            return Ok(courtAdmin.Adapt<CourtAdminDto>());
         }
 
         [HttpPut]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffDto>> UpdateSheriff(SheriffWithIdirDto updateSheriff)
+        public async Task<ActionResult<CourtAdminDto>> UpdateCourtAdmin(CourtAdminWithIdirDto updateCourtAdmin)
         {
-            await CheckForAccessToSheriffByLocation(updateSheriff.Id);
+            await CheckForAccessToCourtAdminByLocation(updateCourtAdmin.Id);
 
             var canEditIdir = User.HasPermission(Permission.EditIdir);
-            var sheriff = updateSheriff.Adapt<CourtAdmin>();
-            sheriff = await SheriffService.UpdateCourtAdmin(sheriff, canEditIdir);
+            var courtAdmin = updateCourtAdmin.Adapt<CourtAdmin>();
+            courtAdmin = await CourtAdminService.UpdateCourtAdmin(courtAdmin, canEditIdir);
 
-            return Ok(sheriff.Adapt<SheriffDto>());
+            return Ok(courtAdmin.Adapt<CourtAdminDto>());
         }
 
         [HttpPut]
         [Route("updateLocation")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffDto>> UpdateSheriffHomeLocation(Guid id, int locationId)
+        public async Task<ActionResult<CourtAdminDto>> UpdateCourtAdminHomeLocation(Guid id, int locationId)
         {
-            await CheckForAccessToSheriffByLocation(id);
+            await CheckForAccessToCourtAdminByLocation(id);
 
-            await SheriffService.UpdateSheriffHomeLocation(id, locationId);
+            await CourtAdminService.UpdateCourtAdminHomeLocation(id, locationId);
             return NoContent();
         }
 
@@ -132,15 +132,15 @@ namespace CAS.API.controllers.usermanagement
         [Route("getPhoto/{id}")]
         [PermissionClaimAuthorize(perm: Permission.Login)]
         [ResponseCache(Duration = 15552000, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetPhoto(Guid id) => File(await SheriffService.GetPhoto(id), "image/jpeg");
+        public async Task<IActionResult> GetPhoto(Guid id) => File(await CourtAdminService.GetPhoto(id), "image/jpeg");
 
         [HttpPost]
         [Route("uploadPhoto")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
-        public async Task<ActionResult<SheriffDto>> UploadPhoto(Guid? id, string badgeNumber, IFormFile file)
+        public async Task<ActionResult<CourtAdminDto>> UploadPhoto(Guid? id, string badgeNumber, IFormFile file)
         {
-            await CheckForAccessToSheriffByLocation(id, badgeNumber);
+            await CheckForAccessToCourtAdminByLocation(id, badgeNumber);
 
             if (file.Length == 0) return BadRequest("File length = 0");
             if (file.Length >= _uploadPhotoSizeLimitKB * 1024) return BadRequest($"File length: {file.Length / 1024} KB, Maximum upload size: {_uploadPhotoSizeLimitKB} KB");
@@ -151,8 +151,8 @@ namespace CAS.API.controllers.usermanagement
 
             if (!fileBytes.IsImage()) return BadRequest("The uploaded file was not a valid GIF/JPEG/PNG.");
 
-            var sheriff = await SheriffService.UpdateCourtAdminPhoto(id, badgeNumber, fileBytes);
-            return Ok(sheriff.Adapt<SheriffDto>());
+            var courtAdmin = await CourtAdminService.UpdateCourtAdminPhoto(id, badgeNumber, fileBytes);
+            return Ok(courtAdmin.Adapt<CourtAdminDto>());
         }
 
         #endregion CourtAdmin
@@ -162,35 +162,35 @@ namespace CAS.API.controllers.usermanagement
         [HttpPost]
         [Route("awayLocation")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffAwayLocationDto>> AddSheriffAwayLocation(SheriffAwayLocationDto sheriffAwayLocationDto, bool overrideConflicts = false)
+        public async Task<ActionResult<CourtAdminAwayLocationDto>> AddCourtAdminAwayLocation(CourtAdminAwayLocationDto courtAdminAwayLocationDto, bool overrideConflicts = false)
         {
-            await CheckForAccessToSheriffByLocation(sheriffAwayLocationDto.SheriffId);
+            await CheckForAccessToCourtAdminByLocation(courtAdminAwayLocationDto.CourtAdminId);
 
-            var sheriffAwayLocation = sheriffAwayLocationDto.Adapt<CourtAdminAwayLocation>();
-            var createdSheriffAwayLocation = await SheriffService.AddSheriffAwayLocation(DutyRosterService, ShiftService, sheriffAwayLocation, overrideConflicts);
-            return Ok(createdSheriffAwayLocation.Adapt<SheriffAwayLocationDto>());
+            var courtAdminAwayLocation = courtAdminAwayLocationDto.Adapt<CourtAdminAwayLocation>();
+            var createdCourtAdminAwayLocation = await CourtAdminService.AddCourtAdminAwayLocation(DutyRosterService, ShiftService, courtAdminAwayLocation, overrideConflicts);
+            return Ok(createdCourtAdminAwayLocation.Adapt<CourtAdminAwayLocationDto>());
         }
 
         [HttpPut]
         [Route("awayLocation")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffAwayLocationDto>> UpdateSheriffAwayLocation(SheriffAwayLocationDto sheriffAwayLocationDto, bool overrideConflicts = false)
+        public async Task<ActionResult<CourtAdminAwayLocationDto>> UpdateCourtAdminAwayLocation(CourtAdminAwayLocationDto courtAdminAwayLocationDto, bool overrideConflicts = false)
         {
-            await CheckForAccessToSheriffByLocation<CourtAdminAwayLocation>(sheriffAwayLocationDto.Id);
+            await CheckForAccessToCourtAdminByLocation<CourtAdminAwayLocation>(courtAdminAwayLocationDto.Id);
 
-            var sheriffAwayLocation = sheriffAwayLocationDto.Adapt<CourtAdminAwayLocation>();
-            var updatedSheriffAwayLocation = await SheriffService.UpdateSheriffAwayLocation(DutyRosterService, ShiftService, sheriffAwayLocation, overrideConflicts);
-            return Ok(updatedSheriffAwayLocation.Adapt<SheriffAwayLocationDto>());
+            var courtAdminAwayLocation = courtAdminAwayLocationDto.Adapt<CourtAdminAwayLocation>();
+            var updatedCourtAdminAwayLocation = await CourtAdminService.UpdateCourtAdminAwayLocation(DutyRosterService, ShiftService, courtAdminAwayLocation, overrideConflicts);
+            return Ok(updatedCourtAdminAwayLocation.Adapt<CourtAdminAwayLocationDto>());
         }
 
         [HttpDelete]
         [Route("awayLocation")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult> RemoveSheriffAwayLocation(int id, string expiryReason)
+        public async Task<ActionResult> RemoveCourtAdminAwayLocation(int id, string expiryReason)
         {
-            await CheckForAccessToSheriffByLocation<CourtAdminAwayLocation>(id);
+            await CheckForAccessToCourtAdminByLocation<CourtAdminAwayLocation>(id);
 
-            await SheriffService.RemoveSheriffAwayLocation(id, expiryReason);
+            await CourtAdminService.RemoveCourtAdminAwayLocation(id, expiryReason);
             return NoContent();
         }
 
@@ -201,29 +201,29 @@ namespace CAS.API.controllers.usermanagement
         [HttpPost]
         [Route("actingRank")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffActingRankDto>> AddSheriffActingRank(SheriffActingRankDto sheriffActingRankDto, bool overrideConflicts = false)
+        public async Task<ActionResult<CourtAdminActingRankDto>> AddCourtAdminActingRank(CourtAdminActingRankDto courtAdminActingRankDto, bool overrideConflicts = false)
         {
-            var sheriffActingRank = sheriffActingRankDto.Adapt<CourtAdminActingRank>();
-            var createdSheriffActingRank = await SheriffService.AddSheriffActingRank(DutyRosterService, ShiftService, sheriffActingRank, overrideConflicts);
-            return Ok(createdSheriffActingRank.Adapt<SheriffActingRankDto>());
+            var courtAdminActingRank = courtAdminActingRankDto.Adapt<CourtAdminActingRank>();
+            var createdCourtAdminActingRank = await CourtAdminService.AddCourtAdminActingRank(DutyRosterService, ShiftService, courtAdminActingRank, overrideConflicts);
+            return Ok(createdCourtAdminActingRank.Adapt<CourtAdminActingRankDto>());
         }
 
         [HttpPut]
         [Route("actingRank")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffActingRankDto>> UpdateSheriffActingRank(SheriffActingRankDto sheriffActingRankDto, bool overrideConflicts = false)
+        public async Task<ActionResult<CourtAdminActingRankDto>> UpdateCourtAdminActingRank(CourtAdminActingRankDto courtAdminActingRankDto, bool overrideConflicts = false)
         {
-            var sheriffActingRank = sheriffActingRankDto.Adapt<CourtAdminActingRank>();
-            var updatedSheriffActingRank = await SheriffService.UpdateSheriffActingRank(DutyRosterService, ShiftService, sheriffActingRank, overrideConflicts);
-            return Ok(updatedSheriffActingRank.Adapt<SheriffActingRankDto>());
+            var courtAdminActingRank = courtAdminActingRankDto.Adapt<CourtAdminActingRank>();
+            var updatedCourtAdminActingRank = await CourtAdminService.UpdateCourtAdminActingRank(DutyRosterService, ShiftService, courtAdminActingRank, overrideConflicts);
+            return Ok(updatedCourtAdminActingRank.Adapt<CourtAdminActingRankDto>());
         }
 
         [HttpDelete]
         [Route("actingRank")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult> RemoveSheriffActingRank(int id, string expiryReason)
+        public async Task<ActionResult> RemoveCourtAdminActingRank(int id, string expiryReason)
         {
-            await SheriffService.RemoveSheriffActingRank(id, expiryReason);
+            await CourtAdminService.RemoveCourtAdminActingRank(id, expiryReason);
             return NoContent();
         }
 
@@ -234,35 +234,35 @@ namespace CAS.API.controllers.usermanagement
         [HttpPost]
         [Route("leave")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffLeaveDto>> AddSheriffLeave(SheriffLeaveDto sheriffLeaveDto, bool overrideConflicts = false)
+        public async Task<ActionResult<CourtAdminLeaveDto>> AddCourtAdminLeave(CourtAdminLeaveDto courtAdminLeaveDto, bool overrideConflicts = false)
         {
-            await CheckForAccessToSheriffByLocation(sheriffLeaveDto.SheriffId);
+            await CheckForAccessToCourtAdminByLocation(courtAdminLeaveDto.CourtAdminId);
 
-            var sheriffLeave = sheriffLeaveDto.Adapt<CourtAdminLeave>();
-            var createdSheriffLeave = await SheriffService.AddSheriffLeave(DutyRosterService, ShiftService, sheriffLeave, overrideConflicts);
-            return Ok(createdSheriffLeave.Adapt<SheriffLeaveDto>());
+            var courtAdminLeave = courtAdminLeaveDto.Adapt<CourtAdminLeave>();
+            var createdCourtAdminLeave = await CourtAdminService.AddCourtAdminLeave(DutyRosterService, ShiftService, courtAdminLeave, overrideConflicts);
+            return Ok(createdCourtAdminLeave.Adapt<CourtAdminLeaveDto>());
         }
 
         [HttpPut]
         [Route("leave")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffLeaveDto>> UpdateSheriffLeave(SheriffLeaveDto sheriffLeaveDto, bool overrideConflicts = false)
+        public async Task<ActionResult<CourtAdminLeaveDto>> UpdateCourtAdminLeave(CourtAdminLeaveDto courtAdminLeaveDto, bool overrideConflicts = false)
         {
-            await CheckForAccessToSheriffByLocation<CourtAdminLeave>(sheriffLeaveDto.Id);
+            await CheckForAccessToCourtAdminByLocation<CourtAdminLeave>(courtAdminLeaveDto.Id);
 
-            var sheriffLeave = sheriffLeaveDto.Adapt<CourtAdminLeave>();
-            var updatedSheriffLeave = await SheriffService.UpdateSheriffLeave(DutyRosterService, ShiftService, sheriffLeave, overrideConflicts);
-            return Ok(updatedSheriffLeave.Adapt<SheriffLeaveDto>());
+            var courtAdminLeave = courtAdminLeaveDto.Adapt<CourtAdminLeave>();
+            var updatedCourtAdminLeave = await CourtAdminService.UpdateCourtAdminLeave(DutyRosterService, ShiftService, courtAdminLeave, overrideConflicts);
+            return Ok(updatedCourtAdminLeave.Adapt<CourtAdminLeaveDto>());
         }
 
         [HttpDelete]
         [Route("leave")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult> RemoveSheriffLeave(int id, string expiryReason)
+        public async Task<ActionResult> RemoveCourtAdminLeave(int id, string expiryReason)
         {
-            await CheckForAccessToSheriffByLocation<CourtAdminLeave>(id);
+            await CheckForAccessToCourtAdminByLocation<CourtAdminLeave>(id);
 
-            await SheriffService.RemoveSheriffLeave(id, expiryReason);
+            await CourtAdminService.RemoveCourtAdminLeave(id, expiryReason);
             return NoContent();
         }
 
@@ -273,58 +273,58 @@ namespace CAS.API.controllers.usermanagement
         [HttpGet]
         [Route("training")]
         [PermissionClaimAuthorize(perm: Permission.GenerateReports)]
-        public async Task<ActionResult<SheriffDto>> GetSheriffsTraining()
+        public async Task<ActionResult<CourtAdminDto>> GetCourtAdminsTraining()
         {
-            var sheriffs = await SheriffService.GetSheriffsTraining();
-            return Ok(sheriffs.Adapt<List<SheriffDto>>());
+            var courtAdmins = await CourtAdminService.GetCourtAdminsTraining();
+            return Ok(courtAdmins.Adapt<List<CourtAdminDto>>());
         }
 
         [HttpPost]
         [Route("training")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffTrainingDto>> AddSheriffTraining(SheriffTrainingDto sheriffTrainingDto, bool overrideConflicts = false)
+        public async Task<ActionResult<CourtAdminTrainingDto>> AddCourtAdminTraining(CourtAdminTrainingDto courtAdminTrainingDto, bool overrideConflicts = false)
         {
-            await CheckForAccessToSheriffByLocation(sheriffTrainingDto.SheriffId);
+            await CheckForAccessToCourtAdminByLocation(courtAdminTrainingDto.CourtAdminId);
 
-            var sheriffTraining = sheriffTrainingDto.Adapt<CourtAdminTraining>();
-            var createdSheriffTraining = await SheriffService.AddSheriffTraining(DutyRosterService, ShiftService, sheriffTraining, overrideConflicts);
-            return Ok(createdSheriffTraining.Adapt<SheriffTrainingDto>());
+            var courtAdminTraining = courtAdminTrainingDto.Adapt<CourtAdminTraining>();
+            var createdCourtAdminTraining = await CourtAdminService.AddCourtAdminTraining(DutyRosterService, ShiftService, courtAdminTraining, overrideConflicts);
+            return Ok(createdCourtAdminTraining.Adapt<CourtAdminTrainingDto>());
         }
 
         [HttpPut]
         [Route("training")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult<SheriffTrainingDto>> UpdateSheriffTraining(SheriffTrainingDto sheriffTrainingDto, bool overrideConflicts = false)
+        public async Task<ActionResult<CourtAdminTrainingDto>> UpdateCourtAdminTraining(CourtAdminTrainingDto courtAdminTrainingDto, bool overrideConflicts = false)
         {
-            await CheckForAccessToSheriffByLocation<CourtAdminTraining>(sheriffTrainingDto.Id);
+            await CheckForAccessToCourtAdminByLocation<CourtAdminTraining>(courtAdminTrainingDto.Id);
 
-            var sheriffTraining = sheriffTrainingDto.Adapt<CourtAdminTraining>();
+            var courtAdminTraining = courtAdminTrainingDto.Adapt<CourtAdminTraining>();
             if (!User.HasPermission(Permission.EditPastTraining))
             {
-                var savedSheriffTraining = Db.SheriffTraining.AsNoTracking().FirstOrDefault(st => st.Id == sheriffTrainingDto.Id);
-                if (savedSheriffTraining?.EndDate <= DateTimeOffset.UtcNow)
+                var savedCourtAdminTraining = Db.CourtAdminTraining.AsNoTracking().FirstOrDefault(st => st.Id == courtAdminTrainingDto.Id);
+                if (savedCourtAdminTraining?.EndDate <= DateTimeOffset.UtcNow)
                     throw new BusinessLayerException("No permission to edit training that has completed.");
             }
 
-            var updatedSheriffTraining = await SheriffService.UpdateSheriffTraining(DutyRosterService, ShiftService, sheriffTraining, overrideConflicts);
-            return Ok(updatedSheriffTraining.Adapt<SheriffTrainingDto>());
+            var updatedCourtAdminTraining = await CourtAdminService.UpdateCourtAdminTraining(DutyRosterService, ShiftService, courtAdminTraining, overrideConflicts);
+            return Ok(updatedCourtAdminTraining.Adapt<CourtAdminTrainingDto>());
         }
 
         [HttpDelete]
         [Route("training")]
         [PermissionClaimAuthorize(perm: Permission.EditUsers)]
-        public async Task<ActionResult> RemoveSheriffTraining(int id, string expiryReason)
+        public async Task<ActionResult> RemoveCourtAdminTraining(int id, string expiryReason)
         {
-            await CheckForAccessToSheriffByLocation<CourtAdminTraining>(id);
+            await CheckForAccessToCourtAdminByLocation<CourtAdminTraining>(id);
 
             if (!User.HasPermission(Permission.RemovePastTraining))
             {
-                var sheriffTraining = Db.SheriffTraining.AsNoTracking().FirstOrDefault(st => st.Id == id);
-                if (sheriffTraining?.EndDate <= DateTimeOffset.UtcNow)
+                var courtAdminTraining = Db.CourtAdminTraining.AsNoTracking().FirstOrDefault(st => st.Id == id);
+                if (courtAdminTraining?.EndDate <= DateTimeOffset.UtcNow)
                     throw new BusinessLayerException("No permission to remove training that has completed.");
             }
 
-            await SheriffService.RemoveSheriffTraining(id, expiryReason);
+            await CourtAdminService.RemoveCourtAdminTraining(id, expiryReason);
             return NoContent();
         }
 
@@ -332,20 +332,20 @@ namespace CAS.API.controllers.usermanagement
 
         #region Access Helpers
 
-        private async Task CheckForAccessToSheriffByLocation(Guid? id, string badgeNumber = null)
+        private async Task CheckForAccessToCourtAdminByLocation(Guid? id, string badgeNumber = null)
         {
-            var savedSheriff = await SheriffService.GetCourtAdmin(id, badgeNumber);
-            if (savedSheriff == null) throw new NotFoundException(CouldNotFindSheriffError);
-            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, savedSheriff.HomeLocationId)) throw new NotAuthorizedException();
+            var savedCourtAdmin = await CourtAdminService.GetCourtAdmin(id, badgeNumber);
+            if (savedCourtAdmin == null) throw new NotFoundException(CouldNotFindCourtAdminError);
+            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, savedCourtAdmin.HomeLocationId)) throw new NotAuthorizedException();
         }
 
-        private async Task CheckForAccessToSheriffByLocation<T>(int id) where T : CourtAdminEvent
+        private async Task CheckForAccessToCourtAdminByLocation<T>(int id) where T : CourtAdminEvent
         {
-            var sheriffEvent = await SheriffService.GetSheriffEvent<T>(id);
-            if (sheriffEvent == null) throw new NotFoundException(CouldNotFindSheriffEventError);
-            var savedSheriff = await SheriffService.GetCourtAdmin(sheriffEvent.CourtAdminId, null);
-            if (savedSheriff == null) throw new NotFoundException(CouldNotFindSheriffError);
-            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, savedSheriff.HomeLocationId)) throw new NotAuthorizedException();
+            var courtAdminEvent = await CourtAdminService.GetCourtAdminEvent<T>(id);
+            if (courtAdminEvent == null) throw new NotFoundException(CouldNotFindCourtAdminEventError);
+            var savedCourtAdmin = await CourtAdminService.GetCourtAdmin(courtAdminEvent.CourtAdminId, null);
+            if (savedCourtAdmin == null) throw new NotFoundException(CouldNotFindCourtAdminError);
+            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, savedCourtAdmin.HomeLocationId)) throw new NotAuthorizedException();
         }
 
         #endregion Access Helpers

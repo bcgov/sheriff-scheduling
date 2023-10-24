@@ -41,11 +41,11 @@
                 style="width:7.5rem; margin:0.25rem 0.35rem;" 
                 body-class="p-1" 
                 v-for="member in sortedShiftAvailabilityInfo"
-                @click="drop(member.sheriffId)" 
-                :key="'court-admin-modal-'+member.sheriffId"> 
+                @click="drop(member.courtAdminId)" 
+                :key="'court-admin-modal-'+member.courtAdminId"> 
                 <!-- <span class="text-white">{{sumOfArrayElements(member.availability)}} {{sumOfArrayElements(unionArrays(member.availability, assignmentBlock))}}              </span> -->
-                    <duty-roster-team-member-card editingBlockId :sheriffInfo="member" :weekView="weekView" :sheriffModal="true"/>
-                    <court-admin-availability-bar v-if="!multipleAssignmentsWeekview" :sheriffInfo="member" :dutyBlock="dutyBlock" :weekView="weekView"/>
+                    <duty-roster-team-member-card editingBlockId :courtAdminInfo="member" :weekView="weekView" :courtAdminModal="true"/>
+                    <court-admin-availability-bar v-if="!multipleAssignmentsWeekview" :courtAdminInfo="member" :dutyBlock="dutyBlock" :weekView="weekView"/>
             </b-card>
         </b-row>
     </div>
@@ -55,7 +55,7 @@
     import { Component, Vue, Prop } from 'vue-property-decorator';
     import { myTeamShiftInfoType, selectedDutyCardInfoType} from '@/types/DutyRoster';
     import DutyRosterTeamMemberCard from './DutyRosterTeamMemberCard.vue'
-    import SheriffAvailabilityBar from './SheriffAvailabilityBar.vue'
+    import CourtAdminAvailabilityBar from './CourtAdminAvailabilityBar.vue'
 
     import * as _ from 'underscore';
     import moment from 'moment-timezone';
@@ -69,10 +69,10 @@
     @Component({
         components: {            
             DutyRosterTeamMemberCard,
-            SheriffAvailabilityBar
+            CourtAdminAvailabilityBar
         }        
     })  
-    export default class SheriffModal extends Vue {
+    export default class CourtAdminModal extends Vue {
         
         @Prop({required: true})
         assignmentName!: string;
@@ -101,7 +101,7 @@
 
         mounted(){
             this.dataready = false;
-            if(this.weekView) this.extractSheriffAvailabilities()
+            if(this.weekView) this.extractCourtAdminAvailabilities()
             if(this.selectedDuties.length>0){
                 this.multipleAssignments = true;
                 if(this.weekView){
@@ -119,11 +119,11 @@
             this.dataready = true;
         }
 
-        public extractSheriffAvailabilities(){
+        public extractCourtAdminAvailabilities(){
             const dutyDate=this.dutyBlock.dutyDate.slice(0,10)            
 
-            for(const sheriffInfo of this.shiftAvailabilityInfo){
-                const shifts = sheriffInfo.shifts.filter( shift => shift.startDate.slice(0,10)==dutyDate)                        
+            for(const courtAdminInfo of this.shiftAvailabilityInfo){
+                const shifts = courtAdminInfo.shifts.filter( shift => shift.startDate.slice(0,10)==dutyDate)                        
                 let availability = Array(96).fill(0)
                 if(shifts.length>0){
                     const shiftStartTime = moment(shifts[0].startDate).tz(shifts[0].timezone);
@@ -134,7 +134,7 @@
                     }
                 }
                 
-                const dutiesDetail = sheriffInfo.dutiesDetail.filter(
+                const dutiesDetail = courtAdminInfo.dutiesDetail.filter(
                     duty => {
                         if(duty.startTime)
                             return duty.startTime.slice(0,10)==dutyDate
@@ -147,13 +147,13 @@
                     duties = this.fillInArray(duties, 1, dutydetail.startBin, dutydetail.endBin)
                 } 
                 
-                sheriffInfo.availability = this.subtractOfTwoArrays(availability, this.unionArrays(availability, duties))
+                courtAdminInfo.availability = this.subtractOfTwoArrays(availability, this.unionArrays(availability, duties))
 
             }
         }
 
-        public drop(sheriffId){
-            this.$emit('drop','member-'+sheriffId, true )
+        public drop(courtAdminId){
+            this.$emit('drop','member-'+courtAdminId, true )
         }
 
         get sortedShiftAvailabilityInfo() {

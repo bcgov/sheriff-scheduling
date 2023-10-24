@@ -5,7 +5,7 @@
                     <h2 class="mb-0 text-light">Confirm Assign Overtime</h2>                    
             </template>            
            
-            <h4 style="line-height:1.5rem" v-if="sheriffName" >Are you sure you want to assign a duty that extends {{sheriffName}}'s shift?</h4>
+            <h4 style="line-height:1.5rem" v-if="courtAdminName" >Are you sure you want to assign a duty that extends {{courtAdminName}}'s shift?</h4>
             
             <template v-slot:modal-footer>
                 <b-button variant="danger" @click="assignOvertimeDuty()">Confirm</b-button>
@@ -32,7 +32,7 @@
         showModal!: {show: boolean};
 
         @Prop({required: true})
-        sheriffName!: string;
+        courtAdminName!: string;
 
         assignOvertimeDuty(){
             this.$emit('assign')

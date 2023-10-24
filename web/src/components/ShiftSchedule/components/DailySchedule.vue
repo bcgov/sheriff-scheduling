@@ -1,7 +1,7 @@
 <template>
     <div v-if="isMounted">         
         <b-table
-            :items="sheriffSchedules" 
+            :items="courtAdminSchedules" 
             :fields="dailyFields"
             small
             bordered
@@ -40,12 +40,12 @@
             <template v-slot:cell(shifts) = "data"> 
                 <div style="font-size: 6pt; border:none;" class="m-0 p-0" >
                     
-                    <div v-if="data.item.sheriffEvent.type == 'Shift'"  style="margin-bottom: 0.1rem;">
-                        <div v-if="data.item.sheriffEvent.startTime && data.item.sheriffEvent.endTime" style="margin:0 1rem; text-align: center; font-weight: 600; border-bottom: 1px solid #ccc;">                    
-                            <span style="font-size: 5.5pt; margin-right:0.1rem; ">In: </span> {{data.item.sheriffEvent.startTime}}                         
-                            <span style="font-size: 6pt;" >Out:</span> {{data.item.sheriffEvent.endTime}}                    
+                    <div v-if="data.item.courtAdminEvent.type == 'Shift'"  style="margin-bottom: 0.1rem;">
+                        <div v-if="data.item.courtAdminEvent.startTime && data.item.courtAdminEvent.endTime" style="margin:0 1rem; text-align: center; font-weight: 600; border-bottom: 1px solid #ccc;">                    
+                            <span style="font-size: 5.5pt; margin-right:0.1rem; ">In: </span> {{data.item.courtAdminEvent.startTime}}                         
+                            <span style="font-size: 6pt;" >Out:</span> {{data.item.courtAdminEvent.endTime}}                    
                         </div>
-                        <div style="font-size: 6pt; border: none; line-height: 0.55rem;" class="m-0 p-0" v-for="duty,inx in sortEvents(data.item.sheriffEvent.duties)" :key="'duty-name-'+inx+'-'+duty.startTime">                                
+                        <div style="font-size: 6pt; border: none; line-height: 0.55rem;" class="m-0 p-0" v-for="duty,inx in sortEvents(data.item.courtAdminEvent.duties)" :key="'duty-name-'+inx+'-'+duty.startTime">                                
                             <div v-if="duty.dutyType=='Training' || duty.dutyType=='Leave' || duty.dutyType=='Loaned'">
                                 <div  style="margin:0 1rem; text-align: center; border-bottom: 1px solid #ccc;">
                                     <div class="badge my-1 " :style="{fontSize:'6pt', background: getColor(duty.dutySubType)}">{{ duty.dutyType }}</div>                            
@@ -58,32 +58,32 @@
                         </div>         
                     </div>
 
-                    <div v-else-if="data.item.sheriffEvent.type == 'Unavailable'" class="text-center middle-text">                                         
+                    <div v-else-if="data.item.courtAdminEvent.type == 'Unavailable'" class="text-center middle-text">                                         
                         <div  class="m-0 p-0" style="">                    
-                            <div :style="{background:getColor(data.item.sheriffEvent.subType)}" class=" text-white">Unavailable</div>
+                            <div :style="{background:getColor(data.item.courtAdminEvent.subType)}" class=" text-white">Unavailable</div>
                         </div>
                     </div>
                     
-                    <div v-else-if="data.item.sheriffEvent.type == 'Leave'" class="text-center middle-text">                                         
+                    <div v-else-if="data.item.courtAdminEvent.type == 'Leave'" class="text-center middle-text">                                         
                         <div  class="m-0 p-0" style="">                    
-                            <div :style="{background:getColor(data.item.sheriffEvent.subType)}" class=" text-white">
-                                <div>Leave</div> {{ data.item.sheriffEvent.subType }}
+                            <div :style="{background:getColor(data.item.courtAdminEvent.subType)}" class=" text-white">
+                                <div>Leave</div> {{ data.item.courtAdminEvent.subType }}
                             </div>
                         </div>
                     </div> 
 
-                    <div v-else-if="data.item.sheriffEvent.type == 'Training'" class="text-center middle-text">                  
+                    <div v-else-if="data.item.courtAdminEvent.type == 'Training'" class="text-center middle-text">                  
                         <div style="" class="m-0 p-0">
                             <div class="bg-training-leave">
-                                <div>Training</div> {{data.item.sheriffEvent.subType}}
+                                <div>Training</div> {{data.item.courtAdminEvent.subType}}
                             </div>
                         </div> 
                     </div>   
 
-                    <div v-else-if="data.item.sheriffEvent.type == 'Loaned'" class="text-center middle-text">  
+                    <div v-else-if="data.item.courtAdminEvent.type == 'Loaned'" class="text-center middle-text">  
                         <div style="" class="m-0 p-0"> 
                             <div class="bg-loaned">
-                                <div>Loaned</div> {{data.item.sheriffEvent.location}}
+                                <div>Loaned</div> {{data.item.courtAdminEvent.location}}
                             </div>
                         </div>                     
                     </div>                
@@ -92,7 +92,7 @@
             </template>
 
             <template v-slot:cell(duties) = "data">
-                <div style="font-size: 6pt; border: none; line-height: 0.55rem;" class="m-0 p-0" v-for="duty,inx in sortEvents(data.item.sheriffEvent.duties)" :key="'duty-name-'+inx+'-'+duty.startTime">                                
+                <div style="font-size: 6pt; border: none; line-height: 0.55rem;" class="m-0 p-0" v-for="duty,inx in sortEvents(data.item.courtAdminEvent.duties)" :key="'duty-name-'+inx+'-'+duty.startTime">                                
                     <div :style="'color: ' + duty.color" v-if="duty.dutyType!='Training' && duty.dutyType!='Leave' && duty.dutyType!='Loaned'">
                         <b v-if="duty.isOvertime">*</b>                            
                         <b> {{duty.startTime}}-{{duty.endTime}}</b>  
@@ -103,7 +103,7 @@
             </template>
 
             <template v-slot:cell(notes) = "data">
-                <div style="font-size: 6pt; border:none;" class="m-0 p-0" v-for="duty in sortEvents(data.item.sheriffEvent.duties)" :key="duty.startTime">
+                <div style="font-size: 6pt; border:none;" class="m-0 p-0" v-for="duty in sortEvents(data.item.courtAdminEvent.duties)" :key="duty.startTime">
                     <div :style="'color: ' + duty.color" v-if="duty.dutyNotes">{{duty.dutyNotes}}</div>
                     <div v-if="duty.assignmentNotes">{{duty.assignmentNotes}}</div>
                 </div>
@@ -129,7 +129,7 @@
     export default class DailySchedule extends Vue {
 
         @Prop({required: true})
-        dailySheriffSchedules!: distributeScheduleInfoType[];        
+        dailyCourtAdminSchedules!: distributeScheduleInfoType[];        
         
         @commonState.State
         public location!: locationInfoType;
@@ -137,7 +137,7 @@
         isMounted = false;       
 
         
-        sheriffSchedules: dailyDistributeScheduleInfoType[] =[];    
+        courtAdminSchedules: dailyDistributeScheduleInfoType[] =[];    
 
         dailyFields=[
             {key:'name',        label:'Name',            tdClass:'px-1 mx-0 align-middle my-team', thStyle:'text-align: center; font-size: 8pt; width: 11rem;'},
@@ -148,7 +148,7 @@
 
         mounted() {
             this.isMounted = false;
-            this.extractSheriffEvents();
+            this.extractCourtAdminEvents();
             this.isMounted = true;       
         }
 
@@ -156,17 +156,17 @@
             return _.sortBy(events, "startTime");
         }
         
-        public extractSheriffEvents(){
-            this.sheriffSchedules = []            
-            for(const sherifschedule of this.dailySheriffSchedules){
+        public extractCourtAdminEvents(){
+            this.courtAdminSchedules = []            
+            for(const sherifschedule of this.dailyCourtAdminSchedules){
                 const scheduleInfo = sherifschedule.conflicts
                 
-                let sheriffEvent = {} as manageAssignmentsScheduleInfoType;
+                let courtAdminEvent = {} as manageAssignmentsScheduleInfoType;
                 const duties: manageAssignmentDutyInfoType[] = []            
                 for(const shEvent of this.sortEvents(scheduleInfo)){
 
                     if(shEvent.fullday){
-                        sheriffEvent=shEvent;
+                        courtAdminEvent=shEvent;
                         break
                     }
 
@@ -193,22 +193,22 @@
                     else{
                     
                         duties.push(...shEvent.duties)
-                        if(!sheriffEvent.type){
-                            sheriffEvent=shEvent
+                        if(!courtAdminEvent.type){
+                            courtAdminEvent=shEvent
                         }else{
-                            const start = sheriffEvent.startTime
-                            const end = sheriffEvent.endTime
-                            sheriffEvent.startTime = start < shEvent.startTime? start :shEvent.startTime;
-                            sheriffEvent.endTime = end > shEvent.endTime? end :shEvent.endTime;
+                            const start = courtAdminEvent.startTime
+                            const end = courtAdminEvent.endTime
+                            courtAdminEvent.startTime = start < shEvent.startTime? start :shEvent.startTime;
+                            courtAdminEvent.endTime = end > shEvent.endTime? end :shEvent.endTime;
                         }
                     }
                 }
 
-                sheriffEvent.duties = duties;
+                courtAdminEvent.duties = duties;
                 
-                this.sheriffSchedules.push({
-                    sheriffId: sherifschedule.sheriffId,   
-                    sheriffEvent: sheriffEvent,
+                this.courtAdminSchedules.push({
+                    courtAdminId: sherifschedule.courtAdminId,   
+                    courtAdminEvent: courtAdminEvent,
                     name: sherifschedule.name,
                     homeLocation: sherifschedule.homeLocation,
                     rank: sherifschedule.rank,
@@ -216,7 +216,7 @@
                     actingRank: sherifschedule.actingRank                    
                 })
             }
-            // console.log(this.sheriffSchedules)
+            // console.log(this.courtAdminSchedules)
         }
 
         public getColor(subtype){

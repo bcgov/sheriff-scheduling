@@ -49,13 +49,13 @@ namespace CAS.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ShiftSheriff",
+                name: "ShiftCourtAdmin",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:IdentitySequenceOptions", "'200', '1', '', '', 'False', '1'")
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SheriffId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CourtAdminId = table.Column<Guid>(type: "uuid", nullable: false),
                     ShiftId = table.Column<int>(type: "integer", nullable: false),
                     CreatedById = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -65,27 +65,27 @@ namespace CAS.DB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShiftSheriff", x => x.Id);
+                    table.PrimaryKey("PK_ShiftCourtAdmin", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShiftSheriff_Shift_ShiftId",
+                        name: "FK_ShiftCourtAdmin_Shift_ShiftId",
                         column: x => x.ShiftId,
                         principalTable: "Shift",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_ShiftSheriff_User_CreatedById",
+                        name: "FK_ShiftCourtAdmin_User_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_ShiftSheriff_User_SheriffId",
-                        column: x => x.SheriffId,
+                        name: "FK_ShiftCourtAdmin_User_CourtAdminId",
+                        column: x => x.CourtAdminId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ShiftSheriff_User_UpdatedById",
+                        name: "FK_ShiftCourtAdmin_User_UpdatedById",
                         column: x => x.UpdatedById,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -470,31 +470,31 @@ namespace CAS.DB.Migrations
                 column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShiftSheriff_CreatedById",
-                table: "ShiftSheriff",
+                name: "IX_ShiftCourtAdmin_CreatedById",
+                table: "ShiftCourtAdmin",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShiftSheriff_SheriffId",
-                table: "ShiftSheriff",
-                column: "SheriffId",
+                name: "IX_ShiftCourtAdmin_CourtAdminId",
+                table: "ShiftCourtAdmin",
+                column: "CourtAdminId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShiftSheriff_ShiftId",
-                table: "ShiftSheriff",
+                name: "IX_ShiftCourtAdmin_ShiftId",
+                table: "ShiftCourtAdmin",
                 column: "ShiftId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShiftSheriff_UpdatedById",
-                table: "ShiftSheriff",
+                name: "IX_ShiftCourtAdmin_UpdatedById",
+                table: "ShiftCourtAdmin",
                 column: "UpdatedById");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ShiftSheriff");
+                name: "ShiftCourtAdmin");
 
             migrationBuilder.DropTable(
                 name: "Shift");

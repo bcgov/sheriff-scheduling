@@ -124,14 +124,14 @@ namespace CAS.API.services.jc
 
             if (AssociateUsersWithNoLocationToVictoria)
             {
-                var sheriffsWithNoHomeLocation = Db.CourtAdmin.Where(s => !s.HomeLocationId.HasValue);
+                var courtAdminsWithNoHomeLocation = Db.CourtAdmin.Where(s => !s.HomeLocationId.HasValue);
                 var victoriaLocation = Db.Location.AsNoTracking().FirstOrDefault(l => l.Name == "Victoria Law Courts");
                 if (victoriaLocation == null)
                     return;
-                foreach (var sheriff in sheriffsWithNoHomeLocation)
+                foreach (var courtAdmin in courtAdminsWithNoHomeLocation)
                 {
-                    Logger.LogDebug($"Setting ${sheriff.LastName}, ${sheriff.FirstName} - HomeLocation to ${victoriaLocation.Id}");
-                    sheriff.HomeLocationId = victoriaLocation.Id;
+                    Logger.LogDebug($"Setting ${courtAdmin.LastName}, ${courtAdmin.FirstName} - HomeLocation to ${victoriaLocation.Id}");
+                    courtAdmin.HomeLocationId = victoriaLocation.Id;
                 }
                 await Db.SaveChangesAsync();
             }

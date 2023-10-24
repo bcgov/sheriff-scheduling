@@ -5,7 +5,7 @@ using CAS.DB.models.courtAdmin;
 
 namespace CAS.API.helpers.extensions
 {
-    public static class SheriffExtensions
+    public static class CourtAdminExtensions
     {
         //Include AwayLocation/Training/Leave that is within a date range.
         public static IQueryable<CourtAdmin> IncludeCourtAdminEventsBetweenDates(this IQueryable<CourtAdmin> query, DateTimeOffset startDate, DateTimeOffset endDate)

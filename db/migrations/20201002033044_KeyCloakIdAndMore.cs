@@ -33,17 +33,17 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "ExpiryDate",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "ExpiryDate",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "ExpiryDate",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 nullable: true);
 
             migrationBuilder.UpdateData(
@@ -149,15 +149,15 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ExpiryDate",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropColumn(
                 name: "ExpiryDate",
-                table: "SheriffLeave");
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropColumn(
                 name: "ExpiryDate",
-                table: "SheriffAwayLocation");
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "IdirId",

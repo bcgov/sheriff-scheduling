@@ -22,7 +22,7 @@ namespace CAS.API.services.usermanagement
 
         public async Task<List<CourtAdminTraining>> GetTrainings()
         {                                    
-            var sheriffTrainingQuery = Db.SheriffTraining.AsNoTracking()
+            var courtAdminTrainingQuery = Db.CourtAdminTraining.AsNoTracking()
                 .AsSplitQuery()
                 .Where(t => t.ExpiryDate == null)
                 .Where(t => t.FirstNotice != true)
@@ -30,12 +30,12 @@ namespace CAS.API.services.usermanagement
                 .Include(t => t.TrainingType)
                 .Include(t => t.CourtAdmin);      
 
-            return await sheriffTrainingQuery.ToListAsync();
+            return await courtAdminTrainingQuery.ToListAsync();
         }
 
         public async Task UpdateTraining(int trainingId)
         {
-            var training = await Db.SheriffTraining.FindAsync(trainingId);
+            var training = await Db.CourtAdminTraining.FindAsync(trainingId);
             training.ThrowBusinessExceptionIfNull(
                 $"{nameof(CourtAdminTraining)} with the id: {trainingId} could not be found. ");
 

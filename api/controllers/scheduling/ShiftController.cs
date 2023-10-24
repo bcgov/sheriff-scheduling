@@ -39,7 +39,7 @@ namespace CAS.API.controllers.scheduling
 
         #region Shift
         /// <summary>
-        /// This is used in the main shift screen, also used in duty roster to populate the available sheriffs on the right hand side. 
+        /// This is used in the main shift screen, also used in duty roster to populate the available courtAdmins on the right hand side. 
         /// </summary>
         [HttpGet]
         [PermissionClaimAuthorize(AuthorizeOperation.Or, Permission.ViewShifts, Permission.ViewDutyRoster)]

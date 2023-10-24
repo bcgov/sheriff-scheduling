@@ -134,7 +134,7 @@
                         <b-badge :variant="data.item['_rowVariant']" style="width:6rem;" >{{data.value}}</b-badge>                        
                     </template>
                     <template v-slot:cell(expiryDate) ="data">{{data.value | beautify-date}}</template>
-                    <template v-slot:cell(excluded) ="data"><b-form-checkbox v-model="data.item.excluded" @change="splitExcludedReports(true, data.item.sheriffId)"/></template>
+                    <template v-slot:cell(excluded) ="data"><b-form-checkbox v-model="data.item.excluded" @change="splitExcludedReports(true, data.item.courtAdminId)"/></template>
                 </b-table>
 
                 <b-row class="mt-5 mx-0">                
@@ -169,7 +169,7 @@
                 </template>
                 <template v-slot:cell(expiryDate) ="data">{{data.value | beautify-date}}</template>
                 <template v-slot:head(excluded)>Excluded</template>
-                <template v-slot:cell(excluded) ="data"><b-form-checkbox v-model="data.item.excluded" @change="splitExcludedReports(false, data.item.sheriffId)"/></template>
+                <template v-slot:cell(excluded) ="data"><b-form-checkbox v-model="data.item.excluded" @change="splitExcludedReports(false, data.item.courtAdminId)"/></template>
             </b-table>
         </b-card>         
 
@@ -268,20 +268,20 @@
                 
                 this.searching = true;
                 const calls: any[] =[]
-                calls.push(this.$http.get("api/sheriff/training"));
-                calls.push(this.$http.get("api/sheriff"));
+                calls.push(this.$http.get("api/courtAdmin/training"));
+                calls.push(this.$http.get("api/courtAdmin"));
 
                 Promise.all(calls).then(values => {
                     if(values[0]?.data && values[0]?.data){                        
-                        const sheriffWithTrainings = values[0].data;
-                        const sheriffs = values[1].data;
-                        const sheriffWithTrainingIds = sheriffWithTrainings.map(sheriff => sheriff.id)
-                        for(const sheriff of sheriffs){
-                            if(!sheriffWithTrainingIds.includes(sheriff.id)){
-                                sheriffWithTrainings.push(sheriff)
+                        const courtAdminWithTrainings = values[0].data;
+                        const courtAdmins = values[1].data;
+                        const courtAdminWithTrainingIds = courtAdminWithTrainings.map(courtAdmin => courtAdmin.id)
+                        for(const courtAdmin of courtAdmins){
+                            if(!courtAdminWithTrainingIds.includes(courtAdmin.id)){
+                                courtAdminWithTrainings.push(courtAdmin)
                             }
                         }
-                        this.extractData(sheriffWithTrainings);
+                        this.extractData(courtAdminWithTrainings);
                     }
                 }, err =>{this.searching = false;this.error = err.response.data})
             } 
@@ -310,28 +310,28 @@
             let reportInfo: any[] = [];               
             
             if (this.reportParameters.location && this.reportParameters.location != 'All'){
-                reportInfo = data.filter(sheriff=>(sheriff.homeLocationId == this.reportParameters.location));               
+                reportInfo = data.filter(courtAdmin=>(courtAdmin.homeLocationId == this.reportParameters.location));               
                 
             } else {
-                reportInfo = data.filter(sheriff=>(this.locationOptionsList.some(location => sheriff.homeLocationId == location.id)))
+                reportInfo = data.filter(courtAdmin=>(this.locationOptionsList.some(location => courtAdmin.homeLocationId == location.id)))
             }
             
             const mandetoryTrainings = this.trainingTypeOptions.filter(training => training.mandatory)
             
-            for (const sheriffData of reportInfo){
+            for (const courtAdminData of reportInfo){
 
-                if (sheriffData.isEnabled){
-                    const sheriffTrainingsId = sheriffData.training? sheriffData.training.map(training => training.trainingTypeId): [];
-                    const sheriffTrainings = sheriffData.training? JSON.parse(JSON.stringify(sheriffData.training)) : [];
+                if (courtAdminData.isEnabled){
+                    const courtAdminTrainingsId = courtAdminData.training? courtAdminData.training.map(training => training.trainingTypeId): [];
+                    const courtAdminTrainings = courtAdminData.training? JSON.parse(JSON.stringify(courtAdminData.training)) : [];
                     
                     for(const training of mandetoryTrainings){
-                        if(!sheriffTrainingsId.includes(training.id)){
-                            sheriffTrainings.push({
+                        if(!courtAdminTrainingsId.includes(training.id)){
+                            courtAdminTrainings.push({
                                 comment: "",
                                 endDate: "",
                                 firstNotice: false,
                                 id: null,
-                                sheriffId: sheriffData.id,
+                                courtAdminId: courtAdminData.id,
                                 startDate: "",
                                 timezone: "",
                                 trainingCertificationExpiry: "",
@@ -341,10 +341,10 @@
                         }
                     }
 
-                    for (const trainingData of sheriffTrainings){
+                    for (const trainingData of courtAdminTrainings){
                         if (  (this.reportParameters.reportSubtype != 'All' && this.reportParameters.reportSubtype == trainingData.trainingType.id) 
                             || this.reportParameters.reportSubtype == 'All'){
-                            this.addTrainingToReport(sheriffData, trainingData);
+                            this.addTrainingToReport(courtAdminData, trainingData);
                         }
                     }
                 }
@@ -360,12 +360,12 @@
             this.dataLoaded = true;            
         }
 
-        public addTrainingToReport(sheriffData, trainingData){
-            //console.log(sheriffData)
+        public addTrainingToReport(courtAdminData, trainingData){
+            //console.log(courtAdminData)
             let rowType = ''
             const trainingInfo = {} as trainingReportInfoType;
-            trainingInfo.name = sheriffData.firstName + ' ' + sheriffData.lastName;
-            trainingInfo.sheriffId = sheriffData.id;
+            trainingInfo.name = courtAdminData.firstName + ' ' + courtAdminData.lastName;
+            trainingInfo.courtAdminId = courtAdminData.id;
             trainingInfo.trainingType = trainingData.trainingType.description;
             const timezone = trainingData.timezone?trainingData.timezone:'America/Vancouver';
             trainingInfo.end = trainingData.endDate? moment(trainingData.endDate).tz(timezone).format():'';
@@ -436,16 +436,16 @@
                   
         }
 
-        public splitExcludedReports(exclude, sheriffId){
+        public splitExcludedReports(exclude, courtAdminId){
             Vue.nextTick(()=>{
                 if(exclude){
-                    const trainings = this.trainingReportData.filter(training => training.sheriffId==sheriffId);                                        
+                    const trainings = this.trainingReportData.filter(training => training.courtAdminId==courtAdminId);                                        
                     this.excludedTrainingReportData.push(...trainings) 
-                    this.trainingReportData = this.trainingReportData.filter(training => training.sheriffId!=sheriffId);
+                    this.trainingReportData = this.trainingReportData.filter(training => training.courtAdminId!=courtAdminId);
                 }else {
-                    const trainings = this.excludedTrainingReportData.filter(training => training.sheriffId==sheriffId);                     
+                    const trainings = this.excludedTrainingReportData.filter(training => training.courtAdminId==courtAdminId);                     
                     this.trainingReportData.push(...trainings) 
-                    this.excludedTrainingReportData = this.excludedTrainingReportData.filter(training => training.sheriffId!=sheriffId);
+                    this.excludedTrainingReportData = this.excludedTrainingReportData.filter(training => training.courtAdminId!=courtAdminId);
                 }
                 this.excludedTrainingReportData.forEach(training => training.excluded = true);
                 this.trainingReportData.forEach(training => training.excluded = false);

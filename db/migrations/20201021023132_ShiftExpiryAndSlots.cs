@@ -9,7 +9,7 @@ namespace CAS.DB.Migrations
         {
             migrationBuilder.AddColumn<DateTimeOffset>(
                 name: "ExpiryDate",
-                table: "ShiftSheriff",
+                table: "ShiftCourtAdmin",
                 type: "timestamp with time zone",
                 nullable: true);
 
@@ -405,7 +405,7 @@ namespace CAS.DB.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "ExpiryDate",
-                table: "ShiftSheriff");
+                table: "ShiftCourtAdmin");
 
             migrationBuilder.DropColumn(
                 name: "ExpiryDate",

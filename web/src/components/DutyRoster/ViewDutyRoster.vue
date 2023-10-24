@@ -85,7 +85,7 @@
         sortedDuties: viewDutyInfoType[] = [];
         duties: viewDutyInfoType[] = [];
         dutiesJson: attachedDutyInfoType[] =[];
-        sheriffsJson: teamMemberJsonType[] = [];
+        courtAdminsJson: teamMemberJsonType[] = [];
         errorText =''
         openErrorModal=false;  
         today = ''; 
@@ -163,11 +163,11 @@
         }
 
         public getTeamData() {             
-            const url = 'api/sheriff';
+            const url = 'api/courtAdmin';
             this.$http.get(url)
                 .then(response => {
                     if(response.data){
-                        this.sheriffsJson = response.data;    
+                        this.courtAdminsJson = response.data;    
                         this.extractTeamDutyInfo();                    
                     }
                     
@@ -189,14 +189,14 @@
                 const dutyData = {} as viewDutyInfoType;
 
                 for (const dutySlot of dutyJson.dutySlots){
-                    if (!dutySlot.isNotAvailable && !dutySlot.isNotRequired && !dutySlot.isClosed && dutySlot.sheriffId && !this.isFinished(dutySlot.endDate)){
-                        const sheriff = this.sheriffsJson.filter(sheriff => {if (sheriff.id == dutySlot.sheriffId) return true})[0];
-                        dutyData.firstName = sheriff.firstName;
-                        dutyData.lastName = sheriff.lastName;
-                        dutyData.rank = sheriff.rank;
+                    if (!dutySlot.isNotAvailable && !dutySlot.isNotRequired && !dutySlot.isClosed && dutySlot.courtAdminId && !this.isFinished(dutySlot.endDate)){
+                        const courtAdmin = this.courtAdminsJson.filter(courtAdmin => {if (courtAdmin.id == dutySlot.courtAdminId) return true})[0];
+                        dutyData.firstName = courtAdmin.firstName;
+                        dutyData.lastName = courtAdmin.lastName;
+                        dutyData.rank = courtAdmin.rank;
                         dutyData.rankOrder = this.getRankOrder(dutyData.rank)[0]?this.getRankOrder(dutyData.rank)[0].id:0;
-                        dutyData.displayName = Vue.filter('capitalizefirst')(sheriff.lastName) + ', ' + Vue.filter('capitalizefirst')(sheriff.firstName);
-                        dutyData.sheriffId = sheriff.id;
+                        dutyData.displayName = Vue.filter('capitalizefirst')(courtAdmin.lastName) + ', ' + Vue.filter('capitalizefirst')(courtAdmin.firstName);
+                        dutyData.courtAdminId = courtAdmin.id;
                         dutyData.assignment =  dutyJson.assignment.lookupCode.code + (dutyJson.assignment.name?(' (' + dutyJson.assignment.name + ')'):'');
                         dutyData.startTime = Vue.filter('beautify-time')(moment(dutySlot.startDate).tz(this.location.timezone).format());
                         dutyData.endTime = Vue.filter('beautify-time')(moment(dutySlot.endDate).tz(this.location.timezone).format());
@@ -228,7 +228,7 @@
         }      
 
         public getRankOrder(rankName: string) {
-            return this.commonInfo.sheriffRankList.filter(rank => {
+            return this.commonInfo.courtAdminRankList.filter(rank => {
                 if (rank.name == rankName) {
                     return true;
                 }

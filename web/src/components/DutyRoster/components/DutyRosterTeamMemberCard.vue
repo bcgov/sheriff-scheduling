@@ -2,14 +2,14 @@
     <div>
         <div 
             v-if="isDataMounted"
-            :id="'member-'+sheriffId"
+            :id="'member-'+courtAdminId"
             :draggable="hasPermissionToAddAssignDuty" 
             v-on:dragstart="DragStart" 
             style="border-radius:5px"          
             :class="bgcolor+' p-1'">
-                <b-col v-if="!specialMember" @click="openMemberDetails(sheriffId)" class="team-member-view">
-                    <div style="font-size:11px; line-height: 16px;"># {{sheriffInfo.badgeNumber}}</div>
-                    <div style="font-size:9px; line-height: 14px;">{{sheriffInfo.rank}}</div>
+                <b-col v-if="!specialMember" @click="openMemberDetails(courtAdminId)" class="team-member-view">
+                    <div style="font-size:11px; line-height: 16px;"># {{courtAdminInfo.badgeNumber}}</div>
+                    <div style="font-size:9px; line-height: 14px;">{{courtAdminInfo.rank}}</div>
                     <div 
                         style="font-size:12px; line-height: 16px; font-weight: bold; text-transform: Capitalize;" 
                         v-b-tooltip.hover.noninteractive                               
@@ -24,17 +24,17 @@
                     <b-row v-else style="margin:0; padding:0; font-size:10px;">
                         <b-badge 
                             class="week-view-badge"
-                            v-for="sch in sheriffSchedules"                            
+                            v-for="sch in courtAdminSchedules"                            
                             :key="sch.weekday"
-                            :id="(sheriffModal?'court-admin-modal-sch':'sch')+sheriffId+'-'+sch.weekday"
+                            :id="(courtAdminModal?'court-admin-modal-sch':'sch')+courtAdminId+'-'+sch.weekday"
                             :variant="sch.variant" 
                             :style="sch.style" >
                                 {{sch.text}}                            
                         
 
-                            <b-tooltip v-if="sch.shifts.length>0" noninteractive :target="(sheriffModal?'court-admin-modal-sch':'sch')+sheriffId+'-'+sch.weekday" variant="warning" show.sync ="true" triggers="hover" placement="topright">
+                            <b-tooltip v-if="sch.shifts.length>0" noninteractive :target="(courtAdminModal?'court-admin-modal-sch':'sch')+courtAdminId+'-'+sch.weekday" variant="warning" show.sync ="true" triggers="hover" placement="topright">
                                 <h2 class="text-danger  mb-1 mx-0 p-0">{{sch.name}}</h2>
-                                <b-card bg-variant="dark" header-class="text-warning m-0 p-0" body-class="m-0 p-0" header="Sheriff Shifts:">             
+                                <b-card bg-variant="dark" header-class="text-warning m-0 p-0" body-class="m-0 p-0" header="CourtAdmin Shifts:">             
                                     <b-table  
                                         :items="sch.shifts"
                                         :fields="shiftFields"
@@ -103,7 +103,7 @@
                                     <identification-tab 
                                         :runMethod="identificationTabMethods"                                         
                                         v-on:closeMemberDetails="closeMemberDetailWindow()" 
-                                        v-on:profileUpdated="getSheriffs()"
+                                        v-on:profileUpdated="getCourtAdmins()"
                                         v-on:enableSave="enableSave()"   
                                         v-on:changeTab="changeTab"                                     
                                         :createMode="false" 
@@ -112,14 +112,14 @@
 
                                 <b-tab title="Locations"> 
                                     <location-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                   
                                 </b-tab>
 
                                 <b-tab title="Leaves">
                                     <leave-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                    
                                 </b-tab>
@@ -127,17 +127,17 @@
                                 <b-tab title="Training"> 
                                     <training-tab
                                         v-on:refresh="refreshProfile"
-                                        v-on:change="getSheriffs()"/>
+                                        v-on:change="getCourtAdmins()"/>
                                 </b-tab>
 
                                 <b-tab v-if="hasPermissionToAssignRoles" title="Roles" class="p-0">
-                                    <role-assignment-tab  v-on:change="getSheriffs()"
+                                    <role-assignment-tab  v-on:change="getCourtAdmins()"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>
                                 </b-tab>
 
                                 <b-tab title="Acting Rank"> 
                                     <rank-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                   
                                 </b-tab>
@@ -244,17 +244,17 @@
         public UpdateUserToEdit!: (userToEdit: teamMemberInfoType) => void
 
         @Prop({required: true})
-        public sheriffInfo!: myTeamShiftInfoType;
+        public courtAdminInfo!: myTeamShiftInfoType;
 
         @Prop({required: true})
         public weekView!: boolean;
 
         @Prop({required: false, default:false})
-        public sheriffModal!: boolean;
+        public courtAdminModal!: boolean;
 
         identificationTabMethods = new Vue();
 
-        sheriffId = '';
+        courtAdminId = '';
         isDataMounted = false;
         hasPermissionToAddAssignDuty = false;
         hasPermissionToEditUsers = false;
@@ -298,7 +298,7 @@
         WeekDay = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
         weekDayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-        sheriffSchedules: any[] = [];
+        courtAdminSchedules: any[] = [];
 
         mounted()
         {
@@ -306,25 +306,25 @@
             this.hasPermissionToAddAssignDuty = this.userDetails.permissions.includes("CreateAndAssignDuties");
             this.hasPermissionToEditUsers = this.userDetails.permissions.includes("EditUsers");
             this.hasPermissionToAssignRoles = this.userDetails.permissions.includes("CreateAndAssignRoles");
-            this.sheriffId = this.sheriffInfo.sheriffId; 
-            if(this.sheriffId== '00000-00000-11111'){
+            this.courtAdminId = this.courtAdminInfo.courtAdminId; 
+            if(this.courtAdminId== '00000-00000-11111'){
                 this.fullName = 'Not Required'
                 this.bgcolor='bg-success text-white mb-2'
                 this.specialMember = true
-            } else if(this.sheriffId== '00000-00000-22222'){
+            } else if(this.courtAdminId== '00000-00000-22222'){
                 this.fullName = 'Not Available'
                 this.bgcolor='bg-danger text-white mb-2'
                 this.specialMember = true
-            }else if(this.sheriffId== '00000-00000-33333'){
+            }else if(this.courtAdminId== '00000-00000-33333'){
                 this.fullName = 'Closed'
                 this.bgcolor='bg-bright text-dark h2 my-2 py-2'
                 this.specialMember = true
             }else{      
-                this.fullName = this.sheriffInfo.lastName +', '+this.sheriffInfo.firstName;
+                this.fullName = this.courtAdminInfo.lastName +', '+this.courtAdminInfo.firstName;
                 this.bgcolor='bg-white mb-2'
                 for(let dayOffset=0; dayOffset<7; dayOffset++){
                     const date= moment(this.dutyRangeInfo.startDate).add(dayOffset,'days').format()
-                    this.sheriffSchedules.push({
+                    this.courtAdminSchedules.push({
                         date: date, 
                         weekday: dayOffset, 
                         text:this.WeekDay[dayOffset],
@@ -345,45 +345,45 @@
         }
 
         public extractSchedules() {
-            // if(this.sheriffInfo.firstName=='Alex'){
-                //console.warn(this.sheriffInfo)
-                //console.log(this.sheriffSchedules)
+            // if(this.courtAdminInfo.firstName=='Alex'){
+                //console.warn(this.courtAdminInfo)
+                //console.log(this.courtAdminSchedules)
             // }
-            for(const scheduleIndex in this.sheriffSchedules) {
+            for(const scheduleIndex in this.courtAdminSchedules) {
 
-                const schedule = this.sheriffSchedules[scheduleIndex];            
+                const schedule = this.courtAdminSchedules[scheduleIndex];            
                 
-                const filteredShifts = this.sheriffInfo.shifts.filter(shift=>{if(shift.startDate.substring(0,10)==schedule.date.substring(0,10))return true;});
-                const filteredDuties = this.sheriffInfo.dutiesDetail.filter(duty=>{if(duty.startTime && duty.startTime.substring(0,10)==schedule.date.substring(0,10))return true;});
+                const filteredShifts = this.courtAdminInfo.shifts.filter(shift=>{if(shift.startDate.substring(0,10)==schedule.date.substring(0,10))return true;});
+                const filteredDuties = this.courtAdminInfo.dutiesDetail.filter(duty=>{if(duty.startTime && duty.startTime.substring(0,10)==schedule.date.substring(0,10))return true;});
                 if (filteredShifts.length == 0) {
-                    this.sheriffSchedules[scheduleIndex].variant = 'danger';
+                    this.courtAdminSchedules[scheduleIndex].variant = 'danger';
                 } else {
-                    this.sheriffSchedules[scheduleIndex].shifts = filteredShifts 
-                    this.sheriffSchedules[scheduleIndex].duties = filteredDuties
+                    this.courtAdminSchedules[scheduleIndex].shifts = filteredShifts 
+                    this.courtAdminSchedules[scheduleIndex].duties = filteredDuties
                     if(filteredDuties.length>0) {
                          
                         let availability = this.getAvailability(filteredShifts, schedule.date)
-                        const duties = this.getSheriffDuties(filteredDuties) 
+                        const duties = this.getCourtAdminDuties(filteredDuties) 
                         availability = this.subtractUnionOfArrays(availability,duties) 
                         //console.log(availability)
                         //console.log(duties)
-                        this.sheriffSchedules[scheduleIndex].variant = 'info';
+                        this.courtAdminSchedules[scheduleIndex].variant = 'info';
                         if(this.sumOfArrayElements(availability)==0)
-                            this.sheriffSchedules[scheduleIndex].style =''
+                            this.courtAdminSchedules[scheduleIndex].style =''
                         else 
-                            this.sheriffSchedules[scheduleIndex].style = this.halfSchStyle;
+                            this.courtAdminSchedules[scheduleIndex].style = this.halfSchStyle;
                     }
                 }
                 
             }
-            // console.log(this.sheriffSchedules)
+            // console.log(this.courtAdminSchedules)
         }
 
         public extractShifts() {
-            //console.log(this.sheriffInfo)
+            //console.log(this.courtAdminInfo)
             this.shifts = [];
             let tooltipTitle = '<div>';
-            const sortedShifts = _.sortBy(this.sheriffInfo.shifts,'startDate');
+            const sortedShifts = _.sortBy(this.courtAdminInfo.shifts,'startDate');
             for(const shift of sortedShifts){
 
                 this.shifts.push(shift.startDate.substring(11,16) +' - '+shift.endDate.substring(11,16))
@@ -416,7 +416,7 @@
             return availability            
         }
 
-        public getSheriffDuties(dutiesDetail){
+        public getCourtAdminDuties(dutiesDetail){
     
                 //console.log(dutiesDetail)
                 let duties = Array(96).fill(0)
@@ -447,7 +447,7 @@
             return arrayA.reduce((acc, arr) => acc + (arr>0?1:0), 0)
         }
 
-        public getSheriffs() {
+        public getCourtAdmins() {
             this.$emit('change');            
         }
         
@@ -462,7 +462,7 @@
 
         public loadUserDetails(userId): void {
             this.resetProfileWindowState();       
-            const url = 'api/sheriff/' + userId;
+            const url = 'api/courtAdmin/' + userId;
             this.$http.get(url)
                 .then(response => {
                     if(response.data){                                              

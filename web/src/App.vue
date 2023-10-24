@@ -18,8 +18,8 @@
     import NavigationFooter from "@components/NavigationFooter.vue";
     import { Component, Vue } from 'vue-property-decorator';
     import { namespace } from 'vuex-class';
-    import {commonInfoType, locationInfoType, sheriffRankInfoType, userInfoType, regionInfoType} from './types/common';
-    import {sheriffRankJsonType} from './types/common/jsonTypes'
+    import {commonInfoType, locationInfoType, courtAdminRankInfoType, userInfoType, regionInfoType} from './types/common';
+    import {courtAdminRankJsonType} from './types/common/jsonTypes'
     import "@store/modules/CommonInformation";
     const commonState = namespace("CommonInformation");
     import * as _ from 'underscore';
@@ -74,7 +74,7 @@
         errorText = '';
         displayError=false;
         isCommonDataReady= false;
-        sheriffRankList: sheriffRankInfoType[] = []
+        courtAdminRankList: courtAdminRankInfoType[] = []
         currentLocation;
        
         mounted() {
@@ -119,13 +119,13 @@
                 }) 
         }
 
-        public loadSheriffRankList(){  
-            const url = 'api/managetypes?codeType=SheriffRank'
+        public loadCourtAdminRankList(){  
+            const url = 'api/managetypes?codeType=CourtAdminRank'
             this.$http.get(url)
                 .then(response => {
                     if(response.data){
-                        this.extractSheriffRankInfo(response.data);
-                        if(this.commonInfo.sheriffRankList.length>0 && 
+                        this.extractCourtAdminRankInfo(response.data);
+                        if(this.commonInfo.courtAdminRankList.length>0 && 
                         this.userDetails.roles.length>0 && this.locationList.length>0)
                         {                              
                             this.isCommonDataReady = true;
@@ -143,15 +143,15 @@
                 })         
         }        
 
-        public extractSheriffRankInfo(sheriffRankList){
+        public extractCourtAdminRankInfo(courtAdminRankList){
 
-            let sheriffRank: sheriffRankJsonType;
+            let courtAdminRank: courtAdminRankJsonType;
 
-            for(sheriffRank of sheriffRankList){                
-                this.sheriffRankList.push({id: Number(sheriffRank.id), name: sheriffRank.description})
+            for(courtAdminRank of courtAdminRankList){                
+                this.courtAdminRankList.push({id: Number(courtAdminRank.id), name: courtAdminRank.description})
             }                       
             this.UpdateCommonInfo({
-                sheriffRankList: this.sheriffRankList 
+                courtAdminRankList: this.courtAdminRankList 
             })
         }
 
@@ -193,7 +193,7 @@
                 .then(response => {
                     if(response.data){
                         this.extractLocationInfo(response.data, false);
-                        this.loadSheriffRankList();
+                        this.loadCourtAdminRankList();
                     }                   
                 },err => {
                     this.errorText = err + '  - ' + moment().format();

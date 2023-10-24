@@ -4,9 +4,9 @@
             style="width:100%; height:3rem;" 
             bg-variant="white"            
             class="ml-2 my-0 p-0">
-                <b-col cols="9" @click="openMemberDetails(sheriffInfo.sheriffId)" class="team-member-view">
-                    <b-row style="font-size:11px; line-height: 16px;"># {{sheriffInfo.badgeNumber}}</b-row>
-                    <b-row style="font-size:9px; line-height: 14px;">{{sheriffInfo.rank}}</b-row>
+                <b-col cols="9" @click="openMemberDetails(courtAdminInfo.courtAdminId)" class="team-member-view">
+                    <b-row style="font-size:11px; line-height: 16px;"># {{courtAdminInfo.badgeNumber}}</b-row>
+                    <b-row style="font-size:9px; line-height: 14px;">{{courtAdminInfo.rank}}</b-row>
                     <b-row 
                         style="font-size:12px; line-height: 16px; font-weight: bold; text-transform: Capitalize;" 
                         v-b-tooltip.hover.topleft                                
@@ -40,7 +40,7 @@
             <template v-slot:modal-title>                
                 <span class="m-0 p-0" > 
                     <h3 class="m-0 p-0" >Creating Shift for </h3>
-                    <h4  class="m-0 pt-2 pb-0 text-warning" style="text-align: center"> {{sheriffInfo.firstName}} {{sheriffInfo.lastName}}</h4>
+                    <h4  class="m-0 pt-2 pb-0 text-warning" style="text-align: center"> {{courtAdminInfo.firstName}} {{courtAdminInfo.lastName}}</h4>
                 </span>
             </template>
 
@@ -206,7 +206,7 @@
                                     <identification-tab 
                                         :runMethod="identificationTabMethods"                                         
                                         v-on:closeMemberDetails="closeMemberDetailWindow()" 
-                                        v-on:profileUpdated="getSheriffs()"
+                                        v-on:profileUpdated="getCourtAdmins()"
                                         v-on:enableSave="enableSave()"   
                                         v-on:changeTab="changeTab"                                     
                                         :createMode="false" 
@@ -215,14 +215,14 @@
 
                                 <b-tab title="Locations"> 
                                     <location-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                   
                                 </b-tab>
 
                                 <b-tab title="Leaves">
                                     <leave-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                    
                                 </b-tab>
@@ -230,17 +230,17 @@
                                 <b-tab title="Training"> 
                                     <training-tab
                                         v-on:refresh="refreshProfile"
-                                        v-on:change="getSheriffs()"/>
+                                        v-on:change="getCourtAdmins()"/>
                                 </b-tab>
 
                                 <b-tab v-if="hasPermissionToAssignRoles" title="Roles" class="p-0">
-                                    <role-assignment-tab  v-on:change="getSheriffs()"
+                                    <role-assignment-tab  v-on:change="getCourtAdmins()"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>
                                 </b-tab>
 
                                 <b-tab title="Acting Rank"> 
                                     <rank-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                   
                                 </b-tab>
@@ -311,7 +311,7 @@
     import RankTab from '@/components/MyTeam/Tabs/RankTab.vue'
     import UserSummaryTemplate from "@/components/MyTeam/Tabs/UserSummaryTemplate.vue";
 
-    import { dayOptionsInfoType, editedShiftInfoType, sheriffAvailabilityInfoType,shiftInfoType,shiftRangeInfoType } from '@/types/ShiftSchedule';
+    import { dayOptionsInfoType, editedShiftInfoType, courtAdminAvailabilityInfoType,shiftInfoType,shiftRangeInfoType } from '@/types/ShiftSchedule';
     import { locationInfoType, userInfoType } from '@/types/common';
     import { teamMemberInfoType } from '@/types/MyTeam';
 
@@ -341,7 +341,7 @@
         public userDetails!: userInfoType;
 
         @Prop({required: true})
-        public sheriffInfo!: sheriffAvailabilityInfoType;
+        public courtAdminInfo!: courtAdminAvailabilityInfoType;
 
         @TeamMemberState.State
         public userToEdit!: teamMemberInfoType;
@@ -351,7 +351,7 @@
 
         identificationTabMethods = new Vue();
 
-        sheriffId = '';
+        courtAdminId = '';
 
         isDataMounted = false;
         hasPermissionToCreateShifts = false; 
@@ -408,8 +408,8 @@
             this.hasPermissionToCreateShifts = this.userDetails.permissions.includes("CreateAndAssignShifts");        
             this.hasPermissionToEditUsers = this.userDetails.permissions.includes("EditUsers");
             this.hasPermissionToAssignRoles = this.userDetails.permissions.includes("CreateAndAssignRoles");
-            this.sheriffId = this.sheriffInfo.sheriffId;          
-            this.fullName = this.sheriffInfo.lastName +', '+this.sheriffInfo.firstName;
+            this.courtAdminId = this.courtAdminInfo.courtAdminId;          
+            this.fullName = this.courtAdminInfo.lastName +', '+this.courtAdminInfo.firstName;
 
             this.dayOptions = [
                 {name:'Sun', diff:0, fullday:false, conflicts:{Training: [], Leave: [], Loaned:[], AllShifts:[], Shift:[], overTimeShift:[], Unavailable:[]}},
@@ -425,9 +425,9 @@
 
         public extractConflicts() {
             this.LoanedInDesc = '';
-            if(this.sheriffInfo.homeLocation.id != this.location.id) this.LoanedInDesc =  "Loaned In from " + this.sheriffInfo.homeLocation.name
+            if(this.courtAdminInfo.homeLocation.id != this.location.id) this.LoanedInDesc =  "Loaned In from " + this.courtAdminInfo.homeLocation.name
                       
-            for(const conflict of this.sheriffInfo.conflicts){
+            for(const conflict of this.courtAdminInfo.conflicts){
                 this.dayOptions[conflict.dayOffset].conflicts[conflict.type].push(conflict); 
                 this.dayOptions[conflict.dayOffset].fullday = this.dayOptions[conflict.dayOffset].fullday || conflict.fullday               
             }
@@ -595,7 +595,7 @@
                             id: 0,
                             startDate: moment(shift.start).utc().format(),
                             endDate: moment(shift.end).utc().format(),
-                            sheriffId: this.sheriffId,
+                            courtAdminId: this.courtAdminId,
                             locationId: this.location.id,
                             timezone: this.location.timezone
                         }
@@ -676,7 +676,7 @@
 			return value.slice(0,100);
         }
 
-        public getSheriffs() {
+        public getCourtAdmins() {
             this.$emit('change');
         }
         
@@ -691,7 +691,7 @@
 
         public loadUserDetails(userId): void {
             this.resetProfileWindowState();       
-            const url = 'api/sheriff/' + userId;
+            const url = 'api/courtAdmin/' + userId;
             this.$http.get(url)
                 .then(response => {
                     if(response.data){                                              

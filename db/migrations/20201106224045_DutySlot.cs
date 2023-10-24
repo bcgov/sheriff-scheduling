@@ -28,7 +28,7 @@ namespace CAS.DB.Migrations
                     EndDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ExpiryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     DutyId = table.Column<int>(type: "integer", nullable: false),
-                    SheriffId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CourtAdminId = table.Column<Guid>(type: "uuid", nullable: true),
                     ShiftId = table.Column<int>(type: "integer", nullable: true),
                     Timezone = table.Column<string>(type: "text", nullable: true),
                     CreatedById = table.Column<Guid>(type: "uuid", nullable: true),
@@ -59,8 +59,8 @@ namespace CAS.DB.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_DutySlot_User_SheriffId",
-                        column: x => x.SheriffId,
+                        name: "FK_DutySlot_User_CourtAdminId",
+                        column: x => x.CourtAdminId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
@@ -508,9 +508,9 @@ namespace CAS.DB.Migrations
                 column: "DutyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DutySlot_SheriffId",
+                name: "IX_DutySlot_CourtAdminId",
                 table: "DutySlot",
-                column: "SheriffId",
+                column: "CourtAdminId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

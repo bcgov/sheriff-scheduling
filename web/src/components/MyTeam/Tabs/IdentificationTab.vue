@@ -34,10 +34,10 @@
             <b-form-group class="ml-1" style="width: 15rem"><label>Rank<span class="text-danger">*</span></label>
                 <b-form-select v-model="user.rank" placeholder="Select Rank" :state = "selectedRankState?null:false">
                     <b-form-select-option
-                        v-for="sheriffRank in sheriffRankList" 
-                        :key="sheriffRank.id"
-                        :value="sheriffRank.name">
-                            {{sheriffRank.name}}
+                        v-for="courtAdminRank in courtAdminRankList" 
+                        :key="courtAdminRank.id"
+                        :value="courtAdminRank.name">
+                            {{courtAdminRank.name}}
                     </b-form-select-option>
                 </b-form-select>
             </b-form-group>
@@ -328,7 +328,7 @@ export default class IdentificationTab extends Vue {
             id: this.user.id
         }
 
-        const url = 'api/sheriff';
+        const url = 'api/courtAdmin';
         this.$http.put(url, body)
             .then(response => {
                 if(response.data){
@@ -356,7 +356,7 @@ export default class IdentificationTab extends Vue {
 
     public updateLocation(){
         
-        const url = 'api/sheriff/updatelocation?id='+this.user.id+'&locationId='+this.user.homeLocationId;
+        const url = 'api/courtAdmin/updatelocation?id='+this.user.id+'&locationId='+this.user.homeLocationId;
         this.$http.put(url)
             .then(response => {                
                 this.resetProfileWindowState();
@@ -385,7 +385,7 @@ export default class IdentificationTab extends Vue {
             lastName: this.user.lastName,
             email: this.user.email
         }
-        const url = 'api/sheriff';
+        const url = 'api/courtAdmin';
         this.$http.post(url, body )
             .then(response => {
                 if(response.data){
@@ -432,8 +432,8 @@ export default class IdentificationTab extends Vue {
         this.duplicateIdir = false;
     }
 
-    get sheriffRankList(){
-        return _.sortBy(this.commonInfo.sheriffRankList, 'id')
+    get courtAdminRankList(){
+        return _.sortBy(this.commonInfo.courtAdminRankList, 'id')
     }
 
     

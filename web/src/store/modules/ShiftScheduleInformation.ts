@@ -1,4 +1,4 @@
-import { shiftRangeInfoType, sheriffAvailabilityInfoType, distributeTeamMemberInfoType } from '@/types/ShiftSchedule';
+import { shiftRangeInfoType, courtAdminAvailabilityInfoType, distributeTeamMemberInfoType } from '@/types/ShiftSchedule';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 
 @Module({
@@ -8,7 +8,7 @@ class ShiftScheduleInformation extends VuexModule {
 
   public shiftRangeInfo = {} as shiftRangeInfoType;
   public dailyShiftRangeInfo = {} as shiftRangeInfoType;
-  public sheriffsAvailabilityInfo = [] as sheriffAvailabilityInfoType[];
+  public courtAdminsAvailabilityInfo = [] as courtAdminAvailabilityInfoType[];
   public selectedShifts = [] as string[];
   public teamMemberList = [] as distributeTeamMemberInfoType[];
 
@@ -33,13 +33,13 @@ class ShiftScheduleInformation extends VuexModule {
   }
 
   @Mutation
-  public setSheriffsAvailabilityInfo(sheriffsAvailabilityInfo): void {   
-    this.sheriffsAvailabilityInfo = sheriffsAvailabilityInfo
+  public setCourtAdminsAvailabilityInfo(courtAdminsAvailabilityInfo): void {   
+    this.courtAdminsAvailabilityInfo = courtAdminsAvailabilityInfo
   }
 
   @Action
-  public UpdateSheriffsAvailabilityInfo(newSheriffsAvailabilityInfo): void {
-    this.context.commit('setSheriffsAvailabilityInfo', newSheriffsAvailabilityInfo)
+  public UpdateCourtAdminsAvailabilityInfo(newCourtAdminsAvailabilityInfo): void {
+    this.context.commit('setCourtAdminsAvailabilityInfo', newCourtAdminsAvailabilityInfo)
   }
 
   @Mutation

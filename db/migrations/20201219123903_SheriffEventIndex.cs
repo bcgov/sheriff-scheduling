@@ -3,28 +3,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CAS.DB.Migrations
 {
-    public partial class SheriffEventIndex : Migration
+    public partial class CourtAdminEventIndex : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffLeave_User_CreatedById",
-                table: "SheriffLeave");
+                name: "FK_CourtAdminLeave_User_CreatedById",
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffLeave_User_UpdatedById",
-                table: "SheriffLeave");
+                name: "FK_CourtAdminLeave_User_UpdatedById",
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffTraining_User_CreatedById",
-                table: "SheriffTraining");
+                name: "FK_CourtAdminTraining_User_CreatedById",
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffTraining_User_UpdatedById",
-                table: "SheriffTraining");
+                name: "FK_CourtAdminTraining_User_UpdatedById",
+                table: "CourtAdminTraining");
 
             migrationBuilder.AlterColumn<Guid>(
-                name: "SheriffId",
+                name: "CourtAdminId",
                 table: "Shift",
                 type: "uuid",
                 nullable: false,
@@ -35,7 +35,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "timestamp with time zone",
                 nullable: false,
                 defaultValueSql: "now()",
@@ -44,7 +44,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "timestamp with time zone",
                 nullable: false,
                 defaultValueSql: "now()",
@@ -52,47 +52,47 @@ namespace CAS.DB.Migrations
                 oldType: "timestamp with time zone");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffTraining_StartDate_EndDate",
-                table: "SheriffTraining",
+                name: "IX_CourtAdminTraining_StartDate_EndDate",
+                table: "CourtAdminTraining",
                 columns: new[] { "StartDate", "EndDate" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffLeave_StartDate_EndDate",
-                table: "SheriffLeave",
+                name: "IX_CourtAdminLeave_StartDate_EndDate",
+                table: "CourtAdminLeave",
                 columns: new[] { "StartDate", "EndDate" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SheriffAwayLocation_StartDate_EndDate",
-                table: "SheriffAwayLocation",
+                name: "IX_CourtAdminAwayLocation_StartDate_EndDate",
+                table: "CourtAdminAwayLocation",
                 columns: new[] { "StartDate", "EndDate" });
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffLeave_User_CreatedById",
-                table: "SheriffLeave",
+                name: "FK_CourtAdminLeave_User_CreatedById",
+                table: "CourtAdminLeave",
                 column: "CreatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffLeave_User_UpdatedById",
-                table: "SheriffLeave",
+                name: "FK_CourtAdminLeave_User_UpdatedById",
+                table: "CourtAdminLeave",
                 column: "UpdatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffTraining_User_CreatedById",
-                table: "SheriffTraining",
+                name: "FK_CourtAdminTraining_User_CreatedById",
+                table: "CourtAdminTraining",
                 column: "CreatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffTraining_User_UpdatedById",
-                table: "SheriffTraining",
+                name: "FK_CourtAdminTraining_User_UpdatedById",
+                table: "CourtAdminTraining",
                 column: "UpdatedById",
                 principalTable: "User",
                 principalColumn: "Id",
@@ -102,35 +102,35 @@ namespace CAS.DB.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffLeave_User_CreatedById",
-                table: "SheriffLeave");
+                name: "FK_CourtAdminLeave_User_CreatedById",
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffLeave_User_UpdatedById",
-                table: "SheriffLeave");
+                name: "FK_CourtAdminLeave_User_UpdatedById",
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffTraining_User_CreatedById",
-                table: "SheriffTraining");
+                name: "FK_CourtAdminTraining_User_CreatedById",
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_SheriffTraining_User_UpdatedById",
-                table: "SheriffTraining");
+                name: "FK_CourtAdminTraining_User_UpdatedById",
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropIndex(
-                name: "IX_SheriffTraining_StartDate_EndDate",
-                table: "SheriffTraining");
+                name: "IX_CourtAdminTraining_StartDate_EndDate",
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropIndex(
-                name: "IX_SheriffLeave_StartDate_EndDate",
-                table: "SheriffLeave");
+                name: "IX_CourtAdminLeave_StartDate_EndDate",
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropIndex(
-                name: "IX_SheriffAwayLocation_StartDate_EndDate",
-                table: "SheriffAwayLocation");
+                name: "IX_CourtAdminAwayLocation_StartDate_EndDate",
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.AlterColumn<Guid>(
-                name: "SheriffId",
+                name: "CourtAdminId",
                 table: "Shift",
                 type: "uuid",
                 nullable: true,
@@ -139,7 +139,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "timestamp with time zone",
                 nullable: false,
                 oldClrType: typeof(DateTimeOffset),
@@ -148,7 +148,7 @@ namespace CAS.DB.Migrations
 
             migrationBuilder.AlterColumn<DateTimeOffset>(
                 name: "CreatedOn",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "timestamp with time zone",
                 nullable: false,
                 oldClrType: typeof(DateTimeOffset),
@@ -156,32 +156,32 @@ namespace CAS.DB.Migrations
                 oldDefaultValueSql: "now()");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffLeave_User_CreatedById",
-                table: "SheriffLeave",
+                name: "FK_CourtAdminLeave_User_CreatedById",
+                table: "CourtAdminLeave",
                 column: "CreatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffLeave_User_UpdatedById",
-                table: "SheriffLeave",
+                name: "FK_CourtAdminLeave_User_UpdatedById",
+                table: "CourtAdminLeave",
                 column: "UpdatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffTraining_User_CreatedById",
-                table: "SheriffTraining",
+                name: "FK_CourtAdminTraining_User_CreatedById",
+                table: "CourtAdminTraining",
                 column: "CreatedById",
                 principalTable: "User",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_SheriffTraining_User_UpdatedById",
-                table: "SheriffTraining",
+                name: "FK_CourtAdminTraining_User_UpdatedById",
+                table: "CourtAdminTraining",
                 column: "UpdatedById",
                 principalTable: "User",
                 principalColumn: "Id",

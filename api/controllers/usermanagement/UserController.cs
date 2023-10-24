@@ -47,19 +47,19 @@ namespace CAS.API.controllers.usermanagement
         [HttpPut]
         [Route("{id}/enable")]
         [PermissionClaimAuthorize(perm: Permission.ExpireUsers)]
-        public async Task<ActionResult<SheriffDto>> EnableUser(Guid id)
+        public async Task<ActionResult<CourtAdminDto>> EnableUser(Guid id)
         {
             var user = await UserService.EnableUser(id);
-            return Ok(user.Adapt<SheriffDto>());
+            return Ok(user.Adapt<CourtAdminDto>());
         }
 
         [HttpPut]
         [Route("{id}/disable")]
         [PermissionClaimAuthorize(perm: Permission.ExpireUsers)]
-        public async Task<ActionResult<SheriffDto>> DisableUser(Guid id)
+        public async Task<ActionResult<CourtAdminDto>> DisableUser(Guid id)
         {
             var user = await UserService.DisableUser(id);
-            return Ok(user.Adapt<SheriffDto>());
+            return Ok(user.Adapt<CourtAdminDto>());
         }
     }
 }

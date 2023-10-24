@@ -9,6 +9,6 @@
         OtherAssignment,
         LeaveType,
         TrainingType,
-        SheriffRank
+        CourtAdminRank
     }
 }

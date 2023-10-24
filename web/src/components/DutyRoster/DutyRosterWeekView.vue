@@ -257,13 +257,13 @@
                 shiftInfo.startDate =  moment(shiftJson.startDate).tz(this.location.timezone).format();
                 shiftInfo.endDate = moment(shiftJson.endDate).tz(this.location.timezone).format();
                 shiftInfo.timezone = shiftJson.timezone;
-                shiftInfo.sheriffId = shiftJson.sheriffId;
+                shiftInfo.courtAdminId = shiftJson.courtAdminId;
                 shiftInfo.locationId = shiftJson.locationId;
                 shiftInfo.overtimeHours = shiftJson.overtimeHours;
 
-                const index = this.shiftAvailabilityInfo.findIndex(shift => shift.sheriffId == shiftInfo.sheriffId);
+                const index = this.shiftAvailabilityInfo.findIndex(shift => shift.courtAdminId == shiftInfo.courtAdminId);
 
-                const dutySlots = allDutySlots.filter(dutyslot=>{if(dutyslot.sheriffId==shiftInfo.sheriffId && dutyslot.startDate.substring(0,10)==shiftInfo.startDate.substring(0,10))return true})
+                const dutySlots = allDutySlots.filter(dutyslot=>{if(dutyslot.courtAdminId==shiftInfo.courtAdminId && dutyslot.startDate.substring(0,10)==shiftInfo.startDate.substring(0,10))return true})
                 const dutiesDetail: dutiesDetailInfoType[] = [];
                 const rangeBin = this.getTimeRangeBins(shiftInfo.startDate, shiftInfo.endDate, shiftInfo.timezone);
                 const shiftArray = this.fillInArray(Array(96).fill(0), 1 , rangeBin.startBin,rangeBin.endBin)
@@ -313,11 +313,11 @@
                     this.shiftAvailabilityInfo[index].dutiesDetail.push(...dutiesDetail);
                 } else {
                     availabilityInfo.shifts = [shiftInfo];
-                    availabilityInfo.sheriffId = shiftJson.sheriff.id;
-                    availabilityInfo.badgeNumber = shiftJson.sheriff.badgeNumber;
-                    availabilityInfo.firstName = shiftJson.sheriff.firstName;
-                    availabilityInfo.lastName = shiftJson.sheriff.lastName;
-                    availabilityInfo.rank = ( shiftJson.sheriff.actingRank?.length>0)?  ( shiftJson.sheriff.actingRank[0].rank)+' (A)': shiftJson.sheriff.rank;
+                    availabilityInfo.courtAdminId = shiftJson.courtAdmin.id;
+                    availabilityInfo.badgeNumber = shiftJson.courtAdmin.badgeNumber;
+                    availabilityInfo.firstName = shiftJson.courtAdmin.firstName;
+                    availabilityInfo.lastName = shiftJson.courtAdmin.lastName;
+                    availabilityInfo.rank = ( shiftJson.courtAdmin.actingRank?.length>0)?  ( shiftJson.courtAdmin.actingRank[0].rank)+' (A)': shiftJson.courtAdmin.rank;
                     availabilityInfo.rankOrder = this.getRankOrder(availabilityInfo.rank)[0]?this.getRankOrder(availabilityInfo.rank)[0].id:0;
                     availabilityInfo.availability = [];
                     availabilityInfo.duties = [];
@@ -465,7 +465,7 @@
         public getRankOrder(rankName: string) {
             if(rankName?.includes(' (A)'))
                 rankName = rankName.replace(' (A)','');
-            return this.commonInfo.sheriffRankList.filter(rank => {
+            return this.commonInfo.courtAdminRankList.filter(rank => {
                 if (rank.name == rankName) {
                     return true;
                 }

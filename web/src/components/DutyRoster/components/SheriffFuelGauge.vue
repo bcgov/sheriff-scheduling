@@ -26,7 +26,7 @@
                         </template>
 
                         <template v-slot:cell(availability)="data" >
-                            <court-admin-availability-card class="m-0 p-0" :sheriffInfo="data.item" />
+                            <court-admin-availability-card class="m-0 p-0" :courtAdminInfo="data.item" />
                         </template>
 
                         <template v-slot:head(name) > 
@@ -43,7 +43,7 @@
 
                          <template v-slot:cell(name)="data" >
                             <div
-                                :id="'gauge--'+data.item.sheriff.sheriffId"
+                                :id="'gauge--'+data.item.courtAdmin.courtAdminId"
                                 :draggable="hasPermissionToAddAssignDuty" 
                                 v-on:dragstart="DragStart"
                                 style="height:1rem; font-size:12px; line-height: 16px; text-transform: capitalize; margin:0; padding:0"
@@ -78,7 +78,7 @@
 
 <script lang="ts">
     import { Component, Vue, Watch } from 'vue-property-decorator';
-    import SheriffAvailabilityCard from './SheriffAvailabilityCard.vue'
+    import CourtAdminAvailabilityCard from './CourtAdminAvailabilityCard.vue'
     import { myTeamShiftInfoType, dutiesDetailInfoType} from '@/types/DutyRoster';
     import { userInfoType } from '@/types/common';
     
@@ -91,10 +91,10 @@
 
     @Component({
         components: {
-            SheriffAvailabilityCard
+            CourtAdminAvailabilityCard
         }
     })
-    export default class SheriffFuelGauge extends Vue {
+    export default class CourtAdminFuelGauge extends Vue {
        
         @dutyState.State
         public shiftAvailabilityInfo!: myTeamShiftInfoType[];
@@ -118,14 +118,14 @@
         @Watch('shiftAvailabilityInfo')
         shiftAvailability() 
         {
-            this.extractSheriffAvailability()
+            this.extractCourtAdminAvailability()
         }
 
         mounted()
         {
             //console.log(this.shiftAvailabilityInfo)
             this.hasPermissionToAddAssignDuty = this.userDetails.permissions.includes("CreateAndAssignDuties");
-            this.extractSheriffAvailability() 
+            this.extractCourtAdminAvailability() 
         }
 
         dutyColors = [
@@ -137,17 +137,17 @@
             {name:'free',   colorCode:'#e6d9e2'}            
         ]
 
-        public extractSheriffAvailability(){
+        public extractCourtAdminAvailability(){
             this.myTeamMembers = [];
-            for(const sheriff of this.shiftAvailabilityInfo){
-                //console.log(sheriff.availability)
-                //this.findIsland(sheriff.availability)
+            for(const courtAdmin of this.shiftAvailabilityInfo){
+                //console.log(courtAdmin.availability)
+                //this.findIsland(courtAdmin.availability)
                 this.myTeamMembers.push({                     
-                    name: Vue.filter('truncate')(sheriff.lastName,10) + ', '+ sheriff.firstName.charAt(0).toUpperCase(),
-                    fullName: sheriff.firstName + ' ' + sheriff.lastName,
-                    availability: this.sumOfArrayElements(sheriff.availability),
-                    sheriff: sheriff,
-                    availabilityDetail: this.findAvailabilitySlots(sheriff.availability)
+                    name: Vue.filter('truncate')(courtAdmin.lastName,10) + ', '+ courtAdmin.firstName.charAt(0).toUpperCase(),
+                    fullName: courtAdmin.firstName + ' ' + courtAdmin.lastName,
+                    availability: this.sumOfArrayElements(courtAdmin.availability),
+                    courtAdmin: courtAdmin,
+                    availabilityDetail: this.findAvailabilitySlots(courtAdmin.availability)
                 })
             }
         }

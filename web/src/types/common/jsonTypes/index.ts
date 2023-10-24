@@ -1,4 +1,4 @@
-export interface sheriffRankJsonType {
+export interface courtAdminRankJsonType {
     id: string;
     type: string;
     description: string; 

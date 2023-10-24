@@ -12,7 +12,7 @@ namespace CAS.API.models.dto
         public dynamic NewValuesJson { get; set; }
         public uint ConcurrencyToken { get; set; }
         public Guid? CreatedById { get; set; }
-        public SheriffDto CreatedBy { get; set; }
+        public CourtAdminDto CreatedBy { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
     }
 }

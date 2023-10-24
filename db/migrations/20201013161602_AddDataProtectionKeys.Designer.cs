@@ -411,8 +411,8 @@ namespace CAS.DB.Migrations
                             Id = 3,
                             ConcurrencyToken = 0u,
                             CreatedOn = new DateTimeOffset(new DateTime(2020, 10, 13, 16, 16, 1, 504, DateTimeKind.Unspecified).AddTicks(6160), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Sheriff",
-                            Name = "Sheriff"
+                            Description = "CourtAdmin",
+                            Name = "CourtAdmin"
                         });
                 });
 
@@ -645,7 +645,7 @@ namespace CAS.DB.Migrations
                     b.ToTable("LookupSortOrder");
                 });
 
-            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffAwayLocation", b =>
+            modelBuilder.Entity("CAS.DB.models.courtAdmin.CourtAdminAwayLocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -676,7 +676,7 @@ namespace CAS.DB.Migrations
                     b.Property<int?>("LocationId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("SheriffId")
+                    b.Property<Guid>("CourtAdminId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("StartDate")
@@ -694,14 +694,14 @@ namespace CAS.DB.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("SheriffId");
+                    b.HasIndex("CourtAdminId");
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("SheriffAwayLocation");
+                    b.ToTable("CourtAdminAwayLocation");
                 });
 
-            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffLeave", b =>
+            modelBuilder.Entity("CAS.DB.models.courtAdmin.CourtAdminLeave", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -732,7 +732,7 @@ namespace CAS.DB.Migrations
                     b.Property<int?>("LeaveTypeId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("SheriffId")
+                    b.Property<Guid>("CourtAdminId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("StartDate")
@@ -750,14 +750,14 @@ namespace CAS.DB.Migrations
 
                     b.HasIndex("LeaveTypeId");
 
-                    b.HasIndex("SheriffId");
+                    b.HasIndex("CourtAdminId");
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("SheriffLeave");
+                    b.ToTable("CourtAdminLeave");
                 });
 
-            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffTraining", b =>
+            modelBuilder.Entity("CAS.DB.models.courtAdmin.CourtAdminTraining", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -785,7 +785,7 @@ namespace CAS.DB.Migrations
                     b.Property<bool>("IsFullDay")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("SheriffId")
+                    b.Property<Guid>("CourtAdminId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("StartDate")
@@ -804,13 +804,13 @@ namespace CAS.DB.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("SheriffId");
+                    b.HasIndex("CourtAdminId");
 
                     b.HasIndex("TrainingTypeId");
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("SheriffTraining");
+                    b.ToTable("CourtAdminTraining");
                 });
 
             modelBuilder.Entity("db.models.Region", b =>
@@ -931,7 +931,7 @@ namespace CAS.DB.Migrations
                             Id = 1,
                             ConcurrencyToken = 0u,
                             CreatedOn = new DateTimeOffset(new DateTime(2020, 10, 13, 16, 16, 1, 499, DateTimeKind.Unspecified).AddTicks(1698), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Chief Sheriff",
+                            Description = "Chief CourtAdmin",
                             Type = 7
                         },
                         new
@@ -979,12 +979,12 @@ namespace CAS.DB.Migrations
                             Id = 7,
                             ConcurrencyToken = 0u,
                             CreatedOn = new DateTimeOffset(new DateTime(2020, 10, 13, 16, 16, 1, 499, DateTimeKind.Unspecified).AddTicks(3025), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Deputy Sheriff",
+                            Description = "Deputy CourtAdmin",
                             Type = 7
                         });
                 });
 
-            modelBuilder.Entity("CAS.DB.models.sheriff.Sheriff", b =>
+            modelBuilder.Entity("CAS.DB.models.courtAdmin.CourtAdmin", b =>
                 {
                     b.HasBaseType("CAS.DB.models.auth.User");
 
@@ -1000,7 +1000,7 @@ namespace CAS.DB.Migrations
                     b.Property<string>("Rank")
                         .HasColumnType("text");
 
-                    b.HasDiscriminator().HasValue("Sheriff");
+                    b.HasDiscriminator().HasValue("CourtAdmin");
                 });
 
             modelBuilder.Entity("CAS.API.Models.DB.Location", b =>
@@ -1138,7 +1138,7 @@ namespace CAS.DB.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 
-            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffAwayLocation", b =>
+            modelBuilder.Entity("CAS.DB.models.courtAdmin.CourtAdminAwayLocation", b =>
                 {
                     b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
@@ -1150,9 +1150,9 @@ namespace CAS.DB.Migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("CAS.DB.models.sheriff.Sheriff", "Sheriff")
+                    b.HasOne("CAS.DB.models.courtAdmin.CourtAdmin", "CourtAdmin")
                         .WithMany("AwayLocation")
-                        .HasForeignKey("SheriffId")
+                        .HasForeignKey("CourtAdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1162,7 +1162,7 @@ namespace CAS.DB.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 
-            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffLeave", b =>
+            modelBuilder.Entity("CAS.DB.models.courtAdmin.CourtAdminLeave", b =>
                 {
                     b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
@@ -1172,9 +1172,9 @@ namespace CAS.DB.Migrations
                         .WithMany()
                         .HasForeignKey("LeaveTypeId");
 
-                    b.HasOne("CAS.DB.models.sheriff.Sheriff", "Sheriff")
+                    b.HasOne("CAS.DB.models.courtAdmin.CourtAdmin", "CourtAdmin")
                         .WithMany("Leave")
-                        .HasForeignKey("SheriffId")
+                        .HasForeignKey("CourtAdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1183,15 +1183,15 @@ namespace CAS.DB.Migrations
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffTraining", b =>
+            modelBuilder.Entity("CAS.DB.models.courtAdmin.CourtAdminTraining", b =>
                 {
                     b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("CAS.DB.models.sheriff.Sheriff", "Sheriff")
+                    b.HasOne("CAS.DB.models.courtAdmin.CourtAdmin", "CourtAdmin")
                         .WithMany("Training")
-                        .HasForeignKey("SheriffId")
+                        .HasForeignKey("CourtAdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -9,7 +9,7 @@ namespace CAS.DB.Migrations
         {
             migrationBuilder.AddColumn<DateTimeOffset>(
                 name: "TrainingCertificationExpiry",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "timestamp with time zone",
                 nullable: true);
 
@@ -368,7 +368,7 @@ namespace CAS.DB.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "TrainingCertificationExpiry",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
 
             migrationBuilder.UpdateData(
                 table: "LookupCode",

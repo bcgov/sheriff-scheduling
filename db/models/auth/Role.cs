@@ -10,7 +10,7 @@ namespace CAS.DB.models.auth
     {
         public const string Manager = nameof(Manager);
         public const string Administrator = nameof(Administrator);
-        public const string Sheriff = nameof(Sheriff);
+        public const string CourtAdmin = nameof(CourtAdmin);
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }

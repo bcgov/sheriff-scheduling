@@ -30,13 +30,13 @@ namespace CAS.API.controllers
 
         [HttpGet("roleHistory")]
         [PermissionClaimAuthorize(perm: Permission.CreateAndAssignRoles)]
-        public async Task<ActionResult<List<AuditDto>>> ViewRoleHistory(Guid sheriffId)
+        public async Task<ActionResult<List<AuditDto>>> ViewRoleHistory(Guid courtAdminId)
         {
-            var sheriff = await CourtAdminService.GetCourtAdmin(sheriffId, null);
-            if (sheriff == null) return NotFound(CouldNotFindCourtAdminError);
-            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, sheriff.HomeLocationId)) return Forbid();
+            var courtAdmin = await CourtAdminService.GetCourtAdmin(courtAdminId, null);
+            if (courtAdmin == null) return NotFound(CouldNotFindCourtAdminError);
+            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, courtAdmin.HomeLocationId)) return Forbid();
 
-            var userRoleIds = Db.UserRole.AsNoTracking().Where(ur => ur.UserId == sheriffId).Select(ur => ur.Id);
+            var userRoleIds = Db.UserRole.AsNoTracking().Where(ur => ur.UserId == courtAdminId).Select(ur => ur.Id);
             var roleHistory = Db.Audit.AsNoTracking().Include(a => a.CreatedBy).Where(e => e.TableName == "UserRole" &&
                                                   userRoleIds.Contains(e.KeyValues.RootElement.GetProperty("Id")
                                                       .GetInt32()))
@@ -46,7 +46,7 @@ namespace CAS.API.controllers
             return Ok(roleHistory.Select(s =>
             {
                 var audit = s.Adapt<AuditDto>();
-                audit.CreatedBy = s.CreatedBy.Adapt<SheriffDto>();
+                audit.CreatedBy = s.CreatedBy.Adapt<CourtAdminDto>();
                 audit.CreatedOn = s.CreatedOn;
                 audit.CreatedById = s.CreatedById;
                 return audit;

@@ -1,7 +1,7 @@
 <template>
     <div> 
         <loading-spinner v-if="!isDutyRosterDataMounted" />      
-        <court-admin-day-view v-else-if="sheriffFullview" />       
+        <court-admin-day-view v-else-if="courtAdminFullview" />       
 
         <b-table
             v-else
@@ -45,7 +45,7 @@
                 </template>
         </b-table>                
         <court-admin-fuel-gauge v-show="isDutyRosterDataMounted && displayFuelGauge" class="fixed-bottom bg-white"/>
-        <div id="app-footer-assignment" v-if="!sheriffFullview">
+        <div id="app-footer-assignment" v-if="!courtAdminFullview">
             <b-row style="margin:0 0 .25rem .25rem; ">
                 <div
                     style="width:5.2rem;"
@@ -78,9 +78,9 @@
     import { Component, Vue, Watch, Prop} from 'vue-property-decorator';
 
     import DutyCard from './components/DutyCard.vue'
-    import SheriffFuelGauge from './components/SheriffFuelGauge.vue'
+    import CourtAdminFuelGauge from './components/CourtAdminFuelGauge.vue'
     import DutyRosterAssignment from './components/DutyRosterAssignment.vue'
-    import SheriffDayView from './components/SheriffDayView.vue'
+    import CourtAdminDayView from './components/CourtAdminDayView.vue'
 
     import moment from 'moment-timezone';
 
@@ -98,9 +98,9 @@
     @Component({
         components: {
             DutyCard,
-            SheriffFuelGauge,
+            CourtAdminFuelGauge,
             DutyRosterAssignment,
-            SheriffDayView
+            CourtAdminDayView
         }
     })
     export default class DutyRosterDayView extends Vue {
@@ -115,10 +115,10 @@
         public displayFuelGauge!: boolean;
 
         @dutyState.State
-        public sheriffFullview!: boolean;
+        public courtAdminFullview!: boolean;
 
         @dutyState.State
-        public printSheriffFullview!: boolean;
+        public printCourtAdminFullview!: boolean;
 
         @commonState.State
         public userDetails!: userInfoType;
@@ -189,14 +189,14 @@
             Vue.nextTick(() => this.calculateTableHeight() )
         }
 
-        @Watch('sheriffFullview')
-        SheriffFullViewChanged() 
+        @Watch('courtAdminFullview')
+        CourtAdminFullViewChanged() 
         {  
             Vue.nextTick(() => this.scrollAdjustment() );
         }
 
-        @Watch('printSheriffFullview')
-        printSheriffFullviewChanged(){
+        @Watch('printCourtAdminFullview')
+        printCourtAdminFullviewChanged(){
             Vue.nextTick(() => this.scrollAdjustment() );
         }
 
@@ -303,12 +303,12 @@
                 shiftInfo.startDate =  moment(shiftJson.startDate).tz(this.location.timezone).format();
                 shiftInfo.endDate = moment(shiftJson.endDate).tz(this.location.timezone).format();
                 shiftInfo.timezone = shiftJson.timezone;
-                shiftInfo.sheriffId = shiftJson.sheriffId;
+                shiftInfo.courtAdminId = shiftJson.courtAdminId;
                 shiftInfo.locationId = shiftJson.locationId;
                 shiftInfo.overtimeHours = shiftJson.overtimeHours
                 const rangeBin = this.getTimeRangeBins(shiftInfo.startDate, shiftInfo.endDate, this.location.timezone);
 
-                const dutySlots = allDutySlots.filter(dutyslot=>{if(dutyslot.sheriffId==shiftInfo.sheriffId)return true})
+                const dutySlots = allDutySlots.filter(dutyslot=>{if(dutyslot.courtAdminId==shiftInfo.courtAdminId)return true})
 
                 let duties = Array(96).fill(0)
                 const dutiesDetail: dutiesDetailInfoType[] = [];
@@ -344,7 +344,7 @@
                     }
                 }
 
-                const index = this.shiftAvailabilityInfo.findIndex(shift => shift.sheriffId == shiftInfo.sheriffId)
+                const index = this.shiftAvailabilityInfo.findIndex(shift => shift.courtAdminId == shiftInfo.courtAdminId)
                 
                 if (index != -1) {
                     let availability = this.shiftAvailabilityInfo[index].availability
@@ -365,11 +365,11 @@
                     const newavailability = this.subtractUnionOfArrays(availability, duties);
                     availability = this.unionArrays(availability, newavailability);
                     availabilityInfo.shifts = [shiftInfo];
-                    availabilityInfo.sheriffId = shiftJson.sheriff.id;
-                    availabilityInfo.badgeNumber = shiftJson.sheriff.badgeNumber;
-                    availabilityInfo.firstName = shiftJson.sheriff.firstName;
-                    availabilityInfo.lastName = shiftJson.sheriff.lastName;
-                    availabilityInfo.rank = ( shiftJson.sheriff.actingRank?.length>0)?  ( shiftJson.sheriff.actingRank[0].rank)+' (A)': shiftJson.sheriff.rank;
+                    availabilityInfo.courtAdminId = shiftJson.courtAdmin.id;
+                    availabilityInfo.badgeNumber = shiftJson.courtAdmin.badgeNumber;
+                    availabilityInfo.firstName = shiftJson.courtAdmin.firstName;
+                    availabilityInfo.lastName = shiftJson.courtAdmin.lastName;
+                    availabilityInfo.rank = ( shiftJson.courtAdmin.actingRank?.length>0)?  ( shiftJson.courtAdmin.actingRank[0].rank)+' (A)': shiftJson.courtAdmin.rank;
                     availabilityInfo.rankOrder = this.getRankOrder(availabilityInfo.rank)[0]?this.getRankOrder(availabilityInfo.rank)[0].id:0;
                     availabilityInfo.availability = availability;
                     availabilityInfo.duties = duties;
@@ -486,7 +486,7 @@
         public getRankOrder(rankName: string) {
             if(rankName?.includes(' (A)'))
                 rankName = rankName.replace(' (A)','');
-            return this.commonInfo.sheriffRankList.filter(rank => {
+            return this.commonInfo.courtAdminRankList.filter(rank => {
                 if (rank.name == rankName) {
                     return true;
                 }

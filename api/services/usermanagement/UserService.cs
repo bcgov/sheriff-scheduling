@@ -12,9 +12,9 @@ namespace CAS.API.services.usermanagement
     public class UserService
     {
         private CourtAdminDbContext Db { get; }
-        public UserService(CourtAdminDbContext sheriffDbContext)
+        public UserService(CourtAdminDbContext courtAdminDbContext)
         {
-            Db = sheriffDbContext;
+            Db = courtAdminDbContext;
         }
         
         public async Task<User> DisableUser(Guid id)

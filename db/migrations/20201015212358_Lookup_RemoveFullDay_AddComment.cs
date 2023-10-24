@@ -9,31 +9,31 @@ namespace CAS.DB.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsFullDay",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropColumn(
                 name: "IsFullDay",
-                table: "SheriffLeave");
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropColumn(
                 name: "IsFullDay",
-                table: "SheriffAwayLocation");
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.AddColumn<string>(
                 name: "Comment",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Comment",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Comment",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "text",
                 nullable: true);
 
@@ -392,33 +392,33 @@ namespace CAS.DB.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Comment",
-                table: "SheriffTraining");
+                table: "CourtAdminTraining");
 
             migrationBuilder.DropColumn(
                 name: "Comment",
-                table: "SheriffLeave");
+                table: "CourtAdminLeave");
 
             migrationBuilder.DropColumn(
                 name: "Comment",
-                table: "SheriffAwayLocation");
+                table: "CourtAdminAwayLocation");
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsFullDay",
-                table: "SheriffTraining",
+                table: "CourtAdminTraining",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsFullDay",
-                table: "SheriffLeave",
+                table: "CourtAdminLeave",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsFullDay",
-                table: "SheriffAwayLocation",
+                table: "CourtAdminAwayLocation",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
