@@ -1,5 +1,5 @@
 ﻿using System;
-using SS.Common.helpers.extensions;
+using CAS.COMMON.helpers.extensions;
 using Xunit;
 
 namespace tests

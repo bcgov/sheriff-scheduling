@@ -1,9 +1,9 @@
-﻿using SS.DB.Configuration;
+﻿using CAS.DB.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.Db.models.scheduling;
+using CAS.DB.models.scheduling;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class ShiftConfiguration : BaseEntityConfiguration<Shift>
     {

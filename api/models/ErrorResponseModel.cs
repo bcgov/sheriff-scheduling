@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System;
-using SS.Api.helpers.extensions;
+using CAS.API.helpers.extensions;
 
-namespace SS.Api.Models
+namespace CAS.API.Models
 {
     /// <summary>
     /// ErrorResponseModel class, provides a standardized error message for unhandled exceptions.

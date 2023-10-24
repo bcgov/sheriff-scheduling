@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.DB.Configuration;
-using SS.Db.models.audit;
+using CAS.DB.Configuration;
+using CAS.DB.models.audit;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class AuditConfiguration : BaseEntityConfiguration<Audit>
     {

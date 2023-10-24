@@ -70,7 +70,7 @@
                                 <b-card-body>                        
                                     <b-alert
                                         v-for="item,inx in sheriffEvents"
-                                        :key="'sheriff-events-'+inx"
+                                        :key="'court-admin-events-'+inx"
                                         class="mx-2 my-3"
                                         variant="info"
                                         :show="true">

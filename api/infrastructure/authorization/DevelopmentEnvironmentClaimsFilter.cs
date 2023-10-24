@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using SS.Api.helpers;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.exceptions;
-using SS.Common.authorization;
+using CAS.API.helpers;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.exceptions;
+using CAS.COMMON.authorization;
 
-namespace SS.Api.infrastructure.authorization
+namespace CAS.API.infrastructure.authorization
 {
     public class DevelopmentEnvironmentClaimsFilter : IAuthorizationFilter
     {

@@ -69,7 +69,7 @@
                         </div>
                     </template>
                     <template v-slot:cell(availability)="data" >
-                        <sheriff-availability-card class="m-0 p-0 gridsheriff " :sheriffInfo="data.item" :pdfView="true"/>
+                        <court-admin-availability-card class="m-0 p-0 gridsheriff " :sheriffInfo="data.item" :pdfView="true"/>
                     </template>
                 </b-table>
            

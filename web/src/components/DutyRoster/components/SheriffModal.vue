@@ -42,10 +42,10 @@
                 body-class="p-1" 
                 v-for="member in sortedShiftAvailabilityInfo"
                 @click="drop(member.sheriffId)" 
-                :key="'sheriff-modal-'+member.sheriffId"> 
+                :key="'court-admin-modal-'+member.sheriffId"> 
                 <!-- <span class="text-white">{{sumOfArrayElements(member.availability)}} {{sumOfArrayElements(unionArrays(member.availability, assignmentBlock))}}              </span> -->
                     <duty-roster-team-member-card editingBlockId :sheriffInfo="member" :weekView="weekView" :sheriffModal="true"/>
-                    <sheriff-availability-bar v-if="!multipleAssignmentsWeekview" :sheriffInfo="member" :dutyBlock="dutyBlock" :weekView="weekView"/>
+                    <court-admin-availability-bar v-if="!multipleAssignmentsWeekview" :sheriffInfo="member" :dutyBlock="dutyBlock" :weekView="weekView"/>
             </b-card>
         </b-row>
     </div>

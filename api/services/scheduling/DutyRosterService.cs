@@ -1,29 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Db.models;
-using SS.Db.models.scheduling;
+using CAS.API.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.scheduling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SS.Api.helpers;
-using SS.Api.infrastructure.exceptions;
-using SS.Common.helpers.extensions;
-using SS.Db.models.sheriff;
-using SS.Api.models;
+using CAS.API.helpers;
+using CAS.API.infrastructure.exceptions;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models.courtAdmin;
+using CAS.API.models;
 
-namespace SS.Api.services.scheduling
+namespace CAS.API.services.scheduling
 {
     public class DutyRosterService
     {
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
         private ShiftService ShiftService { get; }
         private double OvertimeHoursPerDay { get; }
         private ILogger<DutyRosterService> Logger { get; }
 
-        public DutyRosterService(SheriffDbContext db, IConfiguration configuration, ShiftService shiftService, ILogger<DutyRosterService> logger)
+        public DutyRosterService(CourtAdminDbContext db, IConfiguration configuration, ShiftService shiftService, ILogger<DutyRosterService> logger)
         {
             Db = db;
             ShiftService = shiftService;
@@ -406,8 +406,8 @@ namespace SS.Api.services.scheduling
 
         #region String Helpers
 
-        private static string ConflictingSheriffAndDutySlot(Sheriff sheriff, DutySlot dutySlot)
-            => $"Conflict - {nameof(Sheriff)}: {sheriff?.LastName}, {sheriff?.FirstName} - Existing {nameof(DutySlot)} conflicts: {dutySlot.StartDate.ConvertToTimezone(dutySlot.Timezone).PrintFormatDateTime(dutySlot.Timezone)} to {dutySlot.EndDate.ConvertToTimezone(dutySlot.Timezone).PrintFormatDateTime(dutySlot.Timezone)}";
+        private static string ConflictingSheriffAndDutySlot(CourtAdmin sheriff, DutySlot dutySlot)
+            => $"Conflict - {nameof(CourtAdmin)}: {sheriff?.LastName}, {sheriff?.FirstName} - Existing {nameof(DutySlot)} conflicts: {dutySlot.StartDate.ConvertToTimezone(dutySlot.Timezone).PrintFormatDateTime(dutySlot.Timezone)} to {dutySlot.EndDate.ConvertToTimezone(dutySlot.Timezone).PrintFormatDateTime(dutySlot.Timezone)}";
 
         #endregion String Helpers
 

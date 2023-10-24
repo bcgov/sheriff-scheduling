@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using SS.Db.models.sheriff;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Api.helpers.extensions
+namespace CAS.API.helpers.extensions
 {
     public static class SheriffExtensions
     {
         //Include AwayLocation/Training/Leave that is within a date range.
-        public static IQueryable<Sheriff> IncludeSheriffEventsBetweenDates(this IQueryable<Sheriff> query, DateTimeOffset startDate, DateTimeOffset endDate)
+        public static IQueryable<CourtAdmin> IncludeCourtAdminEventsBetweenDates(this IQueryable<CourtAdmin> query, DateTimeOffset startDate, DateTimeOffset endDate)
         {
             return query.Include(s => s.AwayLocation.Where(al =>
                     (al.StartDate < endDate && startDate < al.EndDate)
@@ -25,7 +25,7 @@ namespace SS.Api.helpers.extensions
                 .Include(s => s.HomeLocation);
         }
 
-        public static IQueryable<Sheriff> IncludeSheriffActingRank(this IQueryable<Sheriff> query)
+        public static IQueryable<CourtAdmin> IncludeCourtAdminActingRank(this IQueryable<CourtAdmin> query)
         {
             var startDate = DateTimeOffset.UtcNow;
             return query.Include(s => s.ActingRank.Where(ar =>

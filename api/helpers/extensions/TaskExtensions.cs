@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SS.Api.helpers.extensions
+namespace CAS.API.helpers.extensions
 {
     public static class TaskExtensions
     {

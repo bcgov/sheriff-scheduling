@@ -2,12 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using db.models;
 using Mapster;
-using SS.Api.Models.DB;
-using SS.Common.attributes.mapping;
-using SS.Common.helpers.extensions;
-using ss.db.models;
+using CAS.API.Models.DB;
+using CAS.COMMON.attributes.mapping;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
 
-namespace SS.Db.models.scheduling
+namespace CAS.DB.models.scheduling
 {
     [AdaptTo("[name]Dto")]
     [GenerateUpdateDto, GenerateAddDto]

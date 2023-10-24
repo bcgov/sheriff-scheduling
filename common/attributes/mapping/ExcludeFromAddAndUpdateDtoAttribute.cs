@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SS.Common.attributes.mapping
+namespace CAS.COMMON.attributes.mapping
 {
     public class ExcludeFromAddAndUpdateDtoAttribute : Attribute { }
 }

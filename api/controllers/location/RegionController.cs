@@ -4,19 +4,19 @@ using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.models.dto.generated;
-using SS.Db.models;
+using CAS.API.models.dto.generated;
+using CAS.DB.models;
 
-namespace SS.Api.controllers
+namespace CAS.API.controllers
 {
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
     public class RegionController : ControllerBase
     {
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public RegionController(SheriffDbContext dbContext) {  Db = dbContext; }
+        public RegionController(CourtAdminDbContext dbContext) {  Db = dbContext; }
 
         [HttpGet]
         public async Task<ActionResult<List<RegionDto>>> Regions()

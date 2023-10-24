@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace SS.Db.Migrations
+namespace CAS.DB.Migrations
 {
     public partial class Release_10 : Migration
     {

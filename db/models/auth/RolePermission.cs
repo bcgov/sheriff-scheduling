@@ -2,7 +2,7 @@
 using db.models;
 using Mapster;
 
-namespace SS.Db.models.auth
+namespace CAS.DB.models.auth
 {
     [AdaptTo("[name]Dto")]
     public class RolePermission : BaseEntity

@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.DB.Configuration;
-using SS.Db.models.sheriff;
+using CAS.DB.Configuration;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
-    public class SheriffActingRankConfiguration : BaseEntityConfiguration<SheriffActingRank>
+    public class SheriffActingRankConfiguration : BaseEntityConfiguration<CourtAdminActingRank>
     {
-        public override void Configure(EntityTypeBuilder<SheriffActingRank> builder)
+        public override void Configure(EntityTypeBuilder<CourtAdminActingRank> builder)
         {
             builder.HasIndex(b => new { b.StartDate, b.EndDate });
 

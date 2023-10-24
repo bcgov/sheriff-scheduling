@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.Api.Models.DB;
-using SS.DB.Configuration;
-using SS.Db.models.auth;
+using CAS.API.Models.DB;
+using CAS.DB.Configuration;
+using CAS.DB.models.auth;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class LocationConfiguration : BaseEntityConfiguration<Location>
     {

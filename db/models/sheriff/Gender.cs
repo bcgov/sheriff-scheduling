@@ -1,4 +1,4 @@
-﻿namespace SS.Db.models.sheriff
+﻿namespace CAS.DB.models.courtAdmin
 {
     public enum Gender
     {

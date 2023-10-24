@@ -5,9 +5,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using SS.Api.helpers.extensions;
-using SS.Common.authorization;
-using SS.Db.models.auth;
+using CAS.API.helpers.extensions;
+using CAS.COMMON.authorization;
+using CAS.DB.models.auth;
 using Xunit;
 
 namespace tests.api.Helpers

@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Text;
 using System.Xml.Linq;
-using SS.Api.infrastructure.exceptions;
+using CAS.API.infrastructure.exceptions;
 
-namespace SS.Api.infrastructure.encryption
+namespace CAS.API.infrastructure.encryption
 {
     public class AesGcmXmlDecryptor : IXmlDecryptor
     {

@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
-using SS.Api.controllers.scheduling;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.Models.DB;
-using SS.Api.models.dto.generated;
-using SS.Api.services.scheduling;
-using SS.Api.services.usermanagement;
-using SS.Common.helpers.extensions;
-using ss.db.models;
-using SS.Db.models.scheduling;
-using SS.Db.models.scheduling.notmapped;
+using CAS.API.controllers.scheduling;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.Models.DB;
+using CAS.API.models.dto.generated;
+using CAS.API.services.scheduling;
+using CAS.API.services.usermanagement;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.scheduling;
+using CAS.DB.models.scheduling.notmapped;
 using Microsoft.Extensions.Logging;
-using SS.Db.models.sheriff;
+using CAS.DB.models.courtAdmin;
 using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;
@@ -31,7 +31,7 @@ namespace tests.controllers
         public ShiftControllerTests() : base(false)
         {
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
-            var shiftService = new ShiftService(Db, new SheriffService(Db, environment.Configuration),
+            var shiftService = new ShiftService(Db, new CourtAdminService(Db, environment.Configuration),
                 environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration,
                 shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
@@ -47,7 +47,7 @@ namespace tests.controllers
             var sheriffId = Guid.NewGuid();
             var location = new Location {Id = 50000, AgencyId = "zz"};
             await Db.Location.AddAsync(location);
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId, IsEnabled = true, HomeLocationId = location.Id});
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = sheriffId, IsEnabled = true, HomeLocationId = location.Id});
             await Db.SaveChangesAsync();
 
             Detach();
@@ -156,14 +156,14 @@ namespace tests.controllers
 
             //On awayLocation.
             var awayLocationSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
                 Id = awayLocationSheriff,
                 IsEnabled = true,
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(1),
@@ -174,14 +174,14 @@ namespace tests.controllers
 
             //On training.
             var trainingSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
                 Id = trainingSheriff,
                 IsEnabled = true,
-                Training = new List<SheriffTraining>
+                Training = new List<CourtAdminTraining>
                 {
-                    new SheriffTraining
+                    new CourtAdminTraining
                     {
                         StartDate = startDate.AddDays(1),
                         EndDate = startDate.AddDays(2)
@@ -191,14 +191,14 @@ namespace tests.controllers
 
             //On leave.
             var leaveSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
                 Id = leaveSheriff,
                 IsEnabled = true,
-                Leave = new List<SheriffLeave>
+                Leave = new List<CourtAdminLeave>
                 {
-                    new SheriffLeave
+                    new CourtAdminLeave
                     {
                         StartDate = startDate.AddDays(1),
                         EndDate = startDate.AddDays(2)
@@ -208,7 +208,7 @@ namespace tests.controllers
 
             //Already scheduled.
             var scheduledSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
                 Id = scheduledSheriff,
@@ -228,7 +228,7 @@ namespace tests.controllers
 
             //Already scheduled different location.
             var scheduledDifferentLocationSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
                 Id = scheduledDifferentLocationSheriff,
@@ -247,32 +247,32 @@ namespace tests.controllers
 
             //Expired Leave, Expired Training, Expired Away Location, Expired Shift.
             var expiredEventsAndShiftSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
                 Id = expiredEventsAndShiftSheriff,
                 IsEnabled = true,
-                Leave = new List<SheriffLeave>
+                Leave = new List<CourtAdminLeave>
                 {
-                    new SheriffLeave
+                    new CourtAdminLeave
                     {
                         StartDate = startDate.AddDays(1),
                         EndDate = startDate.AddDays(2),
                         ExpiryDate = DateTimeOffset.UtcNow
                     }
                 },
-                Training = new List<SheriffTraining>
+                Training = new List<CourtAdminTraining>
                 {
-                    new SheriffTraining
+                    new CourtAdminTraining
                     {
                         StartDate = startDate.AddDays(1),
                         EndDate = startDate.AddDays(2),
                         ExpiryDate = DateTimeOffset.UtcNow
                     }
                 },
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(1),
@@ -295,7 +295,7 @@ namespace tests.controllers
 
             //Expired Sheriff.
             var expiredSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
                 Id = expiredSheriff,
@@ -308,16 +308,16 @@ namespace tests.controllers
 
             //Loaned in.
             var loanedInSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location2.Id,
                 FirstName = "Loaned In",
                 LastName = "Loaned In",
                 Id = loanedInSheriff,
                 IsEnabled = true,
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(1),
@@ -385,7 +385,7 @@ namespace tests.controllers
                 Id = 1, 
                 StartDate = startTimeOffset,
                 EndDate = endTimeOffset,
-                Sheriff = new Sheriff { Id = Guid.NewGuid(), LastName = "hello" },
+                Sheriff = new CourtAdmin { Id = Guid.NewGuid(), LastName = "hello" },
                 AnticipatedAssignment = new Assignment {Id = 1, Name = "Super assignment", Location = new Location { Id = 50000, AgencyId = "zz"}, LookupCode = new LookupCode() {Id = 900000}},
                 LocationId = 50000
             });
@@ -412,7 +412,7 @@ namespace tests.controllers
 
             var sheriffId = Guid.NewGuid();
             var sheriffIdAway = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 Id = sheriffId,
                 FirstName = "Hello",
@@ -420,16 +420,16 @@ namespace tests.controllers
                 IsEnabled = true,
                 HomeLocationId = locationId
             });
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 Id = sheriffIdAway,
                 FirstName = "Hello2",
                 LastName = "There2",
                 IsEnabled = true,
                 HomeLocationId = locationId,
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         Id = 1,
                         LocationId = locationId,
@@ -514,28 +514,28 @@ namespace tests.controllers
 
             var shiftDtos = new List<ShiftDto> { shiftDto }.Adapt<List<AddShiftDto>>();
 
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 Id = sheriffId, HomeLocationId = locationId1, FirstName = "First", LastName = "Sheriff", IsEnabled = true,
-                Leave = new List<SheriffLeave>
+                Leave = new List<CourtAdminLeave>
                 {
-                    new SheriffLeave
+                    new CourtAdminLeave
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(2)
                     }
                 },
-                Training = new List<SheriffTraining>
+                Training = new List<CourtAdminTraining>
                 {
-                    new SheriffTraining
+                    new CourtAdminTraining
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(2)
                     }
                 },
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(1),
@@ -558,7 +558,7 @@ namespace tests.controllers
             var sheriffId = Guid.NewGuid();
             var locationId1 = shiftDto.LocationId;
 
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId, FirstName = "Hello", LastName = "There", IsEnabled = true, HomeLocationId = locationId1 });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = sheriffId, FirstName = "Hello", LastName = "There", IsEnabled = true, HomeLocationId = locationId1 });
             await Db.Assignment.AddAsync(new Assignment { Id = 5, LocationId = locationId1, LookupCode = new LookupCode() { Id = 9000 }});
             await Db.SaveChangesAsync();
 
@@ -631,9 +631,9 @@ namespace tests.controllers
             var sheriffId = Guid.NewGuid();
             var sheriffId2 = Guid.NewGuid();
             var shiftDto = await CreateShift();
-            await Db.Sheriff.AddAsync(new Sheriff {Id = sheriffId, IsEnabled = true, HomeLocationId = 50000 });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin {Id = sheriffId, IsEnabled = true, HomeLocationId = 50000 });
             await Db.Location.AddAsync(new Location { Id = 50002, AgencyId = "3z", Timezone = "America/Vancouver" });
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId2, IsEnabled = true, HomeLocationId = 50002 });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = sheriffId2, IsEnabled = true, HomeLocationId = 50002 });
             await Db.SaveChangesAsync();
             shiftDto.LocationId = 50000;
             shiftDto.StartDate = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 6).AddYears(5); //Last week monday
@@ -666,7 +666,7 @@ namespace tests.controllers
             //Create Location, shift.. get 
             var locationId = await CreateLocation();
             var sheriffId = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId, IsEnabled = true, HomeLocationId = locationId });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = sheriffId, IsEnabled = true, HomeLocationId = locationId });
             await Db.SaveChangesAsync();
 
             var shiftStartDate = DateTimeOffset.UtcNow.AddYears(5).ConvertToTimezone("America/Vancouver").DateOnly();
@@ -732,7 +732,7 @@ namespace tests.controllers
         {
             var sheriffId = Guid.NewGuid();
             await Db.Location.AddAsync(new Location { Id = 50000, AgencyId = "zz", Timezone = "America/Vancouver"});
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId, HomeLocationId = 50000, FirstName = "First", LastName = "Sheriff", IsEnabled = true });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = sheriffId, HomeLocationId = 50000, FirstName = "First", LastName = "Sheriff", IsEnabled = true });
             await Db.SaveChangesAsync();
 
             var shiftDto = new ShiftDto

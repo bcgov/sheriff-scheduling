@@ -18,18 +18,18 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
-using SS.Api.helpers;
-using SS.Api.infrastructure;
-using SS.Api.infrastructure.authorization;
-using SS.Api.infrastructure.encryption;
-using SS.Api.infrastructure.middleware;
-using SS.Api.services.ef;
-using SS.Db.models;
+using CAS.API.helpers;
+using CAS.API.infrastructure;
+using CAS.API.infrastructure.authorization;
+using CAS.API.infrastructure.encryption;
+using CAS.API.infrastructure.middleware;
+using CAS.API.services.ef;
+using CAS.DB.models;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using SS.Api.cronjobs;
+using CAS.API.cronjobs;
 
-namespace SS.Api
+namespace CAS.API
 {
     public class Startup
     {
@@ -59,7 +59,7 @@ namespace SS.Api
             services.AddSingleton<MigrationAndSeedService>();
             services.AddScoped<IClaimsTransformation, ClaimsTransformer>();
 
-            services.AddDbContext<SheriffDbContext>(options =>
+            services.AddDbContext<CourtAdminDbContext>(options =>
                 {
                     options.UseNpgsql(Configuration.GetNonEmptyValue("DatabaseConnectionString"), npg => npg.MigrationsAssembly("db"));
                     if (CurrentEnvironment.IsDevelopment())
@@ -70,7 +70,7 @@ namespace SS.Api
             services.AddSingleton(new AesGcmEncryptionOptions { Key = Configuration.GetNonEmptyValue("DataProtectionKeyEncryptionKey") });
 
             services.AddDataProtection()
-                .PersistKeysToDbContext<SheriffDbContext>()
+                .PersistKeysToDbContext<CourtAdminDbContext>()
                 .UseXmlEncryptor(s => new AesGcmXmlEncryptor(s))
                 .SetApplicationName("SS");
 
@@ -186,7 +186,7 @@ namespace SS.Api
 
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("swagger/v1/swagger.json", "SS.Api");
+                options.SwaggerEndpoint("swagger/v1/swagger.json", "CAS.API");
                 options.RoutePrefix = "api";
             });
 

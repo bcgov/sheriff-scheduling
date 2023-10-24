@@ -1,4 +1,4 @@
-﻿namespace SS.Db.models.lookupcodes
+﻿namespace CAS.DB.models.lookupcodes
 {
     public enum LookupTypes
     {

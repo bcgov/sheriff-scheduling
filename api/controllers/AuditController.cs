@@ -5,26 +5,26 @@ using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto;
-using SS.Api.models.dto.generated;
-using SS.Api.services.usermanagement;
-using SS.Db.models;
-using SS.Db.models.auth;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto;
+using CAS.API.models.dto.generated;
+using CAS.API.services.usermanagement;
+using CAS.DB.models;
+using CAS.DB.models.auth;
 
-namespace SS.Api.controllers
+namespace CAS.API.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuditController : ControllerBase
     {
-        public SheriffService SheriffService { get; }
-        public SheriffDbContext Db { get; }
-        public const string CouldNotFindSheriffError = "Couldn't find sheriff.";
+        public CourtAdminService CourtAdminService { get; }
+        public CourtAdminDbContext Db { get; }
+        public const string CouldNotFindCourtAdminError = "Couldn't find court admin.";
 
-        public AuditController(SheriffService sheriffService, SheriffDbContext db)
+        public AuditController(CourtAdminService courtAdminService, CourtAdminDbContext db)
         {
-            SheriffService = sheriffService;
+            CourtAdminService = courtAdminService;
             Db = db;
         }
 
@@ -32,8 +32,8 @@ namespace SS.Api.controllers
         [PermissionClaimAuthorize(perm: Permission.CreateAndAssignRoles)]
         public async Task<ActionResult<List<AuditDto>>> ViewRoleHistory(Guid sheriffId)
         {
-            var sheriff = await SheriffService.GetSheriff(sheriffId, null);
-            if (sheriff == null) return NotFound(CouldNotFindSheriffError);
+            var sheriff = await CourtAdminService.GetCourtAdmin(sheriffId, null);
+            if (sheriff == null) return NotFound(CouldNotFindCourtAdminError);
             if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, sheriff.HomeLocationId)) return Forbid();
 
             var userRoleIds = Db.UserRole.AsNoTracking().Where(ur => ur.UserId == sheriffId).Select(ur => ur.Id);

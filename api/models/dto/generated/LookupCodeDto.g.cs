@@ -1,8 +1,8 @@
 using System;
-using SS.Api.models.dto.generated;
-using SS.Db.models.lookupcodes;
+using CAS.API.models.dto.generated;
+using CAS.DB.models.lookupcodes;
 
-namespace SS.Api.models.dto.generated
+namespace CAS.API.models.dto.generated
 {
     public partial class LookupCodeDto
     {

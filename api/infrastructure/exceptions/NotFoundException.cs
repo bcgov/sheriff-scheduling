@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SS.Api.infrastructure.exceptions
+namespace CAS.API.infrastructure.exceptions
 {
     /// <summary>
     /// NotFoundException class, provides a way to handle not found exceptions so that they are returned by the middleware in a standardized way.

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using db.models;
 using Mapster;
 
-namespace SS.Api.Models.DB
+namespace CAS.API.Models.DB
 {
     [AdaptTo("[name]Dto")]
     public class Location : BaseEntity

@@ -2,7 +2,7 @@
 using NodaTime;
 using TimeZoneNames;
 
-namespace SS.Common.helpers.extensions
+namespace CAS.COMMON.helpers.extensions
 {
     public static class DateTimeExtensions
     {

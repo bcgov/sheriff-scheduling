@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using SS.Db.models;
+using CAS.DB.models;
 
 // Credits to PIMS for this. 
-namespace SS.Db
+namespace CAS.DB
 {
     /// <summary>
     /// ModelBuilderExtensions static class, provides extension methods for ModelBuilder objects.
@@ -37,7 +37,7 @@ namespace SS.Db
         /// <param name="assembly"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static ModelBuilder ApplyAllConfigurations(this ModelBuilder modelBuilder, Assembly assembly, SheriffDbContext context = null)
+        public static ModelBuilder ApplyAllConfigurations(this ModelBuilder modelBuilder, Assembly assembly, CourtAdminDbContext context = null)
         {
             if (assembly == null) throw new ArgumentNullException(nameof(assembly));
 
@@ -51,7 +51,7 @@ namespace SS.Db
             {
                 if (!config.ContainsGenericParameters)
                 {
-                    var includeContext = config.GetConstructors().Any(c => c.GetParameters().Any(p => p.ParameterType == typeof(SheriffDbContext)));
+                    var includeContext = config.GetConstructors().Any(c => c.GetParameters().Any(p => p.ParameterType == typeof(CourtAdminDbContext)));
                     var entityConfig = includeContext ? Activator.CreateInstance(config, context) : Activator.CreateInstance(config);
                     var entityType = config.GetInterfaces().FirstOrDefault()?.GetGenericArguments()[0];
                     var applyConfigurationMethod = method.MakeGenericMethod(entityType ?? throw new InvalidOperationException());

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.Db.models.auth;
-using SS.DB.Configuration;
+using CAS.DB.models.auth;
+using CAS.DB.Configuration;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class PermissionConfiguration : BaseEntityConfiguration<Permission>
     {

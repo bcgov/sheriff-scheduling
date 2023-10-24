@@ -1,7 +1,7 @@
 <template>
     <div> 
         <loading-spinner v-if="!isDutyRosterDataMounted" />      
-        <sheriff-day-view v-else-if="sheriffFullview" />       
+        <court-admin-day-view v-else-if="sheriffFullview" />       
 
         <b-table
             v-else
@@ -44,7 +44,7 @@
                     <duty-card v-on:change="getData" :dutyRosterInfo="data.item"/>
                 </template>
         </b-table>                
-        <sheriff-fuel-gauge v-show="isDutyRosterDataMounted && displayFuelGauge" class="fixed-bottom bg-white"/>
+        <court-admin-fuel-gauge v-show="isDutyRosterDataMounted && displayFuelGauge" class="fixed-bottom bg-white"/>
         <div id="app-footer-assignment" v-if="!sheriffFullview">
             <b-row style="margin:0 0 .25rem .25rem; ">
                 <div

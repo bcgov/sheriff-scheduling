@@ -28,7 +28,7 @@
 
         public login(){
             Vue.$cookies.remove("logout");
-            window.location.replace(`${process.env.BASE_URL}api/auth/login?redirectUri=%2Fsheriff-scheduling`);
+            window.location.replace(`${process.env.BASE_URL}api/auth/login?redirectUri=%2Fcourt-admin-scheduling`);
         }
 
         mounted(){

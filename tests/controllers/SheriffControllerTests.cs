@@ -2,21 +2,21 @@
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Http;
-using SS.Api.controllers.usermanagement;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.Models.DB;
-using SS.Api.models.dto;
-using ss.db.models;
-using SS.Db.models.sheriff;
+using CAS.API.controllers.usermanagement;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.Models.DB;
+using CAS.API.models.dto;
+using CAS.DB.models;
+using CAS.DB.models.courtAdmin;
 using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;
-using SS.Api.models.dto.generated;
-using SS.Api.services.usermanagement;
+using CAS.API.models.dto.generated;
+using CAS.API.services.usermanagement;
 using Microsoft.Extensions.Logging;
-using SS.Db.models.scheduling;
+using CAS.DB.models.scheduling;
 using System.Linq;
-using SS.Api.services.scheduling;
+using CAS.API.services.scheduling;
 
 namespace tests.controllers
 {
@@ -32,7 +32,7 @@ namespace tests.controllers
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
             var httpContextAccessor = new HttpContextAccessor {HttpContext = HttpResponseTest.SetupHttpContext()};
 
-            var sheriffService = new SheriffService(Db, environment.Configuration, httpContextAccessor);
+            var sheriffService = new CourtAdminService(Db, environment.Configuration, httpContextAccessor);
             var shiftService = new ShiftService(Db,sheriffService, environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration, shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
             _controller = new SheriffController(sheriffService, dutyRosterService, shiftService,new UserService(Db), environment.Configuration, Db)
@@ -44,7 +44,7 @@ namespace tests.controllers
         [Fact]
         public async Task CreateSheriff()
         {
-            var newSheriff = new Sheriff
+            var newSheriff = new CourtAdmin
             {
                 FirstName = "Ted",
                 LastName = "Tums",
@@ -60,15 +60,15 @@ namespace tests.controllers
             //Debug.Write(JsonConvert.SerializeObject(sheriffDto));
 
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddSheriff(sheriffDto));
-            var sheriffResponse = response.Adapt<Sheriff>();
+            var sheriffResponse = response.Adapt<CourtAdmin>();
 
-            Assert.NotNull(await Db.Sheriff.FindAsync(sheriffResponse.Id));
+            Assert.NotNull(await Db.CourtAdmin.FindAsync(sheriffResponse.Id));
         }
 
         [Fact]
         public async Task CreateSheriffSameIdir()
         {
-            var newSheriff = new Sheriff
+            var newSheriff = new CourtAdmin
             {
                 FirstName = "Ted",
                 LastName = "Tums",
@@ -84,9 +84,9 @@ namespace tests.controllers
             //Debug.Write(JsonConvert.SerializeObject(sheriffDto));
 
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddSheriff(sheriffDto));
-            var sheriffResponse = response.Adapt<Sheriff>();
+            var sheriffResponse = response.Adapt<CourtAdmin>();
 
-            Assert.NotNull(await Db.Sheriff.FindAsync(sheriffResponse.Id));
+            Assert.NotNull(await Db.CourtAdmin.FindAsync(sheriffResponse.Id));
 
             newSheriff.BadgeNumber = "554";
             sheriffDto = newSheriff.Adapt<SheriffWithIdirDto>();
@@ -97,7 +97,7 @@ namespace tests.controllers
             {
                 response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(
                     await _controller.AddSheriff(sheriffDto));
-                sheriffResponse = response.Adapt<Sheriff>();
+                sheriffResponse = response.Adapt<CourtAdmin>();
             }
             catch (Exception e)
             {
@@ -116,7 +116,7 @@ namespace tests.controllers
 
             var controllerResult = await _controller.GetSheriffForTeam(sheriffObject.Id);
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
-            var sheriffResponse = response.Adapt<Sheriff>();
+            var sheriffResponse = response.Adapt<CourtAdmin>();
 
             //Compare Sheriff and Sheriff Object.
             Assert.Equal(sheriffObject.FirstName, sheriffResponse.FirstName);
@@ -154,7 +154,7 @@ namespace tests.controllers
 
             var controllerResult = await _controller.UpdateSheriff(updateSheriff);
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
-            var sheriffResponse = response.Adapt<Sheriff>();
+            var sheriffResponse = response.Adapt<CourtAdmin>();
 
             Assert.Equal(updateSheriff.FirstName, sheriffResponse.FirstName);
             Assert.Equal(updateSheriff.LastName, sheriffResponse.LastName);
@@ -498,33 +498,33 @@ namespace tests.controllers
             await Db.Location.AddAsync(edmontonTimezoneLocation);
             await Db.SaveChangesAsync();
 
-            var sheriffAwayLocation = new SheriffAwayLocation
+            var sheriffAwayLocation = new CourtAdminAwayLocation
             {
                 Timezone = "America/Vancouver",
                 StartDate = DateTimeOffset.Parse($"{awayLocationDate} 00:00:00 -8"),
                 EndDate = DateTimeOffset.Parse($"{awayLocationDate} 23:59:00 -8"),
-                SheriffId = sheriffObject.Id,
+                CourtAdminId = sheriffObject.Id,
                 LocationId = edmontonTimezoneLocation.Id
             };
 
             var result0 = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddSheriffAwayLocation(sheriffAwayLocation.Adapt<SheriffAwayLocationDto>()));
 
-            var sheriffTraining = new SheriffTraining
+            var sheriffTraining = new CourtAdminTraining
             {
                 Timezone = "America/Edmonton",
                 StartDate = DateTimeOffset.Parse($"{trainingDate} 00:00:00 -7"),
                 EndDate = DateTimeOffset.Parse($"{trainingDate} 23:59:00 -7"),
-                SheriffId = sheriffObject.Id
+                CourtAdminId = sheriffObject.Id
             };
 
             HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await _controller.AddSheriffTraining(sheriffTraining.Adapt<SheriffTrainingDto>()));
 
-            var sheriffTraining2 = new SheriffTraining
+            var sheriffTraining2 = new CourtAdminTraining
             {
                 Timezone = "America/Edmonton",
                 StartDate = DateTimeOffset.Parse($"{trainingDate2} 00:00:00 -7"),
                 EndDate = DateTimeOffset.Parse($"{trainingDate2} 23:59:00 -7"),
-                SheriffId = sheriffObject.Id
+                CourtAdminId = sheriffObject.Id
             };
 
             HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(
@@ -535,9 +535,9 @@ namespace tests.controllers
         #region Helpers
 
 
-        private async Task<Sheriff> CreateSheriffUsingDbContext()
+        private async Task<CourtAdmin> CreateSheriffUsingDbContext()
         {
-            var newSheriff = new Sheriff
+            var newSheriff = new CourtAdmin
             {
                 FirstName = "Ted",
                 LastName = "Tums",
@@ -549,7 +549,7 @@ namespace tests.controllers
                 HomeLocation =  new Location { Name = "Teds Place", AgencyId = "5555555435353535353535353"},
             };
 
-            await Db.Sheriff.AddAsync(newSheriff);
+            await Db.CourtAdmin.AddAsync(newSheriff);
             await Db.SaveChangesAsync();
 
             Detach();
@@ -558,7 +558,7 @@ namespace tests.controllers
         }
 
 
-        private async Task<SheriffAwayLocation> CreateSheriffAwayLocationUsingDbContext()
+        private async Task<CourtAdminAwayLocation> CreateSheriffAwayLocationUsingDbContext()
         {
             var sheriffObject = await CreateSheriffUsingDbContext();
 
@@ -568,10 +568,10 @@ namespace tests.controllers
 
             Detach();
 
-            var sheriffAwayLocation = new SheriffAwayLocation
+            var sheriffAwayLocation = new CourtAdminAwayLocation
             {
                 LocationId = newLocation.Id,
-                SheriffId = sheriffObject.Id,
+                CourtAdminId = sheriffObject.Id,
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddHours(3)
             };

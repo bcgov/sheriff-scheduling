@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.DB.Configuration;
-using ss.db.models;
-using SS.Db.models.auth;
-using SS.Db.models.lookupcodes;
+using CAS.DB.Configuration;
+using CAS.DB.models;
+using CAS.DB.models.auth;
+using CAS.DB.models.lookupcodes;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class LookupCodeOrderConfiguration : BaseEntityConfiguration<LookupCode>
     {

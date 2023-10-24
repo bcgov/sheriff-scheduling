@@ -1,12 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Mapster;
-using ss.db.models;
+using CAS.DB.models;
 
-namespace SS.Db.models.sheriff
+namespace CAS.DB.models.courtAdmin
 {
     [AdaptTo("[name]Dto")]
-    public class SheriffTraining : SheriffEvent
+    public class CourtAdminTraining : CourtAdminEvent
     {
         public virtual LookupCode TrainingType { get; set; }
         public int? TrainingTypeId { get; set; }

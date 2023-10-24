@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SS.Db.models;
+using CAS.DB.models;
 
-namespace SS.Db.Migrations
+namespace CAS.DB.Migrations
 {
-    [DbContext(typeof(SheriffDbContext))]
+    [DbContext(typeof(CourtAdminDbContext))]
     [Migration("20200930190126_Data")]
     partial class Data
     {
@@ -21,7 +21,7 @@ namespace SS.Db.Migrations
                 .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("SS.Api.Models.DB.Location", b =>
+            modelBuilder.Entity("CAS.API.Models.DB.Location", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -88,7 +88,7 @@ namespace SS.Db.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.Permission", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.Permission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -142,7 +142,7 @@ namespace SS.Db.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.Role", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -205,7 +205,7 @@ namespace SS.Db.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.RolePermission", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.RolePermission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -248,7 +248,7 @@ namespace SS.Db.Migrations
                     b.ToTable("RolePermission");
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.User", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -307,7 +307,7 @@ namespace SS.Db.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.UserRole", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.UserRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -350,7 +350,7 @@ namespace SS.Db.Migrations
                     b.ToTable("UserRole");
                 });
 
-            modelBuilder.Entity("SS.Db.models.lookupcodes.LookupSortOrder", b =>
+            modelBuilder.Entity("CAS.DB.models.lookupcodes.LookupSortOrder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -401,7 +401,7 @@ namespace SS.Db.Migrations
                     b.ToTable("LookupSortOrder");
                 });
 
-            modelBuilder.Entity("SS.Db.models.sheriff.SheriffAwayLocation", b =>
+            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffAwayLocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -453,7 +453,7 @@ namespace SS.Db.Migrations
                     b.ToTable("SheriffAwayLocation");
                 });
 
-            modelBuilder.Entity("SS.Db.models.sheriff.SheriffLeave", b =>
+            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffLeave", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -505,7 +505,7 @@ namespace SS.Db.Migrations
                     b.ToTable("SheriffLeave");
                 });
 
-            modelBuilder.Entity("SS.Db.models.sheriff.SheriffTraining", b =>
+            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffTraining", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -605,7 +605,7 @@ namespace SS.Db.Migrations
                     b.ToTable("Region");
                 });
 
-            modelBuilder.Entity("ss.db.models.LookupCode", b =>
+            modelBuilder.Entity("CAS.DB.models.LookupCode", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -716,9 +716,9 @@ namespace SS.Db.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SS.Db.models.sheriff.Sheriff", b =>
+            modelBuilder.Entity("CAS.DB.models.sheriff.Sheriff", b =>
                 {
-                    b.HasBaseType("SS.Db.models.auth.User");
+                    b.HasBaseType("CAS.DB.models.auth.User");
 
                     b.Property<string>("BadgeNumber")
                         .HasColumnType("text");
@@ -740,9 +740,9 @@ namespace SS.Db.Migrations
                     b.HasDiscriminator().HasValue("Sheriff");
                 });
 
-            modelBuilder.Entity("SS.Api.Models.DB.Location", b =>
+            modelBuilder.Entity("CAS.API.Models.DB.Location", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
@@ -750,208 +750,208 @@ namespace SS.Db.Migrations
                         .WithMany()
                         .HasForeignKey("RegionId");
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.Permission", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.Permission", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
 
-                    b.HasOne("SS.Db.models.auth.User", null)
+                    b.HasOne("CAS.DB.models.auth.User", null)
                         .WithMany("Permissions")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.Role", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.Role", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.RolePermission", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.RolePermission", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Db.models.auth.Permission", "Permission")
+                    b.HasOne("CAS.DB.models.auth.Permission", "Permission")
                         .WithMany()
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SS.Db.models.auth.Role", "Role")
+                    b.HasOne("CAS.DB.models.auth.Role", "Role")
                         .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.User", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.User", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("SS.Db.models.auth.UserRole", b =>
+            modelBuilder.Entity("CAS.DB.models.auth.UserRole", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Db.models.auth.Role", "Role")
+                    b.HasOne("CAS.DB.models.auth.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
 
-                    b.HasOne("SS.Db.models.auth.User", "User")
+                    b.HasOne("CAS.DB.models.auth.User", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SS.Db.models.lookupcodes.LookupSortOrder", b =>
+            modelBuilder.Entity("CAS.DB.models.lookupcodes.LookupSortOrder", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Api.Models.DB.Location", "Location")
+                    b.HasOne("CAS.API.Models.DB.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ss.db.models.LookupCode", "LookupCode")
+                    b.HasOne("CAS.DB.models.LookupCode", "LookupCode")
                         .WithMany()
                         .HasForeignKey("LookupCodeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("SS.Db.models.sheriff.SheriffAwayLocation", b =>
+            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffAwayLocation", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Api.Models.DB.Location", "Location")
+                    b.HasOne("CAS.API.Models.DB.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SS.Db.models.sheriff.Sheriff", "Sheriff")
+                    b.HasOne("CAS.DB.models.sheriff.Sheriff", "Sheriff")
                         .WithMany("AwayLocation")
                         .HasForeignKey("SheriffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("SS.Db.models.sheriff.SheriffLeave", b =>
+            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffLeave", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("ss.db.models.LookupCode", "LeaveType")
+                    b.HasOne("CAS.DB.models.LookupCode", "LeaveType")
                         .WithMany()
                         .HasForeignKey("LeaveTypeId");
 
-                    b.HasOne("SS.Db.models.sheriff.Sheriff", "Sheriff")
+                    b.HasOne("CAS.DB.models.sheriff.Sheriff", "Sheriff")
                         .WithMany("Leave")
                         .HasForeignKey("SheriffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("SS.Db.models.sheriff.SheriffTraining", b =>
+            modelBuilder.Entity("CAS.DB.models.sheriff.SheriffTraining", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Db.models.sheriff.Sheriff", "Sheriff")
+                    b.HasOne("CAS.DB.models.sheriff.Sheriff", "Sheriff")
                         .WithMany("Training")
                         .HasForeignKey("SheriffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ss.db.models.LookupCode", "TrainingType")
+                    b.HasOne("CAS.DB.models.LookupCode", "TrainingType")
                         .WithMany()
                         .HasForeignKey("TrainingTypeId");
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
             modelBuilder.Entity("db.models.Region", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("ss.db.models.LookupCode", b =>
+            modelBuilder.Entity("CAS.DB.models.LookupCode", b =>
                 {
-                    b.HasOne("SS.Db.models.auth.User", "CreatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("SS.Api.Models.DB.Location", "Location")
+                    b.HasOne("CAS.API.Models.DB.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("SS.Db.models.auth.User", "UpdatedBy")
+                    b.HasOne("CAS.DB.models.auth.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
                 });
 
-            modelBuilder.Entity("SS.Db.models.sheriff.Sheriff", b =>
+            modelBuilder.Entity("CAS.DB.models.sheriff.Sheriff", b =>
                 {
-                    b.HasOne("SS.Api.Models.DB.Location", "HomeLocation")
+                    b.HasOne("CAS.API.Models.DB.Location", "HomeLocation")
                         .WithMany()
                         .HasForeignKey("HomeLocationId");
                 });

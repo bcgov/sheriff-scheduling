@@ -1,10 +1,10 @@
 ﻿using Mapster;
-using ss.db.models;
+using CAS.DB.models;
 
-namespace SS.Db.models.sheriff
+namespace CAS.DB.models.courtAdmin
 {
     [AdaptTo("[name]Dto")]
-    public class SheriffLeave : SheriffEvent
+    public class CourtAdminLeave : CourtAdminEvent
     {
         public virtual LookupCode LeaveType { get; set; }
         public int? LeaveTypeId { get; set; }

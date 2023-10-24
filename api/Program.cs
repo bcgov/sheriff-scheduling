@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SS.Api.services.ef;
+using CAS.API.services.ef;
 
-namespace SS.Api
+namespace CAS.API
 {
     public static class Program
     {

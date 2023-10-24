@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Hosting;
-using SS.Db.models;
+using CAS.DB.models;
 
-namespace SS.Api.services.ef
+namespace CAS.API.services.ef
 {
     /// <summary>
     /// This is a utility service, to load up our Migrations before any code execution. 
@@ -34,7 +34,7 @@ namespace SS.Api.services.ef
             {
                 Logger.LogInformation("Starting Migrations.");
                 using var scope = Services.CreateScope();
-                var db = scope.ServiceProvider.GetRequiredService<SheriffDbContext>();
+                var db = scope.ServiceProvider.GetRequiredService<CourtAdminDbContext>();
                 var environment = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
                 var migrationsAssembly = db.GetService<IMigrationsAssembly>();
                 var historyRepository = db.GetService<IHistoryRepository>();
@@ -58,7 +58,7 @@ namespace SS.Api.services.ef
             }
         }
 
-        private void ExecuteSeedScripts(SheriffDbContext db, IWebHostEnvironment environment)
+        private void ExecuteSeedScripts(CourtAdminDbContext db, IWebHostEnvironment environment)
         {
             var seedPath = environment.IsDevelopment() ? Path.Combine("docker", "seed") : "data";
             var dbSqlPath = environment.IsDevelopment() ? Path.Combine("db", "sql") : Path.Combine("src", "db", "sql");

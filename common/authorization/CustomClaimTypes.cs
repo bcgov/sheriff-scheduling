@@ -1,4 +1,4 @@
-﻿namespace SS.Common.authorization
+﻿namespace CAS.COMMON.authorization
 {
     public static class CustomClaimTypes
     {

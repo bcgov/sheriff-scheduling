@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using SS.Common.authorization;
+using CAS.COMMON.authorization;
 
-namespace SS.Api.helpers.extensions
+namespace CAS.API.helpers.extensions
 {
     public static class ClaimExtensions
     {

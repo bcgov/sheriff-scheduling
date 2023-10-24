@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.DB.Configuration;
-using SS.Db.models.sheriff;
+using CAS.DB.Configuration;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
-    public class SheriffAwayLocationConfiguration : BaseEntityConfiguration<SheriffAwayLocation>
+    public class SheriffAwayLocationConfiguration : BaseEntityConfiguration<CourtAdminAwayLocation>
     {
-        public override void Configure(EntityTypeBuilder<SheriffAwayLocation> builder)
+        public override void Configure(EntityTypeBuilder<CourtAdminAwayLocation> builder)
         {
             builder.HasOne(b => b.Location).WithMany().HasForeignKey(m => m.LocationId)
                 .OnDelete(DeleteBehavior.Cascade);

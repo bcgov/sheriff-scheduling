@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using db.models;
 using Mapster;
-using SS.Api.Models.DB;
-using ss.db.models;
+using CAS.API.Models.DB;
+using CAS.DB.models;
 
-namespace SS.Db.models.lookupcodes
+namespace CAS.DB.models.lookupcodes
 {
     [AdaptTo("[name]Dto")]
     public class LookupSortOrder : BaseEntity

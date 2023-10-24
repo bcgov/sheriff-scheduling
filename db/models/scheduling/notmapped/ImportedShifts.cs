@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Mapster;
 
-namespace SS.Db.models.scheduling.notmapped
+namespace CAS.DB.models.scheduling.notmapped
 {
     [AdaptTo("[name]Dto")]
     public class ImportedShifts

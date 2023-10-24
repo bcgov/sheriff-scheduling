@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.DB.Configuration;
-using SS.Db.models.sheriff;
+using CAS.DB.Configuration;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
-    public class SheriffConfiguration : BaseEntityConfiguration<Sheriff>
+    public class SheriffConfiguration : BaseEntityConfiguration<CourtAdmin>
     {
-        public override void Configure(EntityTypeBuilder<Sheriff> builder)
+        public override void Configure(EntityTypeBuilder<CourtAdmin> builder)
         {
             builder.HasIndex(s => s.BadgeNumber).IsUnique();
 

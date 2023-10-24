@@ -4,7 +4,7 @@
 # Template File: templates/postgresql-deploy.yaml
 #=========================================================
 NAME=postgresql
-APP_NAME=sheriff-scheduling
+APP_NAME=court-admin-scheduling
 ROLE=db
 IMAGE_NAMESPACE=jag-shuber
 SOURCE_IMAGE_NAME=postgresql

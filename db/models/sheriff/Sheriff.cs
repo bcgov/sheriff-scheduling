@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Mapster;
 using Newtonsoft.Json;
-using SS.Db.models.auth;
+using CAS.DB.models.auth;
 
-namespace SS.Db.models.sheriff
+namespace CAS.DB.models.courtAdmin
 {
     [AdaptTo("[name]Dto", IgnoreAttributes = new[] { typeof(JsonIgnoreAttribute) })]
-    public class Sheriff : User
+    public class CourtAdmin : User
     {
         public Gender Gender { get; set; }
         public string BadgeNumber { get; set; }
         public string Rank { get; set; }
-        public virtual List<SheriffAwayLocation> AwayLocation { get; set; } = new List<SheriffAwayLocation>();
-        public virtual List<SheriffActingRank> ActingRank { get; set; } = new List<SheriffActingRank>();
-        public virtual List<SheriffLeave> Leave { get; set; } = new List<SheriffLeave>();
-        public virtual List<SheriffTraining> Training { get; set; } = new List<SheriffTraining>();
+        public virtual List<CourtAdminAwayLocation> AwayLocation { get; set; } = new List<CourtAdminAwayLocation>();
+        public virtual List<CourtAdminActingRank> ActingRank { get; set; } = new List<CourtAdminActingRank>();
+        public virtual List<CourtAdminLeave> Leave { get; set; } = new List<CourtAdminLeave>();
+        public virtual List<CourtAdminTraining> Training { get; set; } = new List<CourtAdminTraining>();
 
         [AdaptIgnore]
         public byte[] Photo { get; set; }

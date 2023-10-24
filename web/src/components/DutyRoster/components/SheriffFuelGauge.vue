@@ -26,7 +26,7 @@
                         </template>
 
                         <template v-slot:cell(availability)="data" >
-                            <sheriff-availability-card class="m-0 p-0" :sheriffInfo="data.item" />
+                            <court-admin-availability-card class="m-0 p-0" :sheriffInfo="data.item" />
                         </template>
 
                         <template v-slot:head(name) > 

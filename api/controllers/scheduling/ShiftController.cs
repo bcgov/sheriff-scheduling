@@ -6,17 +6,17 @@ using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SS.Api.helpers;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto.generated;
-using SS.Api.services.scheduling;
-using SS.Common.helpers.extensions;
-using SS.Db.models;
-using SS.Db.models.auth;
-using SS.Db.models.scheduling;
+using CAS.API.helpers;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto.generated;
+using CAS.API.services.scheduling;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.auth;
+using CAS.DB.models.scheduling;
 
-namespace SS.Api.controllers.scheduling
+namespace CAS.API.controllers.scheduling
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -26,10 +26,10 @@ namespace SS.Api.controllers.scheduling
         public const string CannotUpdateCrossLocationError = "Cannot update cross location.";
         private ShiftService ShiftService { get; }
         private DutyRosterService DutyRosterService { get; }
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
         private IConfiguration Configuration { get; }
 
-        public ShiftController(ShiftService shiftService, DutyRosterService dutyRosterService, SheriffDbContext db, IConfiguration configuration)
+        public ShiftController(ShiftService shiftService, DutyRosterService dutyRosterService, CourtAdminDbContext db, IConfiguration configuration)
         {
             ShiftService = shiftService;
             DutyRosterService = dutyRosterService;

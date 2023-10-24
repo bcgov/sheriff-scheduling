@@ -2,11 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using db.models;
 using Mapster;
-using SS.Db.models.sheriff;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Db.models
+namespace CAS.DB.models
 {
-    public class SheriffEvent : BaseEntity
+    public class CourtAdminEvent : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -14,9 +14,9 @@ namespace SS.Db.models
         public DateTimeOffset EndDate { get; set; }
         public DateTimeOffset? ExpiryDate { get; set; }
         public string ExpiryReason { get; set; }
-        public Guid SheriffId { get; set; }
+        public Guid CourtAdminId { get; set; }
         [AdaptIgnore]
-        public virtual Sheriff Sheriff { get; set; }
+        public virtual CourtAdmin CourtAdmin { get; set; }
         [MaxLength(200)]
         public string Comment { get; set; }
         public string Timezone { get; set; }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SS.Api.helpers.extensions
+namespace CAS.API.helpers.extensions
 {
     public static class ListExtensions
     {

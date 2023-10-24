@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace SS.Db.models.jc
+namespace CAS.DB.models.jc
 {
     public class JcSynchronization
     {

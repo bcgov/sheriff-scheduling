@@ -257,8 +257,8 @@
             </template>
         </b-modal>
 
-        <b-modal v-model="showEditDutySheriffModal" size="lg sheriff-modal" footer-class="d-none" no-close-on-backdrop centered header-class="bg-primary pt-3 pb-2 text-light">            			
-            <sheriff-modal @drop="drop"
+        <b-modal v-model="showEditDutySheriffModal" size="lg court-admin-modal" footer-class="d-none" no-close-on-backdrop centered header-class="bg-primary pt-3 pb-2 text-light">            			
+            <court-admin-modal @drop="drop"
                 @editDuty="editDuty"
                 :weekView="false"
                 :dutyBlock="getDutyBlock()"

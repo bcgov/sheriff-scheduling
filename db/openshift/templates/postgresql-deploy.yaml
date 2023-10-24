@@ -186,7 +186,7 @@ parameters:
     displayName: App Name
     description: App Name
     required: true
-    value: sheriff-scheduler
+    value: court-admin-scheduler
   - name: ROLE
     displayName: Role
     description: Role

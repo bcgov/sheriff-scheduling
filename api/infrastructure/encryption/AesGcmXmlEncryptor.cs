@@ -3,9 +3,9 @@ using System.Text;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.Extensions.DependencyInjection;
-using SS.Api.infrastructure.exceptions;
+using CAS.API.infrastructure.exceptions;
 
-namespace SS.Api.infrastructure.encryption
+namespace CAS.API.infrastructure.encryption
 {
     public class AesGcmXmlEncryptor : IXmlEncryptor
     {

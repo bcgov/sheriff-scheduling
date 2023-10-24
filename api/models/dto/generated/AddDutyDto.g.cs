@@ -1,6 +1,6 @@
 using System;
 
-namespace SS.Api.models.dto.generated
+namespace CAS.API.models.dto.generated
 {
     public partial class AddDutyDto
     {

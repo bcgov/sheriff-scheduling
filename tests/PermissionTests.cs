@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using db.models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.Controllers;
-using SS.Api.infrastructure.authorization;
-using SS.Api.Models.DB;
-using SS.Common.authorization;
-using SS.Db.models;
-using SS.Db.models.auth;
-using SS.Db.models.sheriff;
+using CAS.API.Controllers;
+using CAS.API.infrastructure.authorization;
+using CAS.API.Models.DB;
+using CAS.COMMON.authorization;
+using CAS.DB.models;
+using CAS.DB.models.auth;
+using CAS.DB.models.courtAdmin;
 using tests.api.helpers;
 using Xunit;
 using static System.String;
@@ -78,55 +78,55 @@ namespace tests
             //4. ViewHome only.
             //5. None
 
-            var options = new DbContextOptionsBuilder<SheriffDbContext>()
+            var options = new DbContextOptionsBuilder<CourtAdminDbContext>()
                 .UseInMemoryDatabase("SheriffTestDb")
                 .Options;
 
             await using var db = new MemorySheriffDbContext(options);
 
-            await db.Sheriff.AddAsync(new Sheriff { Id = new Guid(), HomeLocation = new Location { Id = 1 } });
-            await db.Sheriff.AddAsync(new Sheriff { Id = new Guid(), HomeLocation = new Location { Id = 2 } });
+            await db.CourtAdmin.AddAsync(new CourtAdmin { Id = new Guid(), HomeLocation = new Location { Id = 1 } });
+            await db.CourtAdmin.AddAsync(new CourtAdmin { Id = new Guid(), HomeLocation = new Location { Id = 2 } });
             //Loaned in case.
-            await db.Sheriff.AddAsync(new Sheriff
+            await db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 Id = new Guid(),
                 HomeLocation = new Location
                 {
                     Id = 3
                 },
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         Id = 1,
                         LocationId = 4,
                         StartDate = DateTimeOffset.UtcNow.AddDays(4),
                         EndDate = DateTimeOffset.UtcNow.AddDays(20),
                         ExpiryDate = null,
-                        SheriffId = _ownUserId
+                        CourtAdminId = _ownUserId
                     }
                 }
             });
         
-            await db.Sheriff.AddAsync(new Sheriff { Id = _ownUserId, HomeLocation = new Location { Id = 4 }});
+            await db.CourtAdmin.AddAsync(new CourtAdmin { Id = _ownUserId, HomeLocation = new Location { Id = 4 }});
             //Future loan case, shouldn't show up. 
-            await db.Sheriff.AddAsync(new Sheriff
+            await db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 Id = new Guid(),
                 HomeLocation = new Location
                 {
                     Id = 5
                 },
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         Id = 2,
                         LocationId = 4,
                         StartDate = DateTimeOffset.UtcNow.AddDays(8),
                         EndDate = DateTimeOffset.UtcNow.AddDays(20),
                         ExpiryDate = null,
-                        SheriffId = _ownUserId
+                        CourtAdminId = _ownUserId
                     }
                 }
             });
@@ -142,7 +142,7 @@ namespace tests
             var start = DateTimeOffset.UtcNow.Date;
             var end = start.AddDays(7);
 
-            var sheriffs = await db.Sheriff.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            var sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
             Assert.True(sheriffs.Count == 5);
 
@@ -153,7 +153,7 @@ namespace tests
                 new Claim(CustomClaimTypes.Permission, Permission.ViewOtherProfiles)
             });
 
-            sheriffs = await db.Sheriff.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
             Assert.True(sheriffs.Count == 1);
 
@@ -164,7 +164,7 @@ namespace tests
                 new Claim(CustomClaimTypes.Permission, Permission.ViewOtherProfiles)
             });
 
-            sheriffs = await db.Sheriff.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
             Assert.True(sheriffs.Count == 1);
 
@@ -175,13 +175,13 @@ namespace tests
                 new Claim(CustomClaimTypes.Permission, Permission.ViewOtherProfiles)
             });
 
-            sheriffs = await db.Sheriff.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
             Assert.True(sheriffs.Count == 1);
 
             user = SetupClaim();
 
-            sheriffs = await db.Sheriff.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
+            sheriffs = await db.CourtAdmin.AsNoTracking().ApplyPermissionFilters(user, start, end, db).ToListAsync();
 
             Assert.Empty(sheriffs);
             await db.Database.EnsureDeletedAsync();
@@ -190,7 +190,7 @@ namespace tests
         [Fact]
         public async Task LocationDataTask()
         {
-            var options = new DbContextOptionsBuilder<SheriffDbContext>()
+            var options = new DbContextOptionsBuilder<CourtAdminDbContext>()
                 .UseInMemoryDatabase("SheriffTestDb")
                 .Options;
 
@@ -200,13 +200,13 @@ namespace tests
             await db.Location.AddAsync(new Location { Id = 4, Region = new Region { Id = 1 } });
             await db.Location.AddAsync(new Location { Id = 3, RegionId = 1 });
             await db.Location.AddAsync(new Location { Id = 5 });
-            await db.SheriffAwayLocation.AddAsync(new SheriffAwayLocation
+            await db.SheriffAwayLocation.AddAsync(new CourtAdminAwayLocation
             {
                 Id = 1,
                 LocationId = 5,
                 StartDate = DateTimeOffset.UtcNow.AddDays(4),
                 EndDate = DateTimeOffset.UtcNow.AddDays(20),
-                SheriffId = _ownUserId
+                CourtAdminId = _ownUserId
             });
             await db.SaveChangesAsync();
 

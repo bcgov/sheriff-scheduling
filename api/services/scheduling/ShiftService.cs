@@ -1,32 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.Models.DB;
-using SS.Api.services.usermanagement;
-using SS.Common.helpers.extensions;
-using SS.Db.models;
-using SS.Db.models.scheduling.notmapped;
-using SS.Db.models.sheriff;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.Models.DB;
+using CAS.API.services.usermanagement;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.scheduling.notmapped;
+using CAS.DB.models.courtAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.Extensions.Configuration;
-using SS.Api.helpers;
-using SS.Api.models;
-using SS.Db.models.lookupcodes;
-using Shift = SS.Db.models.scheduling.Shift;
+using CAS.API.helpers;
+using CAS.API.models;
+using CAS.DB.models.lookupcodes;
+using Shift = CAS.DB.models.scheduling.Shift;
 
-namespace SS.Api.services.scheduling
+namespace CAS.API.services.scheduling
 {
     public class ShiftService
     {
-        private SheriffDbContext Db { get; }
-        private SheriffService SheriffService { get; }
+        private CourtAdminDbContext Db { get; }
+        private CourtAdminService SheriffService { get; }
         public double OvertimeHoursPerDay { get; }
 
-        public ShiftService(SheriffDbContext db, SheriffService sheriffService, IConfiguration configuration)
+        public ShiftService(CourtAdminDbContext db, CourtAdminService sheriffService, IConfiguration configuration)
         {
             Db = db;
             SheriffService = sheriffService;
@@ -137,7 +137,7 @@ namespace SS.Api.services.scheduling
                 Db.Entry(savedShift).Property(x => x.LocationId).IsModified = false;
                 Db.Entry(savedShift).Property(x => x.ExpiryDate).IsModified = false;
 
-                savedShift.Sheriff = await Db.Sheriff.FindAsync(shift.SheriffId);
+                savedShift.Sheriff = await Db.CourtAdmin.FindAsync(shift.SheriffId);
                 savedShift.AnticipatedAssignment = await Db.Assignment.FindAsync(shift.AnticipatedAssignmentId);
             }
             await Db.SaveChangesAsync();
@@ -184,7 +184,7 @@ namespace SS.Api.services.scheduling
             var targetStartDate = start.ConvertToTimezone(timezone);
             var targetEndDate = targetStartDate.TranslateDateForDaylightSavings(timezone, 7);
 
-            var sheriffsAvailableAtLocation = await SheriffService.GetSheriffsForShiftAvailabilityForLocation(locationId, targetStartDate, targetEndDate);
+            var sheriffsAvailableAtLocation = await SheriffService.GetCourtAdminsForShiftAvailabilityForLocation(locationId, targetStartDate, targetEndDate);
             var sheriffIds = sheriffsAvailableAtLocation.SelectDistinctToList(s => s.Id);
 
             var shiftsToImport = Db.Shift
@@ -226,7 +226,7 @@ namespace SS.Api.services.scheduling
         /// </summary>
         public async Task<List<ShiftAvailability>> GetShiftAvailability(DateTimeOffset start, DateTimeOffset end, int locationId)
         {
-            var sheriffs = await SheriffService.GetSheriffsForShiftAvailabilityForLocation(locationId, start, end);
+            var sheriffs = await SheriffService.GetCourtAdminsForShiftAvailabilityForLocation(locationId, start, end);
 
             //Include sheriffs that have a shift, but their home location / away location doesn't match.
             //Grey out on the GUI if HomeLocationId and AwayLocation doesn't match.
@@ -240,7 +240,7 @@ namespace SS.Api.services.scheduling
 
             //Note their AwayLocation, Leave, Training should be entirely empty, this is intentional.
             var sheriffsOutOfLocationWithShift = await
-               Db.Sheriff.AsNoTracking()
+               Db.CourtAdmin.AsNoTracking()
                    .Include(s => s.HomeLocation)
                    .In(sheriffsOutOfLocationWithShiftIds,
                        s => s.Id)
@@ -419,7 +419,7 @@ namespace SS.Api.services.scheduling
         private async Task AddShift(Shift shift)
         {
             shift.ExpiryDate = null;
-            shift.Sheriff = await Db.Sheriff.FindAsync(shift.SheriffId);
+            shift.Sheriff = await Db.CourtAdmin.FindAsync(shift.SheriffId);
             shift.AnticipatedAssignment = await Db.Assignment.FindAsync(shift.AnticipatedAssignmentId);
             shift.Location = await Db.Location.FindAsync(shift.LocationId);
             await Db.Shift.AddAsync(shift);
@@ -429,7 +429,7 @@ namespace SS.Api.services.scheduling
 
         #region Override
 
-        public async Task HandleShiftOverrides<T>(T data, DutyRosterService dutyRosterService, List<Shift> shiftConflicts) where T : SheriffEvent
+        public async Task HandleShiftOverrides<T>(T data, DutyRosterService dutyRosterService, List<Shift> shiftConflicts) where T : CourtAdminEvent
         {
             var adjustShifts = new List<Shift>();
             var expireShiftIds = new List<int>();
@@ -531,29 +531,29 @@ namespace SS.Api.services.scheduling
             foreach (var shift in shifts)
             {
                 var locationId = shift.LocationId;
-                var sheriffs = await SheriffService.GetSheriffsForShiftAvailabilityForLocation(locationId, shift.StartDate, shift.EndDate, shift.SheriffId);
+                var sheriffs = await SheriffService.GetCourtAdminsForShiftAvailabilityForLocation(locationId, shift.StartDate, shift.EndDate, shift.SheriffId);
                 var sheriff = sheriffs.FirstOrDefault();
                 var validationErrors = new List<string>();
                 if (sheriff == null)
                 {
                     var unavailableSheriff =
-                        await Db.Sheriff.AsNoTracking().FirstOrDefaultAsync(s => s.Id == shift.SheriffId);
+                        await Db.CourtAdmin.AsNoTracking().FirstOrDefaultAsync(s => s.Id == shift.SheriffId);
                     validationErrors.Add($"{unavailableSheriff?.LastName}, {unavailableSheriff?.FirstName} is not active in this location for {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatDate()} {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)} to {shift.EndDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)}");
                 }
                 else
                 {
                     validationErrors.AddRange(sheriff!.AwayLocation.Where(aw => aw.LocationId != shift.LocationId)
-                        .Select(aw => PrintSheriffEventConflict<SheriffAwayLocation>(aw.Sheriff,
+                        .Select(aw => PrintSheriffEventConflict<CourtAdminAwayLocation>(aw.CourtAdmin,
                             aw.StartDate,
                             aw.EndDate,
                             aw.Timezone)));
-                    validationErrors.AddRange(sheriff.Leave.Select(aw => PrintSheriffEventConflict<SheriffLeave>(
-                        aw.Sheriff,
+                    validationErrors.AddRange(sheriff.Leave.Select(aw => PrintSheriffEventConflict<CourtAdminLeave>(
+                        aw.CourtAdmin,
                         aw.StartDate,
                         aw.EndDate,
                         aw.Timezone)));
-                    validationErrors.AddRange(sheriff.Training.Select(aw => PrintSheriffEventConflict<SheriffTraining>(
-                        aw.Sheriff,
+                    validationErrors.AddRange(sheriff.Training.Select(aw => PrintSheriffEventConflict<CourtAdminTraining>(
+                        aw.CourtAdmin,
                         aw.StartDate,
                         aw.EndDate,
                         aw.Timezone)));
@@ -582,13 +582,13 @@ namespace SS.Api.services.scheduling
 
         #region String Helpers
 
-        private static string ConflictingSheriffAndSchedule(Sheriff sheriff, Shift shift)
+        private static string ConflictingSheriffAndSchedule(CourtAdmin sheriff, Shift shift)
         {
             shift.Timezone.GetTimezone().ThrowBusinessExceptionIfNull("Shift - Timezone was invalid.");
             return $"{sheriff.LastName}, {sheriff.FirstName} has a shift {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatDate()} {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)} to {shift.EndDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)}";
         }
 
-        private static string PrintSheriffEventConflict<T>(Sheriff sheriff, DateTimeOffset start, DateTimeOffset end,
+        private static string PrintSheriffEventConflict<T>(CourtAdmin sheriff, DateTimeOffset start, DateTimeOffset end,
             string timezone)
         {
             timezone.GetTimezone().ThrowBusinessExceptionIfNull("SheriffEvent - Timezone was invalid.");

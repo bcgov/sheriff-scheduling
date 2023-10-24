@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>SS.Api</RootNamespace>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>CAS.Api</RootNamespace>
     <UserSecretsId>de959767-ede6-4f8a-b6b9-d36aed70339C</UserSecretsId>
     <ProjectGuid>6224c484-3e23-4f06-a749-195c1e478110</ProjectGuid>
   </PropertyGroup>

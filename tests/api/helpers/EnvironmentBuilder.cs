@@ -5,10 +5,10 @@ using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moq;
-using SS.Api.helpers;
-using SS.Api.helpers.extensions;
-using SS.Db.models;
-using BasicAuthenticationHeaderValue = SS.Api.helpers.BasicAuthenticationHeaderValue;
+using CAS.API.helpers;
+using CAS.API.helpers.extensions;
+using CAS.DB.models;
+using BasicAuthenticationHeaderValue = CAS.API.helpers.BasicAuthenticationHeaderValue;
 
 namespace tests.api.Helpers
 {
@@ -52,14 +52,14 @@ namespace tests.api.Helpers
             });
         }
 
-        public static DbContextOptions<SheriffDbContext> SetupDbOptions(bool useMemoryDatabase = false)
+        public static DbContextOptions<CourtAdminDbContext> SetupDbOptions(bool useMemoryDatabase = false)
         {
             var builder = new ConfigurationBuilder();
             builder.AddJsonFile("appsettings.json", optional: true);
             builder.AddUserSecrets<EnvironmentBuilder>();
             var configuration = builder.Build();
 
-            var optionsBuilder = new DbContextOptionsBuilder<SheriffDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<CourtAdminDbContext>();
             if (useMemoryDatabase)
                 optionsBuilder.UseInMemoryDatabase("testingDb");
             else

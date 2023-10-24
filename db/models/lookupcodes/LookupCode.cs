@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using db.models;
 using Mapster;
-using SS.Api.Models.DB;
-using SS.Db.models.lookupcodes;
+using CAS.API.Models.DB;
+using CAS.DB.models.lookupcodes;
 
-namespace ss.db.models
+namespace CAS.DB.models
 {
     [AdaptTo("[name]Dto")]
     public class LookupCode : BaseEntity

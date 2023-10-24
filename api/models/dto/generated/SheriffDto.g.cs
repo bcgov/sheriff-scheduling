@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using SS.Api.models.dto.generated;
-using SS.Db.models.sheriff;
+using CAS.API.models.dto.generated;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Api.models.dto.generated
+namespace CAS.API.models.dto.generated
 {
     public partial class SheriffDto
     {

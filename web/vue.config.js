@@ -1,7 +1,7 @@
 const path = require("path");
 const vueSrc = "src";
 
-const webBaseHref = process.env.WEB_BASE_HREF || '/sheriff-scheduling/';
+const webBaseHref = process.env.WEB_BASE_HREF || '/court-admin-scheduling/';
 module.exports = {
 	publicPath: webBaseHref,
 	configureWebpack: {
@@ -12,17 +12,17 @@ module.exports = {
 			port: 1338,
 			proxy: {
 				//Development purposes, if WEB_BASE_HREF changes, this will have to change as well. 
-				'^/sheriff-scheduling/api': {
+				'^/court-admin-scheduling/api': {
 					target: 'https://localhost:44370',
-					pathRewrite: { '^/sheriff-scheduling/api': '/api' },
+					pathRewrite: { '^/court-admin-scheduling/api': '/api' },
 					headers: {
 						Connection: 'keep-alive',
 						'X-Forwarded-Host': 'localhost',
 						'X-Forwarded-Port': '1338'
 					},
 					cookiePathRewrite: {
-						"/api/auth": "/sheriff-scheduling/api/auth",
-						"/api/auth/signin-oidc": "/sheriff-scheduling/api/auth/signin-oidc",
+						"/api/auth": "/court-admin-scheduling/api/auth",
+						"/api/auth/signin-oidc": "/court-admin-scheduling/api/auth/signin-oidc",
 						"*": ""
 					},
 					changeOrigin: true

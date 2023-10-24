@@ -3,7 +3,7 @@ using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SS.Api.infrastructure.encryption
+namespace CAS.API.infrastructure.encryption
 {
     public class AesGcmService : IDisposable
     {

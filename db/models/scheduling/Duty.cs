@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using db.models;
 using Mapster;
-using SS.Api.Models.DB;
-using SS.Common.attributes.mapping;
+using CAS.API.Models.DB;
+using CAS.COMMON.attributes.mapping;
 
-namespace SS.Db.models.scheduling
+namespace CAS.DB.models.scheduling
 {
     [AdaptTo("[name]Dto")]
     [GenerateUpdateDto, GenerateAddDto]

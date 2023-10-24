@@ -26,13 +26,13 @@
                             class="week-view-badge"
                             v-for="sch in sheriffSchedules"                            
                             :key="sch.weekday"
-                            :id="(sheriffModal?'sheriff-modal-sch':'sch')+sheriffId+'-'+sch.weekday"
+                            :id="(sheriffModal?'court-admin-modal-sch':'sch')+sheriffId+'-'+sch.weekday"
                             :variant="sch.variant" 
                             :style="sch.style" >
                                 {{sch.text}}                            
                         
 
-                            <b-tooltip v-if="sch.shifts.length>0" noninteractive :target="(sheriffModal?'sheriff-modal-sch':'sch')+sheriffId+'-'+sch.weekday" variant="warning" show.sync ="true" triggers="hover" placement="topright">
+                            <b-tooltip v-if="sch.shifts.length>0" noninteractive :target="(sheriffModal?'court-admin-modal-sch':'sch')+sheriffId+'-'+sch.weekday" variant="warning" show.sync ="true" triggers="hover" placement="topright">
                                 <h2 class="text-danger  mb-1 mx-0 p-0">{{sch.name}}</h2>
                                 <b-card bg-variant="dark" header-class="text-warning m-0 p-0" body-class="m-0 p-0" header="Sheriff Shifts:">             
                                     <b-table  

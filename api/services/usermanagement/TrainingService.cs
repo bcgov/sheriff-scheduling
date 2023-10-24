@@ -2,25 +2,25 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.exceptions;
-using SS.Db.models;
-using SS.Db.models.sheriff;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.exceptions;
+using CAS.DB.models;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Api.services.usermanagement
+namespace CAS.API.services.usermanagement
 {
 
     public class TrainingService
     {
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public TrainingService(SheriffDbContext db)
+        public TrainingService(CourtAdminDbContext db)
         {
             Db = db;
         }
 
 
-        public async Task<List<SheriffTraining>> GetTrainings()
+        public async Task<List<CourtAdminTraining>> GetTrainings()
         {                                    
             var sheriffTrainingQuery = Db.SheriffTraining.AsNoTracking()
                 .AsSplitQuery()
@@ -28,7 +28,7 @@ namespace SS.Api.services.usermanagement
                 .Where(t => t.FirstNotice != true)
                 .Where(t => t.TrainingType.AdvanceNotice > 0)                
                 .Include(t => t.TrainingType)
-                .Include(t => t.Sheriff);      
+                .Include(t => t.CourtAdmin);      
 
             return await sheriffTrainingQuery.ToListAsync();
         }
@@ -37,10 +37,10 @@ namespace SS.Api.services.usermanagement
         {
             var training = await Db.SheriffTraining.FindAsync(trainingId);
             training.ThrowBusinessExceptionIfNull(
-                $"{nameof(SheriffTraining)} with the id: {trainingId} could not be found. ");
+                $"{nameof(CourtAdminTraining)} with the id: {trainingId} could not be found. ");
 
             if (training.ExpiryDate.HasValue)
-                throw new BusinessLayerException($"{nameof(SheriffTraining)} with the id: {trainingId} has been expired");
+                throw new BusinessLayerException($"{nameof(CourtAdminTraining)} with the id: {trainingId} has been expired");
             
             training.FirstNotice = true;
             await Db.SaveChangesAsync();            

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 //Thanks to PIMS for this. 
-namespace SS.DB.Configuration
+namespace CAS.DB.Configuration
 {
     /// <summary>
     /// BaseEntityConfiguration class, provides a way to configure base entity in the database.

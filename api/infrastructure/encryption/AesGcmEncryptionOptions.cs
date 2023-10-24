@@ -1,4 +1,4 @@
-﻿namespace SS.Api.infrastructure.encryption
+﻿namespace CAS.API.infrastructure.encryption
 {
     public class AesGcmEncryptionOptions
     {

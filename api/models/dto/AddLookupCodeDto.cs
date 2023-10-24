@@ -1,7 +1,7 @@
 ﻿using System;
-using SS.Db.models.lookupcodes;
+using CAS.DB.models.lookupcodes;
 
-namespace SS.Api.models.dto
+namespace CAS.API.models.dto
 {
     public class AddLookupCodeDto
     {

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SS.Api.models;
-using SS.Db.models.scheduling;
+using CAS.API.models;
+using CAS.DB.models.scheduling;
 
-namespace SS.Api.helpers.extensions
+namespace CAS.API.helpers.extensions
 {
     public static class ShiftExtensions
     {

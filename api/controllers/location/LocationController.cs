@@ -5,13 +5,13 @@ using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto.generated;
-using SS.Db.models;
-using SS.Db.models.auth;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto.generated;
+using CAS.DB.models;
+using CAS.DB.models.auth;
 
-namespace SS.Api.controllers
+namespace CAS.API.controllers
 {
     /// <summary>
     /// Used to fetch Locations, plus expire locations. These locations are inserted by JCDataUpdaterService.
@@ -21,9 +21,9 @@ namespace SS.Api.controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public LocationController(SheriffDbContext dbContext)
+        public LocationController(CourtAdminDbContext dbContext)
         {
             Db = dbContext;
         }

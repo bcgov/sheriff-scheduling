@@ -7,7 +7,7 @@
         </b-form-checkbox>
 
 
-        <b-modal v-model="showExpireWarning" id="bv-modal-expire-sheriff-warning" header-class="bg-danger text-light">            
+        <b-modal v-model="showExpireWarning" id="bv-modal-expire-court-admin-warning" header-class="bg-danger text-light">            
             <template v-slot:modal-title>                
                 <h2 class="mb-0 text-light"> {{expiryTitle}} Profile </h2>             
             </template>

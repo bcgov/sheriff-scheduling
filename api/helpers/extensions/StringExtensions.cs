@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using NodaTime;
 
-namespace SS.Api.helpers.extensions
+namespace CAS.API.helpers.extensions
 {
     public static class StringExtensions
     {

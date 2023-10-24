@@ -3,8 +3,8 @@ using System.Text;
 using System.Text.Json;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
-using SS.Db.models;
-using SS.Db.models.audit;
+using CAS.DB.models;
+using CAS.DB.models.audit;
 using tests.api.Helpers;
 
 namespace tests.api.helpers
@@ -36,9 +36,9 @@ namespace tests.api.helpers
 
     }
 
-    public class MemorySheriffDbContext : SheriffDbContext
+    public class MemorySheriffDbContext : CourtAdminDbContext
     {
-        public MemorySheriffDbContext(DbContextOptions<SheriffDbContext> options) : base(options)
+        public MemorySheriffDbContext(DbContextOptions<CourtAdminDbContext> options) : base(options)
         {
 
         }

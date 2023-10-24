@@ -1,10 +1,10 @@
 ﻿using Mapster;
-using SS.Api.Models.DB;
+using CAS.API.Models.DB;
 
-namespace SS.Db.models.sheriff
+namespace CAS.DB.models.courtAdmin
 {
     [AdaptTo("[name]Dto")]
-    public class SheriffAwayLocation : SheriffEvent
+    public class CourtAdminAwayLocation : CourtAdminEvent
     {
         public virtual Location Location { get; set; }
         public int? LocationId { get; set; }

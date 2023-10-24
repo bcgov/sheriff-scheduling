@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>SS.Db</RootNamespace>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>CAS.DB</RootNamespace>
     <!-- Needed for Mapster.Tool to work. -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
@@ -114,7 +114,7 @@
   </ItemGroup>
   <Target Name="Mapster" AfterTargets="AfterBuild">
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet tool restore" />
-    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster model -a $(TargetDir)$(ProjectName).dll -n SS.Api.models.dto.generated -o ../api/models/dto/generated " />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster model -a $(TargetDir)$(ProjectName).dll -n CAS.API.models.dto.generated -o ../api/models/dto/generated " />
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster extension -a $(TargetDir)$(ProjectName).dll" />
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster mapper -a $(TargetDir)$(ProjectName).dll" />
   </Target>

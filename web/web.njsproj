@@ -57,9 +57,16 @@
     <Folder Include="src\components\common\" />
     <Folder Include="src\components\DutyRoster\" />
     <Folder Include="src\components\DutyRoster\components\" />
+    <Folder Include="src\components\DutyRoster\components\pdf\" />
+    <Folder Include="src\components\DutyRoster\manageAssignments\" />
+    <Folder Include="src\components\DutyRoster\manageAssignments\components\" />
+    <Folder Include="src\components\DutyRoster\manageAssignments\components\AssignmentComponents\" />
+    <Folder Include="src\components\DutyRoster\manageAssignments\components\AssignmentComponents\ManageAssignment\" />
+    <Folder Include="src\components\DutyRoster\manageAssignments\components\AssignmentComponents\ManageDuty\" />
     <Folder Include="src\components\ManageTypes\" />
     <Folder Include="src\components\ManageTypes\utils\" />
     <Folder Include="src\components\MyTeam\" />
+    <Folder Include="src\components\MyTeam\Components\" />
     <Folder Include="src\components\MyTeam\Tabs\" />
     <Folder Include="src\components\MyTeam\Tabs\AddForms\" />
     <Folder Include="src\components\ShiftSchedule\" />

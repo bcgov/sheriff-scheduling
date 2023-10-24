@@ -54,7 +54,7 @@
                             <user-summary-template v-on:photoChange="photoChanged" :user="teamMember" :editMode="false" />
                         </div>
                         <div class="card-footer text-white bg-dark border-dark mt-0 pt-0" style="width: 13.4rem; height: 2.5rem;">                                                
-                            <expire-sheriff-profile :disabled="!hasPermissionToExpireUsers" :userID="teamMember.id" :userIsEnable="teamMember.isEnabled" @change="getSheriffs()" />                        
+                            <expire-court-admin-profile :disabled="!hasPermissionToExpireUsers" :userID="teamMember.id" :userIsEnable="teamMember.isEnabled" @change="getSheriffs()" />                        
                         </div>
                     </div>
                 </div>

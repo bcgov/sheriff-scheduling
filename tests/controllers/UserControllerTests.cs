@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using SS.Api.controllers.usermanagement;
-using SS.Api.models.dto;
-using SS.Api.services.scheduling;
-using SS.Api.services.usermanagement;
-using SS.Db.models.auth;
+using CAS.API.controllers.usermanagement;
+using CAS.API.models.dto;
+using CAS.API.services.scheduling;
+using CAS.API.services.usermanagement;
+using CAS.DB.models.auth;
 using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;
@@ -29,7 +29,7 @@ namespace tests.controllers
         {
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
             var httpContextAccessor = new HttpContextAccessor { HttpContext = HttpResponseTest.SetupHttpContext() };
-            var sheriffService = new SheriffService(Db, environment.Configuration, httpContextAccessor);
+            var sheriffService = new CourtAdminService(Db, environment.Configuration, httpContextAccessor);
             var shiftService = new ShiftService(Db, sheriffService, environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration,
                 shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());

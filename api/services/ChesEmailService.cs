@@ -9,11 +9,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.models.ches;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.models.ches;
 
-namespace SS.Api.services
+namespace CAS.API.services
 {
     public class ChesEmailService
     {

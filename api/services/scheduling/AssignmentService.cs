@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Common.helpers.extensions;
-using SS.Db.models;
-using SS.Db.models.scheduling;
+using CAS.API.helpers.extensions;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.scheduling;
 
-namespace SS.Api.services.scheduling
+namespace CAS.API.services.scheduling
 {
     public class AssignmentService
     {
-        private SheriffDbContext Db { get; }
-        public AssignmentService(SheriffDbContext db)
+        private CourtAdminDbContext Db { get; }
+        public AssignmentService(CourtAdminDbContext db)
         {
             Db = db;
         }

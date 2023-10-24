@@ -6,22 +6,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SS.Api.helpers;
-using SS.Api.helpers.extensions;
-using SS.Common.helpers.extensions;
-using SS.Db.models;
-using SS.Db.models.scheduling;
-using SS.Db.models.scheduling.notmapped;
+using CAS.API.helpers;
+using CAS.API.helpers.extensions;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.scheduling;
+using CAS.DB.models.scheduling.notmapped;
 
-namespace SS.Api.services.scheduling
+namespace CAS.API.services.scheduling
 {
     public class DistributeScheduleService
     {
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
         private IConfiguration Configuration { get; }
         private ChesEmailService ChesEmailService { get; }
 
-        public DistributeScheduleService(SheriffDbContext db, IConfiguration configuration, ChesEmailService chesEmailService)
+        public DistributeScheduleService(CourtAdminDbContext db, IConfiguration configuration, ChesEmailService chesEmailService)
         {
             Configuration = configuration;
             ChesEmailService = chesEmailService;

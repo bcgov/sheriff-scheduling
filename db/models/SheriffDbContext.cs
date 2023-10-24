@@ -6,30 +6,30 @@ using System.Threading.Tasks;
 using db.models;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.Models.DB;
-using ss.db.models;
-using SS.Db.models.auth;
-using SS.Db.models.sheriff;
+using CAS.API.Models.DB;
+using CAS.DB.models;
+using CAS.DB.models.auth;
+using CAS.DB.models.courtAdmin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using SS.Common.authorization;
-using SS.Db.models.audit;
-using SS.Db.models.audit.notmapped;
-using SS.Db.models.jc;
-using SS.Db.models.lookupcodes;
-using SS.Db.models.scheduling;
+using CAS.COMMON.authorization;
+using CAS.DB.models.audit;
+using CAS.DB.models.audit.notmapped;
+using CAS.DB.models.jc;
+using CAS.DB.models.lookupcodes;
+using CAS.DB.models.scheduling;
 
-namespace SS.Db.models
+namespace CAS.DB.models
 {
-    public partial class SheriffDbContext : DbContext, IDataProtectionKeyContext
+    public partial class CourtAdminDbContext : DbContext, IDataProtectionKeyContext
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SheriffDbContext()
+        public CourtAdminDbContext()
         {
         }
 
-        public SheriffDbContext(DbContextOptions<SheriffDbContext> options, IHttpContextAccessor httpContextAccessor = null)
+        public CourtAdminDbContext(DbContextOptions<CourtAdminDbContext> options, IHttpContextAccessor httpContextAccessor = null)
             : base(options)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -39,11 +39,11 @@ namespace SS.Db.models
         public virtual DbSet<LookupCode> LookupCode { get; set; }
         public virtual DbSet<LookupSortOrder> LookupSortOrder { get; set; }
         public virtual DbSet<Region> Region { get; set; }
-        public virtual DbSet<Sheriff> Sheriff { get; set; }
-        public virtual DbSet<SheriffLeave> SheriffLeave { get; set; }
-        public virtual DbSet<SheriffAwayLocation> SheriffAwayLocation { get; set; }
-        public virtual DbSet<SheriffActingRank> SheriffActingRank { get; set; }
-        public virtual DbSet<SheriffTraining> SheriffTraining { get; set; }
+        public virtual DbSet<CourtAdmin> CourtAdmin { get; set; }
+        public virtual DbSet<CourtAdminLeave> SheriffLeave { get; set; }
+        public virtual DbSet<CourtAdminAwayLocation> SheriffAwayLocation { get; set; }
+        public virtual DbSet<CourtAdminActingRank> SheriffActingRank { get; set; }
+        public virtual DbSet<CourtAdminTraining> SheriffTraining { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserRole> UserRole { get; set; }
         public virtual DbSet<Permission> Permission { get; set; }

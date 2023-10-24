@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Mapster;
-using SS.Api.Models.DB;
-using SS.Db.models.sheriff;
+using CAS.API.Models.DB;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Db.models.scheduling.notmapped
+namespace CAS.DB.models.scheduling.notmapped
 {
     [AdaptTo("[name]Dto")]
     public class ShiftAvailability
@@ -20,7 +20,7 @@ namespace SS.Db.models.scheduling.notmapped
         public List<ShiftAvailabilityConflict> Conflicts { get; set; }
 
         [NotMapped]
-        public Sheriff Sheriff { get; set; }
+        public CourtAdmin Sheriff { get; set; }
 
         [NotMapped]
         public Guid? SheriffId { get; set; }

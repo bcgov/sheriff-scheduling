@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto.generated;
-using SS.Db.models;
-using SS.Db.models.auth;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto.generated;
+using CAS.DB.models;
+using CAS.DB.models.auth;
 
-namespace SS.Api.controllers.usermanagement
+namespace CAS.API.controllers.usermanagement
 {
     /// <summary>
     /// This just fetches our permissions, the permissions need to be determined at compile time. 
@@ -18,9 +18,9 @@ namespace SS.Api.controllers.usermanagement
     [PermissionClaimAuthorize(perm: Permission.CreateAndAssignRoles)]
     public class PermissionController : ControllerBase
     {
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public PermissionController(SheriffDbContext dbContext) {  Db = dbContext;  }
+        public PermissionController(CourtAdminDbContext dbContext) {  Db = dbContext;  }
 
         [HttpGet]
         public async Task<ActionResult<List<PermissionDto>>> GetPermissions()

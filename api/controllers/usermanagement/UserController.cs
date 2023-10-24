@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto;
-using SS.Api.models.dto.generated;
-using SS.Api.services.usermanagement;
-using SS.Db.models.auth;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto;
+using CAS.API.models.dto.generated;
+using CAS.API.services.usermanagement;
+using CAS.DB.models.auth;
 
-namespace SS.Api.controllers.usermanagement
+namespace CAS.API.controllers.usermanagement
 {
     /// <summary>
     /// This was made abstract, so it can be reused. The idea is you could take the User object and reuse with minimal changes in another project. 

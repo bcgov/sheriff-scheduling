@@ -1,13 +1,13 @@
 ﻿using Mapster;
-using SS.Api.controllers.scheduling;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.models.dto.generated;
-using SS.Api.Models.DB;
-using SS.Api.services.scheduling;
-using SS.Api.services.usermanagement;
-using SS.Common.helpers.extensions;
-using SS.Db.models.scheduling;
-using SS.Db.models.sheriff;
+using CAS.API.controllers.scheduling;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.models.dto.generated;
+using CAS.API.Models.DB;
+using CAS.API.services.scheduling;
+using CAS.API.services.usermanagement;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models.scheduling;
+using CAS.DB.models.courtAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace tests.controllers
         public DutyRosterControllerTests() : base(false)
         {
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
-            var shiftService = new ShiftService(Db, new SheriffService(Db, environment.Configuration),
+            var shiftService = new ShiftService(Db, new CourtAdminService(Db, environment.Configuration),
                 environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration,
                  shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
@@ -518,7 +518,7 @@ namespace tests.controllers
         }
         private async Task<Guid> CreateSheriff(int locationId)
         {
-            var newSheriff = new Sheriff
+            var newSheriff = new CourtAdmin
             {
                 FirstName = "Ted",
                 LastName = "Tums",
@@ -526,7 +526,7 @@ namespace tests.controllers
                 IsEnabled = true
             };
 
-            await Db.Sheriff.AddAsync(newSheriff);
+            await Db.CourtAdmin.AddAsync(newSheriff);
             await Db.SaveChangesAsync();
             return newSheriff.Id;
         }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace SS.Db.Migrations
+namespace CAS.DB.Migrations
 {
     public partial class EditIdir : Migration
     {
