@@ -80,7 +80,7 @@ build-api() {
     -e "CORS_DOMAIN=http://localhost:8080" \
     -e "DOTNET_STARTUP_PROJECT=./api/api.csproj" \
     '..' \
-    'registry.redhat.io/rhel8/dotnet-50' \
+    'registry.redhat.io/rhel8/dotnet-70' \
     'cas-api'
   echo -e "===================================================================================================="
 }
@@ -158,7 +158,7 @@ configureEnvironment () {
 
   # cas-db
   export POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE:-appdb}
-  export POSTGRESQL_USER=${POSTGRESQL_USER:-shersched}
+  export POSTGRESQL_USER=${POSTGRESQL_USER:-casched}
   export POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD:-n05dmkFjio1GCUVY}
   export POSTGRESQL_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD:-A?]qosqxBqNLdesFKWe}
   export TrainingNotification=${TrainingNotification:-"0 0/5 * * * ?"}
@@ -234,8 +234,8 @@ restoreDatabase() {
   # Wait for the database container to start
   sleep 10
 
-  #docker exec cas_db_1 psql -ac "CREATE USER shersched WITH PASSWORD 'n05dmkFjio1GCUVY';"
-  docker exec cas_db_1 psql -ac "GRANT ALL ON DATABASE ${POSTGRESQL_DATABASE} TO shersched;"
+  #docker exec cas_db_1 psql -ac "CREATE USER casched WITH PASSWORD 'n05dmkFjio1GCUVY';"
+  docker exec cas_db_1 psql -ac "GRANT ALL ON DATABASE ${POSTGRESQL_DATABASE} TO casched;"
   
   cmd="gunzip -c /tmp2/${backupFileName} | psql -v -x -h 127.0.0.1 -d ${POSTGRESQL_DATABASE}"
 
