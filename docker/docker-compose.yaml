@@ -2,7 +2,7 @@ version: "3.4"
 services:
 
   web:
-    image: ss-web
+    image: cas-web
     environment:
       - API_URL=${API_URL}
       - USE_SELF_SIGNED_SSL=${USE_SELF_SIGNED_SSL}
@@ -15,7 +15,7 @@ services:
       - api
 
   api:
-    image: ss-api
+    image: cas-api
     environment: 
       - LocationServicesClient__Username=${LocationServicesClientUsername}
       - LocationServicesClient__Password=${LocationServicesClientPassword}

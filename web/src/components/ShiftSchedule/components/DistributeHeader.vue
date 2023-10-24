@@ -305,7 +305,7 @@
 
         public printSchedule() { 
             const el = document.getElementById("pdf")   
-            const bottomLeftText = `" SS ";`;
+            const bottomLeftText = `" CAS ";`;
             const bottomRightText = `" "`;         
             const url = '/api/distributeschedule/print';            
             const pdfhtml = Vue.filter('printPdf')(el?.innerHTML, bottomLeftText, bottomRightText );
@@ -376,7 +376,7 @@
 
             this.emailingPdf=true;
             const el= document.getElementById("pdf");            
-            const bottomLeftText = `" SS ";`;
+            const bottomLeftText = `" CAS ";`;
             const bottomRightText = `" "`;
             const url = '/api/distributeschedule/email';            
             const pdfhtml = Vue.filter('printPdf')(el?.innerHTML, bottomLeftText, bottomRightText );            

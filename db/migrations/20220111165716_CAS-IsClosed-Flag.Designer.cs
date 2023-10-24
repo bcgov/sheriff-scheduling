@@ -12,7 +12,7 @@ namespace CAS.DB.Migrations
 {
     [DbContext(typeof(CourtAdminDbContext))]
     [Migration("20220111165716_SS-IsClosed-Flag")]
-    partial class SSIsClosedFlag
+    partial class CASIsClosedFlag
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

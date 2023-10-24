@@ -90,7 +90,7 @@ build-web() {
   # web
   #
   # The nginx-runtime image is used for the final runtime image.
-  # The ss-app image is used to build the artifacts for the vue distribution.
+  # The cas-app image is used to build the artifacts for the vue distribution.
   # The vue-on-nginx image is copy of the nginx-runtime image complete with a copy of the build artifacts.
   #
   echo -e "\n\n===================================================================================================="
@@ -105,7 +105,7 @@ build-web() {
   # I tried using __webpack_public_path__, but the CSS file path and JS file path weren't correctly updated. 
   # Also note we don't load in environment variables from the arguments here. 
   echo -e "\n\n===================================================================================================="
-  echo -e "Building the ss-web-artifacts image using s2i ... Using WEB_BASE_HREF: ${WEB_BASE_HREF-/court-admin-scheduling/}"
+  echo -e "Building the cas-web-artifacts image using s2i ... Using WEB_BASE_HREF: ${WEB_BASE_HREF-/court-admin-scheduling/}"
   echo -e "----------------------------------------------------------------------------------------------------"
   ${S2I_EXE} build \
     --copy \
@@ -116,7 +116,7 @@ build-web() {
   echo -e "===================================================================================================="
 
   echo -e "\n\n===================================================================================================="
-  echo -e "Building the ss-web image using Docker ..."
+  echo -e "Building the cas-web image using Docker ..."
   echo -e "----------------------------------------------------------------------------------------------------"
   docker build \
     -t 'ss-web' \
@@ -137,7 +137,7 @@ build-web-dev() {
   echo -e "===================================================================================================="
 
   echo -e "\n\n===================================================================================================="
-  echo -e "Building the ss-web-dev image using s2i ..."
+  echo -e "Building the cas-web-dev image using s2i ..."
   echo -e "----------------------------------------------------------------------------------------------------"
   ${S2I_EXE} build \
     -e "DEV_MODE=true" \
@@ -156,17 +156,17 @@ configureEnvironment () {
     esac
   done
 
-  # ss-db
+  # cas-db
   export POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE:-appdb}
   export POSTGRESQL_USER=${POSTGRESQL_USER:-shersched}
   export POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD:-n05dmkFjio1GCUVY}
   export POSTGRESQL_ADMIN_PASSWORD=${POSTGRESQL_ADMIN_PASSWORD:-A?]qosqxBqNLdesFKWe}
   export TrainingNotification=${TrainingNotification:-"0 0/5 * * * ?"}
-  # ss-web
+  # cas-web
   export API_URL=${API_URL-http://api:5000/api/}
   export WEB_BASE_HREF=${WEB_BASE_HREF-/court-admin-scheduling/}
 
-  # ss-pdf
+  # cas-pdf
   export PdfUrl=${PdfUrl-http://pdf:5001}
 }
 
@@ -234,13 +234,13 @@ restoreDatabase() {
   # Wait for the database container to start
   sleep 10
 
-  #docker exec ss_db_1 psql -ac "CREATE USER shersched WITH PASSWORD 'n05dmkFjio1GCUVY';"
-  docker exec ss_db_1 psql -ac "GRANT ALL ON DATABASE ${POSTGRESQL_DATABASE} TO shersched;"
+  #docker exec cas_db_1 psql -ac "CREATE USER shersched WITH PASSWORD 'n05dmkFjio1GCUVY';"
+  docker exec cas_db_1 psql -ac "GRANT ALL ON DATABASE ${POSTGRESQL_DATABASE} TO shersched;"
   
   cmd="gunzip -c /tmp2/${backupFileName} | psql -v -x -h 127.0.0.1 -d ${POSTGRESQL_DATABASE}"
 
   echo "${cmd}"
-  docker exec ss_db_1 bash -c "${cmd}"
+  docker exec cas_db_1 bash -c "${cmd}"
 
   docker-compose stop
 }

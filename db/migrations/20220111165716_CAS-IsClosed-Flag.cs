@@ -2,7 +2,7 @@
 
 namespace CAS.DB.Migrations
 {
-    public partial class SSIsClosedFlag : Migration
+    public partial class CASIsClosedFlag : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

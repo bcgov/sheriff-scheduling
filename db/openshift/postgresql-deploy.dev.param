@@ -1,6 +1,6 @@
 #=========================================================
 # OpenShift template parameters for:
-# Component: ss-db
+# Component: cas-db
 # Template File: templates/postgresql-deploy.yaml
 #=========================================================
 # NAME=postgresql
