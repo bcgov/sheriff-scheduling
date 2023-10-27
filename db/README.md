@@ -22,7 +22,3 @@ Timezones:
 
 https://www.npgsql.org/doc/types/nodatime.html
 
-WARNING
-A common mistake is for users to think that the PostgreSQL timestamp with timezone type stores the timezone in the database. 
-This is not the case: only the timestamp is stored. 
-There is no single PostgreSQL type that stores both a date/time and a timezone, similar to .NET DateTimeOffset.
