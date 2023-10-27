@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -47,6 +48,9 @@ namespace CAS.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //for debugging purposes
+            //IdentityModelEventSource.ShowPII = true;
+            
             services.AddLogging(options =>
             {
                 options.AddConsole(c =>
