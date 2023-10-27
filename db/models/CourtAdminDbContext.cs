@@ -12,6 +12,8 @@ using CAS.DB.models.auth;
 using CAS.DB.models.courtAdmin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using CAS.COMMON.authorization;
 using CAS.DB.models.audit;
 using CAS.DB.models.audit.notmapped;
@@ -75,7 +77,11 @@ namespace CAS.DB.models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Name=DatabaseConnectionString");
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+                optionsBuilder.UseNpgsql(configuration.GetConnectionString("DatabaseConnectionString"));
             }
         }
 

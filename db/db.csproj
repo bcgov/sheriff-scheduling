@@ -14,83 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="migrations\20200922142720_Initial.cs" />
-    <Compile Remove="migrations\20200922142720_Initial.Designer.cs" />
-    <Compile Remove="migrations\20200925220406_Spell5.cs" />
-    <Compile Remove="migrations\20200925220406_Spell5.Designer.cs" />
-    <Compile Remove="migrations\20200929185800_t2.cs" />
-    <Compile Remove="migrations\20200929185800_t2.Designer.cs" />
-    <Compile Remove="migrations\20200929190318_t2.cs" />
-    <Compile Remove="migrations\20200929190318_t2.Designer.cs" />
-    <Compile Remove="migrations\20200929191200_expiryForLocation.cs" />
-    <Compile Remove="migrations\20200929191200_expiryForLocation.Designer.cs" />
-    <Compile Remove="migrations\20200929193057_t3.cs" />
-    <Compile Remove="migrations\20200929193057_t3.Designer.cs" />
-    <Compile Remove="migrations\20200929193313_t3.cs" />
-    <Compile Remove="migrations\20200929193313_t3.Designer.cs" />
-    <Compile Remove="migrations\20200929212354_PermissionSeedData.cs" />
-    <Compile Remove="migrations\20200929212354_PermissionSeedData.Designer.cs" />
-    <Compile Remove="migrations\20200930002122_courtAdminRankSeed.cs" />
-    <Compile Remove="migrations\20200930002122_courtAdminRankSeed.Designer.cs" />
-    <Compile Remove="migrations\20200930005546_updateUser.cs" />
-    <Compile Remove="migrations\20200930005546_updateUser.Designer.cs" />
-    <Compile Remove="migrations\20200930011847_Data.cs" />
-    <Compile Remove="migrations\20200930011847_Data.Designer.cs" />
-    <Compile Remove="migrations\20200930185342_Data.cs" />
-    <Compile Remove="migrations\20200930185342_Data.Designer.cs" />
-    <Compile Remove="migrations\20201001192757_KeyCloakId.cs" />
-    <Compile Remove="migrations\20201001192757_KeyCloakId.Designer.cs" />
-    <Compile Remove="migrations\20201002182317_SeedUsers.cs" />
-    <Compile Remove="migrations\20201002182317_SeedUsers.Designer.cs" />
-    <Compile Remove="migrations\20201004171704_LocationToRegion.cs" />
-    <Compile Remove="migrations\20201004171704_LocationToRegion.Designer.cs" />
-    <Compile Remove="migrations\20201009192719_go.cs" />
-    <Compile Remove="migrations\20201009192719_go.Designer.cs" />
-    <Compile Remove="migrations\20201009195010_MorePermissions.cs" />
-    <Compile Remove="migrations\20201009195010_MorePermissions.Designer.cs" />
-    <Compile Remove="migrations\20201014174502_CascadeDeleteRole.cs" />
-    <Compile Remove="migrations\20201014174502_CascadeDeleteRole.Designer.cs" />
-    <Compile Remove="migrations\20201014174814_CascadeDeleteRole.cs" />
-    <Compile Remove="migrations\20201014174814_CascadeDeleteRole.Designer.cs" />
-    <Compile Remove="migrations\20201014174947_CascadeDeleteUserOrRole.cs" />
-    <Compile Remove="migrations\20201014174947_CascadeDeleteUserOrRole.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="migrations\20201113230451_UpdatePermissions.sql" />
-    <None Remove="migrations\20201209182004_UpdatePermissions_2.sql" />
-    <None Remove="migrations\20201210203059_UpdatePermissions_3.sql" />
-    <None Remove="migrations\20201212165816_UpdatePermissions_4.sql" />
-    <None Remove="migrations\20201215005036_UpdatePermissions_5.sql" />
-    <None Remove="migrations\20201221154933_UpdatePermissions_6.sql" />
-    <None Remove="migrations\20210114180437_UpdatePermissions_Final.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="migrations\20201113230451_UpdatePermissions.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="migrations\20201209182004_UpdatePermissions_2.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="migrations\20201210203059_UpdatePermissions_3.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="migrations\20201212165816_UpdatePermissions_4.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="migrations\20201215005036_UpdatePermissions_5.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="migrations\20210114180437_UpdatePermissions_Final.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="migrations\20201221154933_UpdatePermissions_6.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="7.0.0" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="7.0.13" />
@@ -101,12 +24,19 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\api\appsettings.json" Link="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
