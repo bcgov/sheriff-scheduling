@@ -14,7 +14,7 @@
                     <b-row class="info-box">
                         <b-col >
                             <b-col class="text-light text-center mt-0">
-                                <div style="font-size:25pt;" ><b>CourtAdmin Scheduling System</b></div>                                
+                                <div style="font-size:25pt;" ><b>Court Admin Scheduling System</b></div>                                
                             </b-col>
                             <div class=" mt-n1 mb-2 text-center text-shift" style="font-size:16pt;">
                                 <i>Welcome <b class="ml-1">{{courtAdminName}}</b></i>

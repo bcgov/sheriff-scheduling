@@ -94,7 +94,7 @@ namespace CAS.API.Controllers
         public async Task<IActionResult> RequestAccess(string currentEmailAddress)
         {
             var emailString =
-                $"{User.FullName()} - {User.IdirUserName()} - {currentEmailAddress} - Has requested access to CourtAdmin Scheduling on {DateTime.Now}.";
+                $"{User.FullName()} - {User.IdirUserName()} - {currentEmailAddress} - Has requested access to Court Admin Scheduling on {DateTime.Now}.";
 
             var requestAccessEmailAddress = Configuration.GetNonEmptyValue("RequestAccessEmailAddress");
 
