@@ -75,7 +75,7 @@ build-api() {
   echo -e "----------------------------------------------------------------------------------------------------"
   ${S2I_EXE} build \
     --copy \
-    -e "ASPNETCORE_ENVIRONMENT=Development" \
+    -e "ASPNETCORE_ENVIRONMENT=Production" \
     -e "ASPNETCORE_URLS=http://+:5000" \
     -e "CORS_DOMAIN=http://localhost:8080" \
     -e "DOTNET_STARTUP_PROJECT=./api/api.csproj" \
