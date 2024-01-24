@@ -6,17 +6,17 @@ using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SS.Api.helpers;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto.generated;
-using SS.Api.services.scheduling;
-using SS.Common.helpers.extensions;
-using SS.Db.models;
-using SS.Db.models.auth;
-using SS.Db.models.scheduling;
+using CAS.API.helpers;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto.generated;
+using CAS.API.services.scheduling;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.auth;
+using CAS.DB.models.scheduling;
 
-namespace SS.Api.controllers.scheduling
+namespace CAS.API.controllers.scheduling
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -25,9 +25,9 @@ namespace SS.Api.controllers.scheduling
         public const string InvalidDutyErrorMessage = "Invalid Duty.";
         public const string CannotUpdateCrossLocationError = "Cannot update cross location.";
         private DutyRosterService DutyRosterService { get; }
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
         private IConfiguration Configuration { get; }
-        public DutyRosterController(DutyRosterService dutyRosterService, SheriffDbContext db, IConfiguration configuration)
+        public DutyRosterController(DutyRosterService dutyRosterService, CourtAdminDbContext db, IConfiguration configuration)
         {
             DutyRosterService = dutyRosterService;
             Db = db;
@@ -95,15 +95,15 @@ namespace SS.Api.controllers.scheduling
             return NoContent();
         }
 
-        [HttpPut("moveSheriff")]
+        [HttpPut("moveCourtAdmin")]
         [PermissionClaimAuthorize(perm: Permission.EditDuties)]
-        public async Task<ActionResult<DutyDto>> MoveSheriffFromDutySlot(int fromDutySlotId, int toDutyId, DateTimeOffset? separationTime = null)
+        public async Task<ActionResult<DutyDto>> MoveCourtAdminFromDutySlot(int fromDutySlotId, int toDutyId, DateTimeOffset? separationTime = null)
         {
             var duty = await DutyRosterService.GetDutyByDutySlot(fromDutySlotId);
             if (duty == null) return NotFound();
             if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, duty.LocationId)) return Forbid();
 
-            duty = await DutyRosterService.MoveSheriffFromDutySlot(fromDutySlotId, toDutyId, separationTime);
+            duty = await DutyRosterService.MoveCourtAdminFromDutySlot(fromDutySlotId, toDutyId, separationTime);
             return Ok(duty.Adapt<DutyDto>());
         }
 

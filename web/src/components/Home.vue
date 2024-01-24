@@ -14,10 +14,10 @@
                     <b-row class="info-box">
                         <b-col >
                             <b-col class="text-light text-center mt-0">
-                                <div style="font-size:25pt;" ><b>Sheriff Scheduling System</b></div>                                
+                                <div style="font-size:25pt;" ><b>Court Admin Scheduling System</b></div>                                
                             </b-col>
                             <div class=" mt-n1 mb-2 text-center text-shift" style="font-size:16pt;">
-                                <i>Welcome <b class="ml-1">{{sheriffName}}</b></i>
+                                <i>Welcome <b class="ml-1">{{courtAdminName}}</b></i>
                             </div>
                         </b-col>
 
@@ -64,13 +64,13 @@
                                 </b-card-body>
                             </b-card>
                         </b-col>
-                        <b-col cols="6" v-if="sheriffEvents.length>0">
+                        <b-col cols="6" v-if="courtAdminEvents.length>0">
                             <b-card class="border training-box" no-body>
                                 <b-card-header class="h3 bg-primary text-white">Upcoming Events</b-card-header>
                                 <b-card-body>                        
                                     <b-alert
-                                        v-for="item,inx in sheriffEvents"
-                                        :key="'sheriff-events-'+inx"
+                                        v-for="item,inx in courtAdminEvents"
+                                        :key="'court-admin-events-'+inx"
                                         class="mx-2 my-3"
                                         variant="info"
                                         :show="true">
@@ -112,7 +112,7 @@ export default class Home extends Vue {
     public userDetails!: userInfoType;
 
 
-    sheriffName = ''
+    courtAdminName = ''
     location = {} as locationInfoType;
     
     trainingTypeOptions: leaveTrainingTypeInfoType[] = [];
@@ -125,7 +125,7 @@ export default class Home extends Vue {
 
     trainingAlert=false;
 
-    sheriffEvents: userEventsInfoType[] = []
+    courtAdminEvents: userEventsInfoType[] = []
 
     today=""
     dataReady=false
@@ -160,7 +160,7 @@ export default class Home extends Vue {
         this.errorText='';
         this.dataReady=false;
 
-        const url = 'api/sheriff/' + userId;
+        const url = 'api/courtAdmin/' + userId;
         this.$http.get(url)
             .then(response => {
                 if(response.data){                                              
@@ -178,28 +178,28 @@ export default class Home extends Vue {
         //
         // console.log(user)
         this.location = user.homeLocation
-        this.sheriffName = user.firstName + ' ' + user.lastName; 
+        this.courtAdminName = user.firstName + ' ' + user.lastName; 
         this.extractTrainings(user);
         this.extractAwayLocations(user);
-        this.sheriffEvents = _.sortBy(this.sheriffEvents, 'start')
+        this.courtAdminEvents = _.sortBy(this.courtAdminEvents, 'start')
         this.today = moment().tz(this.location.timezone).format("dddd - MMM DD, YYYY");
         this.dataReady=true;
     }
 
     
-    public extractTrainings(sheriffData){
+    public extractTrainings(courtAdminData){
         const mandetoryTrainings = this.trainingTypeOptions.filter(training => training.mandatory)
-        const sheriffTrainingsId = sheriffData.training? sheriffData.training.map(training => training.trainingTypeId): [];
-        const sheriffTrainings = sheriffData.training? JSON.parse(JSON.stringify(sheriffData.training)) : [];
+        const courtAdminTrainingsId = courtAdminData.training? courtAdminData.training.map(training => training.trainingTypeId): [];
+        const courtAdminTrainings = courtAdminData.training? JSON.parse(JSON.stringify(courtAdminData.training)) : [];
         
         for(const training of mandetoryTrainings){
-            if(!sheriffTrainingsId.includes(training.id)){
-                sheriffTrainings.push({
+            if(!courtAdminTrainingsId.includes(training.id)){
+                courtAdminTrainings.push({
                     comment: "",
                     endDate: "",
                     firstNotice: false,
                     id: null,
-                    sheriffId: sheriffData.id,
+                    courtAdminId: courtAdminData.id,
                     startDate: "",
                     timezone: "",
                     trainingCertificationExpiry: "",
@@ -209,17 +209,17 @@ export default class Home extends Vue {
             }
         }
         this.training = { notmet:[], expired:[],expiringsoon:[] }
-        for (const trainingData of sheriffTrainings){
-            this.addTrainingToReport(sheriffData, trainingData);            
+        for (const trainingData of courtAdminTrainings){
+            this.addTrainingToReport(courtAdminData, trainingData);            
         }
     }
 
-    public addTrainingToReport(sheriffData, trainingData){
-        //console.log(sheriffData)
+    public addTrainingToReport(courtAdminData, trainingData){
+        //console.log(courtAdminData)
         let rowType = ''
         const trainingInfo = {} as trainingReportInfoType;
-        trainingInfo.name = sheriffData.firstName + ' ' + sheriffData.lastName;
-        trainingInfo.sheriffId = sheriffData.id;
+        trainingInfo.name = courtAdminData.firstName + ' ' + courtAdminData.lastName;
+        trainingInfo.courtAdminId = courtAdminData.id;
         trainingInfo.trainingType = trainingData.trainingType.description;
         const timezone = trainingData.timezone?trainingData.timezone:'America/Vancouver';
         trainingInfo.start = trainingData.startDate? moment(trainingData.startDate).tz(timezone).format():'';
@@ -245,7 +245,7 @@ export default class Home extends Vue {
         const nextWeekDate = moment().add(7,'days').format()
         if(currentDate<=trainingInfo.start && nextWeekDate>=trainingInfo.start){
             // console.log(trainingInfo.trainingType)
-            this.sheriffEvents.push({
+            this.courtAdminEvents.push({
                 name: trainingInfo.trainingType,
                 type: 'Training',
                 start: trainingInfo.start,
@@ -254,10 +254,10 @@ export default class Home extends Vue {
         }        
     }
 
-    public extractAwayLocations(sheriffData){
-        for (const awayInfo of sheriffData.awayLocation){
+    public extractAwayLocations(courtAdminData){
+        for (const awayInfo of courtAdminData.awayLocation){
             const start = awayInfo.startDate? moment(awayInfo.startDate).tz(awayInfo.timezone).format():'';
-            this.sheriffEvents.push({
+            this.courtAdminEvents.push({
                 name: awayInfo.location.name,
                 type: 'Loaned',
                 start: start,

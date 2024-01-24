@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto;
-using SS.Api.models.dto.generated;
-using SS.Api.services.usermanagement;
-using SS.Db.models.auth;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto;
+using CAS.API.models.dto.generated;
+using CAS.API.services.usermanagement;
+using CAS.DB.models.auth;
 
-namespace SS.Api.controllers.usermanagement
+namespace CAS.API.controllers.usermanagement
 {
     /// <summary>
     /// This was made abstract, so it can be reused. The idea is you could take the User object and reuse with minimal changes in another project. 
@@ -47,19 +47,19 @@ namespace SS.Api.controllers.usermanagement
         [HttpPut]
         [Route("{id}/enable")]
         [PermissionClaimAuthorize(perm: Permission.ExpireUsers)]
-        public async Task<ActionResult<SheriffDto>> EnableUser(Guid id)
+        public async Task<ActionResult<CourtAdminDto>> EnableUser(Guid id)
         {
             var user = await UserService.EnableUser(id);
-            return Ok(user.Adapt<SheriffDto>());
+            return Ok(user.Adapt<CourtAdminDto>());
         }
 
         [HttpPut]
         [Route("{id}/disable")]
         [PermissionClaimAuthorize(perm: Permission.ExpireUsers)]
-        public async Task<ActionResult<SheriffDto>> DisableUser(Guid id)
+        public async Task<ActionResult<CourtAdminDto>> DisableUser(Guid id)
         {
             var user = await UserService.DisableUser(id);
-            return Ok(user.Adapt<SheriffDto>());
+            return Ok(user.Adapt<CourtAdminDto>());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SS.Api.models.dto
+namespace CAS.API.models.dto
 {
     public class UnassignRoleDto
     {

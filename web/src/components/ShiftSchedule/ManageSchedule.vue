@@ -23,10 +23,10 @@
                             <span>{{data.label}}</span>
                         </template>
                         <template v-slot:cell()="data" >
-                            <schedule-card :sheriffId="data.item.myteam.sheriffId" :scheduleInfo=" data.value"/>
+                            <schedule-card :courtAdminId="data.item.myteam.courtAdminId" :scheduleInfo=" data.value"/>
                         </template>
                         <template v-slot:cell(myteam) = "data" > 
-                            <team-member-card v-on:change="loadScheduleInformation()" :sheriffInfo="data.item.myteam" />
+                            <team-member-card v-on:change="loadScheduleInformation()" :courtAdminInfo="data.item.myteam" />
                         </template>
                 </b-table>
                 <div v-if="!isManageScheduleDataMounted && this.shiftSchedules.length == 0" style="min-height:115.6px;">
@@ -68,8 +68,8 @@
     const commonState = namespace("CommonInformation");
 
     import { locationInfoType, commonInfoType } from '@/types/common';
-    import { sheriffAvailabilityInfoType, shiftRangeInfoType, weekShiftInfoType,conflictsInfoType } from '@/types/ShiftSchedule/index'
-    import { sheriffsAvailabilityJsonType } from '@/types/ShiftSchedule/jsonTypes';
+    import { courtAdminAvailabilityInfoType, shiftRangeInfoType, weekShiftInfoType,conflictsInfoType } from '@/types/ShiftSchedule/index'
+    import { courtAdminsAvailabilityJsonType } from '@/types/ShiftSchedule/jsonTypes';
     
 
     @Component({
@@ -94,10 +94,10 @@
         public UpdateSelectedShifts!: (newSelectedShifts: string[]) => void
 
         @shiftState.State
-        public sheriffsAvailabilityInfo!: sheriffAvailabilityInfoType[];
+        public courtAdminsAvailabilityInfo!: courtAdminAvailabilityInfoType[];
 
         @shiftState.Action
-        public UpdateSheriffsAvailabilityInfo!: (newSheriffsAvailabilityInfo: sheriffAvailabilityInfoType[]) => void
+        public UpdateCourtAdminsAvailabilityInfo!: (newCourtAdminsAvailabilityInfo: courtAdminAvailabilityInfoType[]) => void
 
         isManageScheduleDataMounted = false;
         headerDates: string[] = [];
@@ -174,38 +174,38 @@
             //console.log(this.headerDates)
         }
 
-        public extractTeamAvailabilityInfo(sheriffsAvailabilityJson: sheriffsAvailabilityJsonType[]) {
+        public extractTeamAvailabilityInfo(courtAdminsAvailabilityJson: courtAdminsAvailabilityJsonType[]) {
 
-           // const sheriffsAvailability: sheriffAvailabilityInfoType[] = [];
+           // const courtAdminsAvailability: courtAdminAvailabilityInfoType[] = [];
             this.shiftSchedules = [];
             
-            for(const sheriffAvailabilityJson of sheriffsAvailabilityJson) {
-                const sheriffAvailability = {} as sheriffAvailabilityInfoType;
-                sheriffAvailability.sheriffId = sheriffAvailabilityJson.sheriffId;
-                sheriffAvailability.firstName = sheriffAvailabilityJson.sheriff.firstName;
-                sheriffAvailability.lastName = sheriffAvailabilityJson.sheriff.lastName;
-                sheriffAvailability.badgeNumber = sheriffAvailabilityJson.sheriff.badgeNumber;
-                sheriffAvailability.rank = (sheriffAvailabilityJson.sheriff.actingRank?.length>0)?  (sheriffAvailabilityJson.sheriff.actingRank[0].rank)+' (A)': sheriffAvailabilityJson.sheriff.rank;
-                sheriffAvailability.rankOrder = this.getRankOrder(sheriffAvailability.rank)[0]?this.getRankOrder(sheriffAvailability.rank)[0].id:0;
-                sheriffAvailability.homeLocation= {id: sheriffAvailabilityJson.sheriff.homeLocation.id, name: sheriffAvailabilityJson.sheriff.homeLocation.name}
-                const isInLoanLocation = (sheriffAvailabilityJson.sheriff.homeLocation.id !=this.location.id)
-                sheriffAvailability.conflicts =isInLoanLocation? this.extractInLoanLocationConflicts(sheriffAvailabilityJson.conflicts) :this.extractConflicts(sheriffAvailabilityJson.conflicts, false);        
-                //sheriffsAvailability.push(sheriffAvailability)
+            for(const courtAdminAvailabilityJson of courtAdminsAvailabilityJson) {
+                const courtAdminAvailability = {} as courtAdminAvailabilityInfoType;
+                courtAdminAvailability.courtAdminId = courtAdminAvailabilityJson.courtAdminId;
+                courtAdminAvailability.firstName = courtAdminAvailabilityJson.courtAdmin.firstName;
+                courtAdminAvailability.lastName = courtAdminAvailabilityJson.courtAdmin.lastName;
+                courtAdminAvailability.badgeNumber = courtAdminAvailabilityJson.courtAdmin.badgeNumber;
+                courtAdminAvailability.rank = (courtAdminAvailabilityJson.courtAdmin.actingRank?.length>0)?  (courtAdminAvailabilityJson.courtAdmin.actingRank[0].rank)+' (A)': courtAdminAvailabilityJson.courtAdmin.rank;
+                courtAdminAvailability.rankOrder = this.getRankOrder(courtAdminAvailability.rank)[0]?this.getRankOrder(courtAdminAvailability.rank)[0].id:0;
+                courtAdminAvailability.homeLocation= {id: courtAdminAvailabilityJson.courtAdmin.homeLocation.id, name: courtAdminAvailabilityJson.courtAdmin.homeLocation.name}
+                const isInLoanLocation = (courtAdminAvailabilityJson.courtAdmin.homeLocation.id !=this.location.id)
+                courtAdminAvailability.conflicts =isInLoanLocation? this.extractInLoanLocationConflicts(courtAdminAvailabilityJson.conflicts) :this.extractConflicts(courtAdminAvailabilityJson.conflicts, false);        
+                //courtAdminsAvailability.push(courtAdminAvailability)
                // console.log(isInLoanLocation)
                 
                 this.shiftSchedules.push({
-                    myteam: sheriffAvailability,
-                    Sun: sheriffAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==0) return true}),
-                    Mon: sheriffAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==1) return true}),
-                    Tue: sheriffAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==2) return true}),
-                    Wed: sheriffAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==3) return true}),
-                    Thu: sheriffAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==4) return true}),
-                    Fri: sheriffAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==5) return true}),
-                    Sat: sheriffAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==6) return true})
+                    myteam: courtAdminAvailability,
+                    Sun: courtAdminAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==0) return true}),
+                    Mon: courtAdminAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==1) return true}),
+                    Tue: courtAdminAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==2) return true}),
+                    Wed: courtAdminAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==3) return true}),
+                    Thu: courtAdminAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==4) return true}),
+                    Fri: courtAdminAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==5) return true}),
+                    Sat: courtAdminAvailability.conflicts.filter(conflict=>{if(conflict.dayOffset ==6) return true})
                 })
             }
-            //this.UpdateSheriffsAvailabilityInfo(sheriffsAvailability);
-            this.maxRank = this.commonInfo.sheriffRankList.reduce((max, rank) => rank.id > max ? rank.id : max, this.commonInfo.sheriffRankList[0].id);
+            //this.UpdateCourtAdminsAvailabilityInfo(courtAdminsAvailability);
+            this.maxRank = this.commonInfo.courtAdminRankList.reduce((max, rank) => rank.id > max ? rank.id : max, this.commonInfo.courtAdminRankList[0].id);
             this.shiftSchedules = this.sortTeamMembers(this.shiftSchedules);
             this.isManageScheduleDataMounted = true;
             this.updateTable++;
@@ -247,9 +247,9 @@
                                 startInMinutes:0, 
                                 timeDuration:0, 
                                 type:this.getConflictsType(conflict), 
-                                subType: (this.getConflictsType(conflict)=='Leave' && conflict.sheriffEventType)?conflict.sheriffEventType:'',
+                                subType: (this.getConflictsType(conflict)=='Leave' && conflict.courtAdminEventType)?conflict.courtAdminEventType:'',
                                 fullday: true,
-                                sheriffEventType:conflict.sheriffEventType?conflict.sheriffEventType:'' ,
+                                courtAdminEventType:conflict.courtAdminEventType?conflict.courtAdminEventType:'' ,
                                 comment: conflict.comment? conflict.comment :''
                             })        
                         }                       
@@ -288,7 +288,7 @@
                                     startInMinutes:moment.duration(start.diff(moment(conflict.start).startOf('day'))).asMinutes(),
                                     timeDuration:duration.asMinutes(), 
                                     type:this.getConflictsType(conflict),
-                                    subType: (this.getConflictsType(conflict)=='Leave' && conflict.sheriffEventType)?conflict.sheriffEventType:'',                                 
+                                    subType: (this.getConflictsType(conflict)=='Leave' && conflict.courtAdminEventType)?conflict.courtAdminEventType:'',                                 
                                     fullday:false,
                                     comment: conflict.comment? conflict.comment :''
                                 }
@@ -324,9 +324,9 @@
                                 startInMinutes:moment.duration(start.diff(moment(conflict.start).startOf('day'))).asMinutes(),
                                 timeDuration:duration.asMinutes(), 
                                 type:this.getConflictsType(conflict), 
-                                subType: (this.getConflictsType(conflict)=='Leave' && conflict.sheriffEventType)?conflict.sheriffEventType:'',                                
+                                subType: (this.getConflictsType(conflict)=='Leave' && conflict.courtAdminEventType)?conflict.courtAdminEventType:'',                                
                                 fullday:false,
-                                sheriffEventType:conflict.sheriffEventType?conflict.sheriffEventType:'',
+                                courtAdminEventType:conflict.courtAdminEventType?conflict.courtAdminEventType:'',
                                 comment: conflict.comment? conflict.comment :''
                                 }) 
 
@@ -348,9 +348,9 @@
                                 startInMinutes:moment.duration(start.diff(moment(conflict.start).startOf('day'))).asMinutes(),
                                 timeDuration:durationStart.asMinutes(), 
                                 type:this.getConflictsType(conflict), 
-                                subType: (this.getConflictsType(conflict)=='Leave' && conflict.sheriffEventType)?conflict.sheriffEventType:'',
+                                subType: (this.getConflictsType(conflict)=='Leave' && conflict.courtAdminEventType)?conflict.courtAdminEventType:'',
                                 fullday:false,
-                                sheriffEventType:conflict.sheriffEventType?conflict.sheriffEventType:'',
+                                courtAdminEventType:conflict.courtAdminEventType?conflict.courtAdminEventType:'',
                                 comment: conflict.comment? conflict.comment :'' 
                             })
                             conflicts.push({
@@ -363,9 +363,9 @@
                                 startInMinutes:0,
                                 timeDuration:durationEnd.asMinutes(), 
                                 type:this.getConflictsType(conflict), 
-                                subType: (this.getConflictsType(conflict)=='Leave' && conflict.sheriffEventType)?conflict.sheriffEventType:'',                                
+                                subType: (this.getConflictsType(conflict)=='Leave' && conflict.courtAdminEventType)?conflict.courtAdminEventType:'',                                
                                 fullday:false,
-                                sheriffEventType:conflict.sheriffEventType?conflict.sheriffEventType:'',
+                                courtAdminEventType:conflict.courtAdminEventType?conflict.courtAdminEventType:'',
                                 comment: conflict.comment? conflict.comment :'' 
                             })        
                         }                       
@@ -483,7 +483,7 @@
         public getRankOrder(rankName: string) {
             if(rankName?.includes(' (A)'))
                 rankName = rankName.replace(' (A)','');
-            return this.commonInfo.sheriffRankList.filter(rank => {
+            return this.commonInfo.courtAdminRankList.filter(rank => {
                 if (rank.name == rankName) {
                     return true;
                 }

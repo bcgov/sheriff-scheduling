@@ -1,7 +1,7 @@
 using System;
-using SS.Api.models.dto.generated;
+using CAS.API.models.dto.generated;
 
-namespace SS.Api.models.dto
+namespace CAS.API.models.dto
 {
     public partial class AuditDto
     {
@@ -12,7 +12,7 @@ namespace SS.Api.models.dto
         public dynamic NewValuesJson { get; set; }
         public uint ConcurrencyToken { get; set; }
         public Guid? CreatedById { get; set; }
-        public SheriffDto CreatedBy { get; set; }
+        public CourtAdminDto CreatedBy { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
     }
 }

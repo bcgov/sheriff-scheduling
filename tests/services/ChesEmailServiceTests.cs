@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SS.Api.helpers;
-using SS.Api.models.ches;
-using SS.Api.services;
+using CAS.API.helpers;
+using CAS.API.models.ches;
+using CAS.API.services;
 using tests.api.Helpers;
 using Xunit;
 

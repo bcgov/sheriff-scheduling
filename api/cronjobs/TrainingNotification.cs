@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using SS.Api.services;
-using SS.Api.services.usermanagement;
-using SS.Db.models.sheriff;
+using CAS.API.services;
+using CAS.API.services.usermanagement;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Api.cronjobs
+namespace CAS.API.cronjobs
 {
     [DisallowConcurrentExecution]    
     public class TrainingNotification: IJob
@@ -36,14 +36,14 @@ namespace SS.Api.cronjobs
                 
                 Logger.LogInformation(training.TrainingCertificationExpiry.ToString());
                 Logger.LogInformation((training.TrainingCertificationExpiry < noticeDate).ToString());
-                Logger.LogInformation(training.Sheriff.Email);
+                Logger.LogInformation(training.CourtAdmin.Email);
                 
                 if(training.TrainingCertificationExpiry < noticeDate){
                     var emailBody = GetEmailBody(training);
                     var emailSent = await ChesEmailService.SendEmail(
                         emailBody,
                         "Training Expiry Notice", 
-                        training.Sheriff.Email
+                        training.CourtAdmin.Email
                     );
                     if(emailSent)
                         await TrainingService.UpdateTraining(training.Id);
@@ -52,11 +52,11 @@ namespace SS.Api.cronjobs
             Logger.LogInformation("CronJob Done");            
         }
 
-        public string GetEmailBody(SheriffTraining training)
+        public string GetEmailBody(CourtAdminTraining training)
         {
             var expiryDate = training.TrainingCertificationExpiry.Value.ToString("MMMM dd, yyyy");
             var emailBody = 
-                $"Dear {training.Sheriff.FirstName} {training.Sheriff.LastName}, \n"+
+                $"Dear {training.CourtAdmin.FirstName} {training.CourtAdmin.LastName}, \n"+
                 $"Your \'{training.TrainingType.Code}\' certification will expire on \'{expiryDate}\'. \n"+
                 "Please ensure your certification is renewed before this date.";
             

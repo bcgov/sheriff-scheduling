@@ -3,18 +3,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.exceptions;
-using SS.Db.models;
-using SS.Db.models.auth;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.exceptions;
+using CAS.DB.models;
+using CAS.DB.models.auth;
 
-namespace SS.Api.services.usermanagement
+namespace CAS.API.services.usermanagement
 {
     public class RoleService
     {
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public RoleService(SheriffDbContext dbContext)
+        public RoleService(CourtAdminDbContext dbContext)
         {
             Db = dbContext;
         }

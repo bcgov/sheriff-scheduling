@@ -19,17 +19,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
-using SS.Api.helpers;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.ches;
-using SS.Api.services;
-using SS.Api.services.jc;
-using SS.Api.services.scheduling;
-using SS.Api.services.usermanagement;
-using BasicAuthenticationHeaderValue = SS.Api.helpers.BasicAuthenticationHeaderValue;
+using CAS.API.helpers;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.ches;
+using CAS.API.services;
+using CAS.API.services.jc;
+using CAS.API.services.scheduling;
+using CAS.API.services.usermanagement;
+using BasicAuthenticationHeaderValue = CAS.API.helpers.BasicAuthenticationHeaderValue;
 
-namespace SS.Api.infrastructure
+namespace CAS.API.infrastructure
 {
     public static class ServiceCollectionExtensions
     {
@@ -68,7 +68,7 @@ namespace SS.Api.infrastructure
             services.AddScoped<ClaimsService>();
             services.AddScoped<RoleService>();
             services.AddScoped<UserService>();
-            services.AddScoped<SheriffService>();
+            services.AddScoped<CourtAdminService>();
             services.AddScoped<ShiftService>();
             services.AddScoped<TrainingService>();
             services.AddScoped<DutyRosterService>();

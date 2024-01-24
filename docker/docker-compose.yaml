@@ -2,7 +2,7 @@ version: "3.4"
 services:
 
   web:
-    image: ss-web
+    image: cas-web
     environment:
       - API_URL=${API_URL}
       - USE_SELF_SIGNED_SSL=${USE_SELF_SIGNED_SSL}
@@ -15,7 +15,7 @@ services:
       - api
 
   api:
-    image: ss-api
+    image: cas-api
     environment: 
       - LocationServicesClient__Username=${LocationServicesClientUsername}
       - LocationServicesClient__Password=${LocationServicesClientPassword}
@@ -37,7 +37,7 @@ services:
       - WebBaseHref=${WEB_BASE_HREF}
       - SiteMinderLogoutUrl=${SiteMinderLogoutUrl}
       - Logging__LogLevel__Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker=${ControllerLoggingLevel} 
-      - Logging__LogLevel__SS.Api.infrastructure.middleware.ErrorHandlingMiddleware=${MiddlewareLoggingLevel} 
+      - Logging__LogLevel__CAS.API.infrastructure.middleware.ErrorHandlingMiddleware=${MiddlewareLoggingLevel} 
       - Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command=${DatabaseLoggingLevel}
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${KestrelPassword}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=${KestrelPath}

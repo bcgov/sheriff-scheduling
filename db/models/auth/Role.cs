@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations;
 using db.models;
 using Mapster;
 
-namespace SS.Db.models.auth
+namespace CAS.DB.models.auth
 {
     [AdaptTo("[name]Dto")]
     public class Role : BaseEntity
     {
         public const string Manager = nameof(Manager);
         public const string Administrator = nameof(Administrator);
-        public const string Sheriff = nameof(Sheriff);
+        public const string CourtAdmin = nameof(CourtAdmin);
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }

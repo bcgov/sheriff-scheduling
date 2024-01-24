@@ -2,7 +2,7 @@
     <div> 
          
         <b-table            
-            :items="sheriffSchedules" 
+            :items="courtAdminSchedules" 
             :fields="fields"
             small
             class="printer"
@@ -75,7 +75,7 @@
     export default class WeeklySchedule extends Vue {
 
         @Prop({required: true})
-        sheriffSchedules!: weekScheduleInfoType[];
+        courtAdminSchedules!: weekScheduleInfoType[];
 
         @Prop({required: true})
         fields!: any[];

@@ -3,10 +3,10 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SS.Api.helpers.extensions;
-using SS.Db.models.auth;
+using CAS.API.helpers.extensions;
+using CAS.DB.models.auth;
 
-namespace SS.Api.infrastructure.authorization
+namespace CAS.API.infrastructure.authorization
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class PermissionClaimAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter

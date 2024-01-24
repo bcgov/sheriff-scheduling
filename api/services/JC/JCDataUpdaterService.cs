@@ -7,23 +7,23 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SS.Api.helpers;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.Models.DB;
-using SS.Db.models;
-using SS.Db.models.auth;
-using SS.Db.models.jc;
-using SS.Db.models.lookupcodes;
+using CAS.API.helpers;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.Models.DB;
+using CAS.DB.models;
+using CAS.DB.models.auth;
+using CAS.DB.models.jc;
+using CAS.DB.models.lookupcodes;
 using Region = db.models.Region;
 
-namespace SS.Api.services.jc
+namespace CAS.API.services.jc
 {
     public class JCDataUpdaterService
     {
         private ILogger Logger { get; }
         private LocationServicesClient LocationClient { get; }
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
         private IConfiguration Configuration { get; }
         private bool ExpireRegions { get; }
         private bool ExpireLocations { get; }
@@ -32,7 +32,7 @@ namespace SS.Api.services.jc
         private bool AssociateUsersWithNoLocationToVictoria { get; }
         private TimeSpan UpdateEvery { get; }
 
-        public JCDataUpdaterService(SheriffDbContext dbContext, LocationServicesClient locationClient, IConfiguration configuration, ILogger<JCDataUpdaterService> logger)
+        public JCDataUpdaterService(CourtAdminDbContext dbContext, LocationServicesClient locationClient, IConfiguration configuration, ILogger<JCDataUpdaterService> logger)
         {
             LocationClient = locationClient;
             Db = dbContext;
@@ -124,14 +124,14 @@ namespace SS.Api.services.jc
 
             if (AssociateUsersWithNoLocationToVictoria)
             {
-                var sheriffsWithNoHomeLocation = Db.Sheriff.Where(s => !s.HomeLocationId.HasValue);
+                var courtAdminsWithNoHomeLocation = Db.CourtAdmin.Where(s => !s.HomeLocationId.HasValue);
                 var victoriaLocation = Db.Location.AsNoTracking().FirstOrDefault(l => l.Name == "Victoria Law Courts");
                 if (victoriaLocation == null)
                     return;
-                foreach (var sheriff in sheriffsWithNoHomeLocation)
+                foreach (var courtAdmin in courtAdminsWithNoHomeLocation)
                 {
-                    Logger.LogDebug($"Setting ${sheriff.LastName}, ${sheriff.FirstName} - HomeLocation to ${victoriaLocation.Id}");
-                    sheriff.HomeLocationId = victoriaLocation.Id;
+                    Logger.LogDebug($"Setting ${courtAdmin.LastName}, ${courtAdmin.FirstName} - HomeLocation to ${victoriaLocation.Id}");
+                    courtAdmin.HomeLocationId = victoriaLocation.Id;
                 }
                 await Db.SaveChangesAsync();
             }
@@ -146,7 +146,7 @@ namespace SS.Api.services.jc
             //To list so we don't need to re-query on each select.
             var locations = Db.Location.ToList();
             var courtRooms = courtRoomsLookups.SelectToList(cr =>
-                new ss.db.models.LookupCode
+                new CAS.DB.models.LookupCode
                 {
                     Type = LookupTypes.CourtRoom,
                     Code = cr.Code,
@@ -162,7 +162,7 @@ namespace SS.Api.services.jc
 
             await Db.LookupCode.UpsertRange(courtRooms)
                  .On(v => new { v.Type, v.Code, v.LocationId })
-                 .WhenMatched((cr, crNew) => new ss.db.models.LookupCode
+                 .WhenMatched((cr, crNew) => new CAS.DB.models.LookupCode
                  {
                      Code = crNew.Code,
                      LocationId = crNew.LocationId,

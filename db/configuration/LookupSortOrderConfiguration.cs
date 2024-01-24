@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.DB.Configuration;
-using SS.Db.models.lookupcodes;
-using SS.Db.models.auth;
+using CAS.DB.Configuration;
+using CAS.DB.models.lookupcodes;
+using CAS.DB.models.auth;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class LookupSortOrderConfiguration : BaseEntityConfiguration<LookupSortOrder>
     {

@@ -7,7 +7,7 @@
             </template>    
             <b-table
                 :key="updateTable"
-                :items="sheriffSchedules" 
+                :items="courtAdminSchedules" 
                 :fields="fields"
                 small
                 head-row-variant="primary"   
@@ -24,15 +24,15 @@
                     </template>
                     <template v-slot:cell()="data" > 
                         <assignment-card 
-                            :sheriffId="data.item.myteam.sheriffId" 
-                            :sheriffName="data.item.myteam.name" 
+                            :courtAdminId="data.item.myteam.courtAdminId" 
+                            :courtAdminName="data.item.myteam.name" 
                             :scheduleInfo="data.value"
                             :showAllDuties="showAllAssignments"
                             :cardDate="data.field.label"
                             v-on:change="loadScheduleInformation()"/>
                     </template>
                     <template v-slot:cell(myteam) = "data" > 
-                        <team-member-card v-on:change="loadScheduleInformation()" :sheriffInfo="data.item.myteam" />
+                        <team-member-card v-on:change="loadScheduleInformation()" :courtAdminInfo="data.item.myteam" />
                     </template>
             </b-table>
            
@@ -74,7 +74,7 @@
 
     import { locationInfoType, commonInfoType } from '@/types/common';
     import { shiftRangeInfoType, selectShiftInfoType } from '@/types/ShiftSchedule/index';
-    import { sheriffsAvailabilityJsonType, conflictJsonType } from '@/types/ShiftSchedule/jsonTypes';
+    import { courtAdminsAvailabilityJsonType, conflictJsonType } from '@/types/ShiftSchedule/jsonTypes';
     import { assignmentCardWeekInfoType, attachedDutyInfoType, manageAssignmentDutyInfoType, manageScheduleInfoType, manageAssignmentsInfoType, manageAssignmentsScheduleInfoType, conflictsJsonAwayLocationInfoType, dutyRangeInfoType } from '@/types/DutyRoster';
     
     @Component({
@@ -131,7 +131,7 @@
             {key:'Sat', label:'', tdClass:'align-middle px-0 mx-0', thStyle:'text-align: center;'}
         ];
 
-        sheriffSchedules: manageAssignmentsInfoType[] = [];
+        courtAdminSchedules: manageAssignmentsInfoType[] = [];
 
         @Watch('location.id', { immediate: true })
         locationChange()
@@ -184,7 +184,7 @@
                 if (err.response.status != '401') {
                     this.openErrorModal=true;
                 }   
-                this.sheriffSchedules = [];
+                this.courtAdminSchedules = [];
                 this.isManageScheduleDataMounted=true;
             });
             
@@ -193,36 +193,36 @@
             this.extractTeamScheduleInfo(response[2].data);            
         }
 
-        public extractTeamScheduleInfo(sheriffsScheduleJson: sheriffsAvailabilityJsonType[]) {
+        public extractTeamScheduleInfo(courtAdminsScheduleJson: courtAdminsAvailabilityJsonType[]) {
             
-            this.sheriffSchedules = [];
+            this.courtAdminSchedules = [];
             
-            for(const sheriffScheduleJson of sheriffsScheduleJson) {
-                //console.log(sheriffScheduleJson)
-                const sheriffSchedule = {} as manageScheduleInfoType;
-                sheriffSchedule.sheriffId = sheriffScheduleJson.sheriffId;                
-                sheriffSchedule.name = Vue.filter('capitalizefirst')(sheriffScheduleJson.sheriff.lastName) 
-                                        + ', ' + Vue.filter('capitalizefirst')(sheriffScheduleJson.sheriff.firstName);
-                sheriffSchedule.rank = sheriffScheduleJson.sheriff.rank;
-                sheriffSchedule.actingRank = sheriffScheduleJson.sheriff.actingRank;
-                sheriffSchedule.badgeNumber = sheriffScheduleJson.sheriff.badgeNumber; 
-                sheriffSchedule.homeLocation = sheriffScheduleJson.sheriff.homeLocation.name;                                        
-                const isInLoanLocation = (sheriffScheduleJson.sheriff.homeLocation.id !=this.location.id)
-                sheriffSchedule.conflicts =isInLoanLocation? this.extractInLoanLocationConflicts(sheriffScheduleJson.conflicts) :this.extractSchedules(sheriffScheduleJson.conflicts, false);    
+            for(const courtAdminScheduleJson of courtAdminsScheduleJson) {
+                //console.log(courtAdminScheduleJson)
+                const courtAdminSchedule = {} as manageScheduleInfoType;
+                courtAdminSchedule.courtAdminId = courtAdminScheduleJson.courtAdminId;                
+                courtAdminSchedule.name = Vue.filter('capitalizefirst')(courtAdminScheduleJson.courtAdmin.lastName) 
+                                        + ', ' + Vue.filter('capitalizefirst')(courtAdminScheduleJson.courtAdmin.firstName);
+                courtAdminSchedule.rank = courtAdminScheduleJson.courtAdmin.rank;
+                courtAdminSchedule.actingRank = courtAdminScheduleJson.courtAdmin.actingRank;
+                courtAdminSchedule.badgeNumber = courtAdminScheduleJson.courtAdmin.badgeNumber; 
+                courtAdminSchedule.homeLocation = courtAdminScheduleJson.courtAdmin.homeLocation.name;                                        
+                const isInLoanLocation = (courtAdminScheduleJson.courtAdmin.homeLocation.id !=this.location.id)
+                courtAdminSchedule.conflicts =isInLoanLocation? this.extractInLoanLocationConflicts(courtAdminScheduleJson.conflicts) :this.extractSchedules(courtAdminScheduleJson.conflicts, false);    
                 
-                this.sheriffSchedules.push({
-                    myteam: sheriffSchedule,
-                    Sun: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==0) return true}),
-                    Mon: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==1) return true}),
-                    Tue: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==2) return true}),
-                    Wed: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==3) return true}),
-                    Thu: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==4) return true}),
-                    Fri: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==5) return true}),
-                    Sat: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==6) return true})
+                this.courtAdminSchedules.push({
+                    myteam: courtAdminSchedule,
+                    Sun: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==0) return true}),
+                    Mon: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==1) return true}),
+                    Tue: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==2) return true}),
+                    Wed: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==3) return true}),
+                    Thu: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==4) return true}),
+                    Fri: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==5) return true}),
+                    Sat: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==6) return true})
                 })
                 //break //TODO remove break
             } 
-            //console.log(this.sheriffSchedules)         
+            //console.log(this.courtAdminSchedules)         
             this.isManageScheduleDataMounted = true;            
             this.updateTable++;
         }
@@ -265,7 +265,7 @@
                                             startTime:'', 
                                             endTime:'',
                                             type:this.getConflictsType(conflict),
-                                            subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'',
+                                            subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'',
                                             duties: duties,
                                             workSection: '',
                                             workSectionColor: '',
@@ -284,7 +284,7 @@
                                         endTime:'',
                                         duties: [],
                                         type:this.getConflictsType(conflict),
-                                        subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'',
+                                        subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'',
                                         workSection: '',
                                         workSectionColor: '',
                                         fullday: true,
@@ -303,7 +303,7 @@
                                     startTime:'', 
                                     endTime:'',
                                     type:this.getConflictsType(conflict),
-                                    subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'',
+                                    subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'',
                                     duties: [],
                                     workSection: '',
                                     workSectionColor: '',
@@ -331,7 +331,7 @@
                                     startTime:Vue.filter('beautify-time')(conflict.start), 
                                     endTime:Vue.filter('beautify-time')(conflict.end), 
                                     type:this.getConflictsType(conflict),                                
-                                    subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                    subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                     duties: duties,
                                     workSection:'',
                                     workSectionColor: '',
@@ -349,7 +349,7 @@
                                     startTime:Vue.filter('beautify-time')(conflict.start), 
                                     endTime:Vue.filter('beautify-time')(conflict.end), 
                                     type:this.getConflictsType(conflict),                                
-                                    subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                    subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                     duties: [],
                                     workSection: '',
                                     workSectionColor: '',
@@ -372,7 +372,7 @@
                                     startTime:Vue.filter('beautify-time')(conflict.start), 
                                     endTime:Vue.filter('beautify-time')(midnight.format()),
                                     type:this.getConflictsType(conflict),
-                                    subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                    subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                     duties: duties,
                                     workSection: '',
                                     workSectionColor: '',
@@ -388,7 +388,7 @@
                                     startTime:'00:00', 
                                     endTime:Vue.filter('beautify-time')(conflict.end),
                                     type:this.getConflictsType(conflict),
-                                    subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                    subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                     duties: duties,
                                     workSection: '',
                                     workSectionColor: '',
@@ -406,7 +406,7 @@
                                     startTime:Vue.filter('beautify-time')(conflict.start), 
                                     endTime:Vue.filter('beautify-time')(midnight.format()),
                                     type:this.getConflictsType(conflict),
-                                    subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                    subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                     duties: [],
                                     workSection:'',
                                     workSectionColor: '',
@@ -421,7 +421,7 @@
                                     startTime:'00:00', 
                                     endTime:Vue.filter('beautify-time')(conflict.end),
                                     type:this.getConflictsType(conflict),
-                                    subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                    subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                     duties: [],
                                     workSection:'',
                                     workSectionColor: '',
@@ -465,7 +465,7 @@
                 conflictsJsonAwayLocation.start = moment(conflict.start).tz(this.location.timezone).format();
                 conflictsJsonAwayLocation.end = moment(conflict.end).tz(this.location.timezone).format();              
                 if(conflict.conflict !='AwayLocation' || conflict.locationId != this.location.id) continue;
-                conflictsJsonAwayLocation.sheriffId = conflict.sheriffId;
+                conflictsJsonAwayLocation.courtAdminId = conflict.courtAdminId;
                 conflictsJsonAwayLocation.conflict = conflict.conflict;
                
                 conflictsJsonAwayLocation.locationId = conflict.locationId;

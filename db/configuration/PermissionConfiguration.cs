@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.Db.models.auth;
-using SS.DB.Configuration;
+using CAS.DB.models.auth;
+using CAS.DB.Configuration;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class PermissionConfiguration : BaseEntityConfiguration<Permission>
     {
@@ -46,7 +46,7 @@ namespace SS.Db.configuration
                 new Permission { Id = 40, Name = Permission.ViewDutyRosterInFuture, Description = "View DutyRoster in the future" },
                 new Permission { Id = 41, Name = Permission.ViewAllFutureShifts, Description = "View Shifts in the future (not time constrained)" },
                 new Permission { Id = 42, Name = Permission.ViewOtherProfiles, Description = "View other profiles (beside their own)" },
-                new Permission { Id = 43, Name = Permission.GenerateReports, Description = "Generate Reports based on Sheriff's activity" }
+                new Permission { Id = 43, Name = Permission.GenerateReports, Description = "Generate Reports based on CourtAdmin's activity" }
             );
             base.Configure(builder);
         }

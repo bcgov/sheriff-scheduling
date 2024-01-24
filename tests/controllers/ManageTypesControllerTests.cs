@@ -1,11 +1,11 @@
-﻿using SS.Api.services;
+﻿using CAS.API.services;
 using System;
 using System.Threading.Tasks;
-using SS.Api.controllers;
-using SS.Api.Models.DB;
-using SS.Api.models.dto;
-using SS.Api.models.dto.generated;
-using SS.Db.models.lookupcodes;
+using CAS.API.controllers;
+using CAS.API.Models.DB;
+using CAS.API.models.dto;
+using CAS.API.models.dto.generated;
+using CAS.DB.models.lookupcodes;
 using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;

@@ -1,6 +1,5 @@
 ﻿using System.Transactions;
-using ss.db.models;
-using SS.Db.models;
+using CAS.DB.models;
 using tests.api.Helpers;
 using Xunit;
 
@@ -20,7 +19,7 @@ namespace tests.db
             {
                 Description = "desc"
             };
-            using (var dbContext = new SheriffDbContext(EnvironmentBuilder.SetupDbOptions()))
+            using (var dbContext = new CourtAdminDbContext(EnvironmentBuilder.SetupDbOptions()))
             {
                 using (TransactionScope scope = new TransactionScope())
                 {
@@ -34,7 +33,7 @@ namespace tests.db
                 }
             }
 
-            using (var dbContext = new SheriffDbContext(EnvironmentBuilder.SetupDbOptions()))
+            using (var dbContext = new CourtAdminDbContext(EnvironmentBuilder.SetupDbOptions()))
             {
                 var workSectionCode2 = dbContext.LookupCode.Find(lookupCode.Id);
                 Assert.Null(workSectionCode2);
@@ -49,7 +48,7 @@ namespace tests.db
                 Description = "desc"
             };
 
-            using (var dbContext = new SheriffDbContext(EnvironmentBuilder.SetupDbOptions()))
+            using (var dbContext = new CourtAdminDbContext(EnvironmentBuilder.SetupDbOptions()))
             {
                 using (TransactionScope scope = new TransactionScope())
                 {
@@ -63,7 +62,7 @@ namespace tests.db
                 }
             }
 
-            using (var dbContext = new SheriffDbContext(EnvironmentBuilder.SetupDbOptions()))
+            using (var dbContext = new CourtAdminDbContext(EnvironmentBuilder.SetupDbOptions()))
             {
                 var workSectionCode2 = dbContext.LookupCode.Find(lookupCode.Id);
                 Assert.NotNull(workSectionCode2);

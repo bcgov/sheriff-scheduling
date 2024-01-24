@@ -1,9 +1,9 @@
-[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](<https://github.com/bcgov/sheriff-scheduling/>)
+[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](<https://github.com/bcgov/court-admin-scheduling/>)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-# Sheriff Scheduling
+# Court Admin Scheduling
 
-This repository contains the stand alone **Sheriff Scheduling** application.  This application allows authorized individuals to review file details and access the electronic versions of the related documentation.
+This repository contains the stand alone **Court Admin Scheduling** application that was forked from **Sheriff Scheduling** <https://github.com/bcgov/sheriff-scheduling/>.  This application allows authorized individuals to review file details and access the electronic versions of the related documentation.
 
 ## Running in Docker
 
@@ -11,7 +11,7 @@ Refer to [Running the Application on Docker](./docker/README.md) to details.
 
 ## Running on OpenShift
 
-The OpenShift build and deployment configurations for the project can be found here; [bcgov/sheriff-scheduling-configurations](https://github.com/bcgov/sheriff-scheduling-configurations)
+The OpenShift build and deployment configurations for the project can be found here; [bcgov/court-admin-scheduling-configurations](https://github.com/bcgov/court-admin-scheduling-configurations)
 
 ## Getting Help or Reporting an Issue
 

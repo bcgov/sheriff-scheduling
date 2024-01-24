@@ -3,8 +3,8 @@ using System.Text;
 using System.Text.Json;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
-using SS.Db.models;
-using SS.Db.models.audit;
+using CAS.DB.models;
+using CAS.DB.models.audit;
 using tests.api.Helpers;
 
 namespace tests.api.helpers
@@ -14,11 +14,11 @@ namespace tests.api.helpers
         private readonly TransactionScope _scope;
         public bool CommitTxn { get; set; }
 
-        protected MemorySheriffDbContext Db { get; }
+        protected MemoryCourtAdminDbContext Db { get; }
 
         public WrapTransactionScopeInMemory(bool useMemoryDatabase)
         {
-            Db = new MemorySheriffDbContext(EnvironmentBuilder.SetupDbOptions(true));
+            Db = new MemoryCourtAdminDbContext(EnvironmentBuilder.SetupDbOptions(true));
             _scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
         }
 
@@ -36,9 +36,9 @@ namespace tests.api.helpers
 
     }
 
-    public class MemorySheriffDbContext : SheriffDbContext
+    public class MemoryCourtAdminDbContext : CourtAdminDbContext
     {
-        public MemorySheriffDbContext(DbContextOptions<SheriffDbContext> options) : base(options)
+        public MemoryCourtAdminDbContext(DbContextOptions<CourtAdminDbContext> options) : base(options)
         {
 
         }

@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.Models.DB;
-using SS.Db.models;
-using SS.Db.models.scheduling;
+using CAS.API.Models.DB;
+using CAS.DB.models;
+using CAS.DB.models.scheduling;
 using tests.api.Helpers;
 using Xunit;
 
@@ -14,10 +14,10 @@ namespace tests.db
     //Test the ConcurrencyException that comes back. 
     public class ConcurrencyExceptionTest
     {
-        protected SheriffDbContext Db { get; }
+        protected CourtAdminDbContext Db { get; }
         public ConcurrencyExceptionTest()
         {
-            Db = new SheriffDbContext(EnvironmentBuilder.SetupDbOptions(false));
+            Db = new CourtAdminDbContext(EnvironmentBuilder.SetupDbOptions(false));
         }
 
         [Fact(Skip="Adhoc test that writes to the database.")]

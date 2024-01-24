@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using NodaTime;
-using SS.Api.controllers.scheduling;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.Models.DB;
-using SS.Api.models.dto.generated;
-using SS.Api.services.scheduling;
-using SS.Api.services.usermanagement;
-using SS.Common.helpers.extensions;
-using ss.db.models;
-using SS.Db.models.scheduling;
-using SS.Db.models.scheduling.notmapped;
+using CAS.API.controllers.scheduling;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.Models.DB;
+using CAS.API.models.dto.generated;
+using CAS.API.services.scheduling;
+using CAS.API.services.usermanagement;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.scheduling;
+using CAS.DB.models.scheduling.notmapped;
 using Microsoft.Extensions.Logging;
-using SS.Db.models.sheriff;
+using CAS.DB.models.courtAdmin;
 using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;
@@ -31,7 +31,7 @@ namespace tests.controllers
         public ShiftControllerTests() : base(false)
         {
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
-            var shiftService = new ShiftService(Db, new SheriffService(Db, environment.Configuration),
+            var shiftService = new ShiftService(Db, new CourtAdminService(Db, environment.Configuration),
                 environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration,
                 shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
@@ -44,10 +44,10 @@ namespace tests.controllers
         [Fact]
         public async Task AddShiftConflicts()
         {
-            var sheriffId = Guid.NewGuid();
+            var courtAdminId = Guid.NewGuid();
             var location = new Location {Id = 50000, AgencyId = "zz"};
             await Db.Location.AddAsync(location);
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId, IsEnabled = true, HomeLocationId = location.Id});
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = courtAdminId, IsEnabled = true, HomeLocationId = location.Id});
             await Db.SaveChangesAsync();
 
             Detach();
@@ -59,7 +59,7 @@ namespace tests.controllers
                 EndDate = DateTimeOffset.UtcNow.Date.AddHours(1),
                 LocationId = location.Id,
                 Timezone = "America/Vancouver",
-                SheriffId = sheriffId
+                CourtAdminId = courtAdminId
             }.Adapt<AddShiftDto>();
 
             var shiftTwo = new Shift
@@ -68,7 +68,7 @@ namespace tests.controllers
                 EndDate = DateTimeOffset.UtcNow.Date.AddHours(2),
                 LocationId = location.Id,
                 Timezone = "America/Vancouver",
-                SheriffId = sheriffId
+                CourtAdminId = courtAdminId
             }.Adapt<AddShiftDto>();
 
             var shiftThree = new Shift
@@ -78,7 +78,7 @@ namespace tests.controllers
                 EndDate = DateTimeOffset.UtcNow.Date.AddHours(1),
                 LocationId = location.Id,
                 Timezone = "America/Vancouver",
-                SheriffId = sheriffId
+                CourtAdminId = courtAdminId
             }.Adapt<AddShiftDto>();
 
             var shiftFour = new Shift
@@ -88,7 +88,7 @@ namespace tests.controllers
                 EndDate = DateTimeOffset.UtcNow.Date.AddHours(2),
                 LocationId = location.Id,
                 Timezone = "America/Vancouver",
-                SheriffId = sheriffId
+                CourtAdminId = courtAdminId
             }.Adapt<AddShiftDto>();
 
             var shiftFive = new Shift
@@ -97,7 +97,7 @@ namespace tests.controllers
                 EndDate = DateTimeOffset.UtcNow.Date.AddHours(2),
                 LocationId = location.Id,
                 Timezone = "America/Vancouver",
-                SheriffId = sheriffId
+                CourtAdminId = courtAdminId
             }.Adapt<AddShiftDto>();
 
             var shiftSix = new Shift
@@ -107,7 +107,7 @@ namespace tests.controllers
                 EndDate = DateTimeOffset.UtcNow.Date.AddHours(3),
                 LocationId = location.Id,
                 Timezone = "America/Vancouver",
-                SheriffId = sheriffId
+                CourtAdminId = courtAdminId
             }.Adapt<AddShiftDto>();
 
             var shiftSeven = new Shift
@@ -117,28 +117,28 @@ namespace tests.controllers
                 EndDate = DateTimeOffset.UtcNow.Date,
                 LocationId = location.Id,
                 Timezone = "America/Vancouver",
-                SheriffId = sheriffId
+                CourtAdminId = courtAdminId
             }.Adapt<AddShiftDto>();
 
 
             await Assert.ThrowsAsync<BusinessLayerException>(async () => await ShiftController.AddShifts( new List<AddShiftDto> { shiftOne, shiftFive } ));
-            var sheriffShifts = Db.Shift.AsNoTracking().Where(s => s.SheriffId == sheriffId);
-            Assert.Empty(sheriffShifts);
+            var courtAdminShifts = Db.Shift.AsNoTracking().Where(s => s.CourtAdminId == courtAdminId);
+            Assert.Empty(courtAdminShifts);
 
             //Two shifts no conflicts.
             var shifts = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await ShiftController.AddShifts(new List<AddShiftDto> { shiftOne, shiftTwo }));
-            sheriffShifts = Db.Shift.AsNoTracking().Where(s => s.SheriffId == sheriffId);
-            Assert.All(sheriffShifts, s => new List<int> { 1, 2 }.Contains(s.Id));
+            courtAdminShifts = Db.Shift.AsNoTracking().Where(s => s.CourtAdminId == courtAdminId);
+            Assert.All(courtAdminShifts, s => new List<int> { 1, 2 }.Contains(s.Id));
 
             //Already assigned to two shifts: Two new shifts, should conflict now. 
             await Assert.ThrowsAsync<BusinessLayerException>(async () => await ShiftController.AddShifts(new List<AddShiftDto> { shiftThree, shiftFour }));
-            sheriffShifts = Db.Shift.AsNoTracking().Where(s => s.SheriffId == sheriffId);
-            Assert.All(sheriffShifts, s => new List<int> { 1, 2 }.Contains(s.Id));
+            courtAdminShifts = Db.Shift.AsNoTracking().Where(s => s.CourtAdminId == courtAdminId);
+            Assert.All(courtAdminShifts, s => new List<int> { 1, 2 }.Contains(s.Id));
 
             //Schedule two more shifts, on the outside of 3 and 4. 
             HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await ShiftController.AddShifts(new List<AddShiftDto> { shiftSix, shiftSeven }));
-            sheriffShifts = Db.Shift.AsNoTracking().Where(s => s.SheriffId == sheriffId);
-            Assert.All(sheriffShifts, s => new List<int> { 3, 4, 6, 7 }.Contains(s.Id));
+            courtAdminShifts = Db.Shift.AsNoTracking().Where(s => s.CourtAdminId == courtAdminId);
+            Assert.All(courtAdminShifts, s => new List<int> { 3, 4, 6, 7 }.Contains(s.Id));
         }
 
 
@@ -155,15 +155,15 @@ namespace tests.controllers
             var endDate = DateTimeOffset.UtcNow.TranslateDateForDaylightSavings("America/Edmonton", 7);
 
             //On awayLocation.
-            var awayLocationSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            var awayLocationCourtAdmin = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
-                Id = awayLocationSheriff,
+                Id = awayLocationCourtAdmin,
                 IsEnabled = true,
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(1),
@@ -173,15 +173,15 @@ namespace tests.controllers
             });
 
             //On training.
-            var trainingSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            var trainingCourtAdmin = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
-                Id = trainingSheriff,
+                Id = trainingCourtAdmin,
                 IsEnabled = true,
-                Training = new List<SheriffTraining>
+                Training = new List<CourtAdminTraining>
                 {
-                    new SheriffTraining
+                    new CourtAdminTraining
                     {
                         StartDate = startDate.AddDays(1),
                         EndDate = startDate.AddDays(2)
@@ -190,15 +190,15 @@ namespace tests.controllers
             });
 
             //On leave.
-            var leaveSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            var leaveCourtAdmin = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
-                Id = leaveSheriff,
+                Id = leaveCourtAdmin,
                 IsEnabled = true,
-                Leave = new List<SheriffLeave>
+                Leave = new List<CourtAdminLeave>
                 {
-                    new SheriffLeave
+                    new CourtAdminLeave
                     {
                         StartDate = startDate.AddDays(1),
                         EndDate = startDate.AddDays(2)
@@ -207,11 +207,11 @@ namespace tests.controllers
             });
 
             //Already scheduled.
-            var scheduledSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            var scheduledCourtAdmin = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
-                Id = scheduledSheriff,
+                Id = scheduledCourtAdmin,
                 IsEnabled = true
             });
 
@@ -221,17 +221,17 @@ namespace tests.controllers
                 StartDate = startDate.AddDays(2),
                 EndDate = startDate.AddDays(3),
                 LocationId = location1.Id,
-                SheriffId = scheduledSheriff,
+                CourtAdminId = scheduledCourtAdmin,
                 Timezone = "America/Vancouver"
             });
 
 
             //Already scheduled different location.
-            var scheduledDifferentLocationSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            var scheduledDifferentLocationCourtAdmin = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
-                Id = scheduledDifferentLocationSheriff,
+                Id = scheduledDifferentLocationCourtAdmin,
                 IsEnabled = true
             });
 
@@ -241,38 +241,38 @@ namespace tests.controllers
                 StartDate = startDate.AddDays(2),
                 EndDate = startDate.AddDays(3),
                 LocationId = location2.Id,
-                SheriffId = scheduledDifferentLocationSheriff,
+                CourtAdminId = scheduledDifferentLocationCourtAdmin,
                 Timezone = "America/Vancouver"
             });
 
             //Expired Leave, Expired Training, Expired Away Location, Expired Shift.
-            var expiredEventsAndShiftSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            var expiredEventsAndShiftCourtAdmin = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
-                Id = expiredEventsAndShiftSheriff,
+                Id = expiredEventsAndShiftCourtAdmin,
                 IsEnabled = true,
-                Leave = new List<SheriffLeave>
+                Leave = new List<CourtAdminLeave>
                 {
-                    new SheriffLeave
+                    new CourtAdminLeave
                     {
                         StartDate = startDate.AddDays(1),
                         EndDate = startDate.AddDays(2),
                         ExpiryDate = DateTimeOffset.UtcNow
                     }
                 },
-                Training = new List<SheriffTraining>
+                Training = new List<CourtAdminTraining>
                 {
-                    new SheriffTraining
+                    new CourtAdminTraining
                     {
                         StartDate = startDate.AddDays(1),
                         EndDate = startDate.AddDays(2),
                         ExpiryDate = DateTimeOffset.UtcNow
                     }
                 },
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(1),
@@ -288,36 +288,36 @@ namespace tests.controllers
                 StartDate = startDate.AddDays(2),
                 EndDate = startDate.AddDays(3),
                 LocationId = location2.Id,
-                SheriffId = expiredEventsAndShiftSheriff,
+                CourtAdminId = expiredEventsAndShiftCourtAdmin,
                 Timezone = "America/Vancouver",
                 ExpiryDate = DateTimeOffset.UtcNow
             });
 
-            //Expired Sheriff.
-            var expiredSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            //Expired CourtAdmin.
+            var expiredCourtAdmin = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location1.Id,
-                Id = expiredSheriff,
+                Id = expiredCourtAdmin,
                 FirstName = "Expired",
-                LastName = "Expired Sheriff",
+                LastName = "Expired CourtAdmin",
                 IsEnabled = false
             });
 
             await Db.SaveChangesAsync();
 
             //Loaned in.
-            var loanedInSheriff = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            var loanedInCourtAdmin = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
                 HomeLocationId = location2.Id,
                 FirstName = "Loaned In",
                 LastName = "Loaned In",
-                Id = loanedInSheriff,
+                Id = loanedInCourtAdmin,
                 IsEnabled = true,
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(1),
@@ -332,40 +332,40 @@ namespace tests.controllers
                 await ShiftController.GetAvailability(location1.Id, startDate, endDate));
 
             //Postgres stores ticks as 1/1,000,000 vs .NET uses 1/10,000,000
-            var awayLocationsSheriffConflicts = shiftConflicts.FirstOrDefault(sc => sc.SheriffId == awayLocationSheriff);
-            Assert.NotNull(awayLocationsSheriffConflicts); 
-            Assert.Contains(awayLocationsSheriffConflicts.Conflicts, c =>
+            var awayLocationsCourtAdminConflicts = shiftConflicts.FirstOrDefault(sc => sc.CourtAdminId == awayLocationCourtAdmin);
+            Assert.NotNull(awayLocationsCourtAdminConflicts); 
+            Assert.Contains(awayLocationsCourtAdminConflicts.Conflicts, c =>
                 c.Conflict == ShiftConflictType.AwayLocation && c.LocationId == location2.Id && (startDate - c.Start).TotalSeconds <= 1 && (startDate.AddDays(1) - c.End).TotalSeconds <= 1);
 
-            var trainingSheriffConflicts = shiftConflicts.FirstOrDefault(sc => sc.SheriffId == trainingSheriff);
-            Assert.NotNull(trainingSheriffConflicts);
-            Assert.Contains(trainingSheriffConflicts.Conflicts, c =>
+            var trainingCourtAdminConflicts = shiftConflicts.FirstOrDefault(sc => sc.CourtAdminId == trainingCourtAdmin);
+            Assert.NotNull(trainingCourtAdminConflicts);
+            Assert.Contains(trainingCourtAdminConflicts.Conflicts, c =>
                 c.Conflict == ShiftConflictType.Training);
 
-            var leaveSheriffConflicts = shiftConflicts.FirstOrDefault(sc => sc.SheriffId == leaveSheriff);
-            Assert.NotNull(leaveSheriffConflicts);
-            Assert.Contains(leaveSheriffConflicts.Conflicts, c =>
+            var leaveCourtAdminConflicts = shiftConflicts.FirstOrDefault(sc => sc.CourtAdminId == leaveCourtAdmin);
+            Assert.NotNull(leaveCourtAdminConflicts);
+            Assert.Contains(leaveCourtAdminConflicts.Conflicts, c =>
                 c.Conflict == ShiftConflictType.Leave);
 
-            var scheduledSheriffConflicts = shiftConflicts.FirstOrDefault(sc => sc.SheriffId == scheduledSheriff);
-            Assert.NotNull(scheduledSheriffConflicts);
-            Assert.Contains(scheduledSheriffConflicts.Conflicts, c =>
+            var scheduledCourtAdminConflicts = shiftConflicts.FirstOrDefault(sc => sc.CourtAdminId == scheduledCourtAdmin);
+            Assert.NotNull(scheduledCourtAdminConflicts);
+            Assert.Contains(scheduledCourtAdminConflicts.Conflicts, c =>
                 c.Conflict == ShiftConflictType.Scheduled && (startDate.AddDays(2) - c.Start).TotalSeconds <= 1 && (startDate.AddDays(3) - c.End).TotalSeconds <= 1  && c.LocationId == location1.Id);
 
-            var scheduledDifferentLocationSheriffConflicts = shiftConflicts.FirstOrDefault(sc => sc.SheriffId == scheduledDifferentLocationSheriff);
-            Assert.NotNull(scheduledDifferentLocationSheriffConflicts);
-            Assert.Contains(scheduledDifferentLocationSheriffConflicts.Conflicts, c =>
+            var scheduledDifferentLocationCourtAdminConflicts = shiftConflicts.FirstOrDefault(sc => sc.CourtAdminId == scheduledDifferentLocationCourtAdmin);
+            Assert.NotNull(scheduledDifferentLocationCourtAdminConflicts);
+            Assert.Contains(scheduledDifferentLocationCourtAdminConflicts.Conflicts, c =>
                 c.Conflict == ShiftConflictType.Scheduled && (startDate.AddDays(2) - c.Start).TotalSeconds <= 1 && (startDate.AddDays(3) - c.End).TotalSeconds <= 1 && c.LocationId == location2.Id);
 
-            var expiredEventsAndShiftSheriffConflict = shiftConflicts.FirstOrDefault(sc => sc.SheriffId == expiredEventsAndShiftSheriff);
-            Assert.NotNull(expiredEventsAndShiftSheriffConflict);
-            Assert.Empty(expiredEventsAndShiftSheriffConflict.Conflicts);
+            var expiredEventsAndShiftCourtAdminConflict = shiftConflicts.FirstOrDefault(sc => sc.CourtAdminId == expiredEventsAndShiftCourtAdmin);
+            Assert.NotNull(expiredEventsAndShiftCourtAdminConflict);
+            Assert.Empty(expiredEventsAndShiftCourtAdminConflict.Conflicts);
 
-            Assert.True(shiftConflicts.All(sc => sc.SheriffId != expiredSheriff));
+            Assert.True(shiftConflicts.All(sc => sc.CourtAdminId != expiredCourtAdmin));
 
-            var loanedInSheriffConflicts = shiftConflicts.FirstOrDefault(sc => sc.SheriffId == loanedInSheriff);
-            Assert.NotNull(loanedInSheriffConflicts);
-            Assert.Contains(loanedInSheriffConflicts.Conflicts, c =>
+            var loanedInCourtAdminConflicts = shiftConflicts.FirstOrDefault(sc => sc.CourtAdminId == loanedInCourtAdmin);
+            Assert.NotNull(loanedInCourtAdminConflicts);
+            Assert.Contains(loanedInCourtAdminConflicts.Conflicts, c =>
                 c.Conflict == ShiftConflictType.AwayLocation && c.LocationId == location1.Id && (startDate - c.Start).TotalSeconds <= 1 && (startDate.AddDays(1) - c.End).TotalSeconds <= 1);
 
         }
@@ -385,7 +385,7 @@ namespace tests.controllers
                 Id = 1, 
                 StartDate = startTimeOffset,
                 EndDate = endTimeOffset,
-                Sheriff = new Sheriff { Id = Guid.NewGuid(), LastName = "hello" },
+                CourtAdmin = new CourtAdmin { Id = Guid.NewGuid(), LastName = "hello" },
                 AnticipatedAssignment = new Assignment {Id = 1, Name = "Super assignment", Location = new Location { Id = 50000, AgencyId = "zz"}, LookupCode = new LookupCode() {Id = 900000}},
                 LocationId = 50000
             });
@@ -394,7 +394,7 @@ namespace tests.controllers
 
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await ShiftController.GetShifts(50000, startTimeOffset, endTimeOffset));
             Assert.NotEmpty(response);
-            Assert.NotNull(response[0].Sheriff);
+            Assert.NotNull(response[0].CourtAdmin);
             Assert.NotNull(response[0].AnticipatedAssignment);
             Assert.NotNull(response[0].Location);
         }
@@ -410,26 +410,26 @@ namespace tests.controllers
 
             var stDate = DateTimeOffset.UtcNow.AddDays(20);
 
-            var sheriffId = Guid.NewGuid();
-            var sheriffIdAway = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff
+            var courtAdminId = Guid.NewGuid();
+            var courtAdminIdAway = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
-                Id = sheriffId,
+                Id = courtAdminId,
                 FirstName = "Hello",
                 LastName = "There",
                 IsEnabled = true,
                 HomeLocationId = locationId
             });
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
-                Id = sheriffIdAway,
+                Id = courtAdminIdAway,
                 FirstName = "Hello2",
                 LastName = "There2",
                 IsEnabled = true,
                 HomeLocationId = locationId,
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         Id = 1,
                         LocationId = locationId,
@@ -456,7 +456,7 @@ namespace tests.controllers
             {
                 new AddShiftDto
                 {
-                    SheriffId = sheriffId,
+                    CourtAdminId = courtAdminId,
                     StartDate = stDate,
                     EndDate = stDate.AddHours(5),
                     LocationId = locationId,
@@ -470,7 +470,7 @@ namespace tests.controllers
             {
                 new AddShiftDto
                 {
-                    SheriffId = sheriffId,
+                    CourtAdminId = courtAdminId,
                     StartDate = stDate.AddHours(2),
                     EndDate = stDate.AddHours(3),
                     LocationId = locationId,
@@ -480,13 +480,13 @@ namespace tests.controllers
 
             await Assert.ThrowsAsync<BusinessLayerException>(() => ShiftController.AddShifts(addShifts));
 
-            //Schedule a sheriff who has an AwayLocation row, with the same ID as the location scheduled for. 
+            //Schedule a courtAdmin who has an AwayLocation row, with the same ID as the location scheduled for. 
 
             addShifts = new List<AddShiftDto>
             {
                 new AddShiftDto
                 {
-                    SheriffId = sheriffIdAway,
+                    CourtAdminId = courtAdminIdAway,
                     StartDate = stDate.AddHours(2),
                     EndDate = stDate.AddHours(3),
                     LocationId = locationId,
@@ -499,7 +499,7 @@ namespace tests.controllers
 
 
         [Fact]
-        public async Task AddShiftSheriffEventConflict()
+        public async Task AddShiftCourtAdminEventConflict()
         {
             var location2 = new Location {Id = 50002, AgencyId = "5555", Name = "Location 2"};
             await Db.Location.AddAsync(location2);
@@ -509,33 +509,33 @@ namespace tests.controllers
             var locationId2 = location2.Id;
 
             var startDate = shiftDto.StartDate;
-            var sheriffId = Guid.NewGuid();
-            shiftDto.SheriffId = sheriffId;
+            var courtAdminId = Guid.NewGuid();
+            shiftDto.CourtAdminId = courtAdminId;
 
             var shiftDtos = new List<ShiftDto> { shiftDto }.Adapt<List<AddShiftDto>>();
 
-            await Db.Sheriff.AddAsync(new Sheriff
+            await Db.CourtAdmin.AddAsync(new CourtAdmin
             {
-                Id = sheriffId, HomeLocationId = locationId1, FirstName = "First", LastName = "Sheriff", IsEnabled = true,
-                Leave = new List<SheriffLeave>
+                Id = courtAdminId, HomeLocationId = locationId1, FirstName = "First", LastName = "CourtAdmin", IsEnabled = true,
+                Leave = new List<CourtAdminLeave>
                 {
-                    new SheriffLeave
+                    new CourtAdminLeave
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(2)
                     }
                 },
-                Training = new List<SheriffTraining>
+                Training = new List<CourtAdminTraining>
                 {
-                    new SheriffTraining
+                    new CourtAdminTraining
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(2)
                     }
                 },
-                AwayLocation = new List<SheriffAwayLocation>
+                AwayLocation = new List<CourtAdminAwayLocation>
                 {
-                    new SheriffAwayLocation
+                    new CourtAdminAwayLocation
                     {
                         StartDate = startDate,
                         EndDate = startDate.AddDays(1),
@@ -555,10 +555,10 @@ namespace tests.controllers
         {
             var shiftDto = await CreateShift();
             var shiftDtos = new List<ShiftDto> {shiftDto};
-            var sheriffId = Guid.NewGuid();
+            var courtAdminId = Guid.NewGuid();
             var locationId1 = shiftDto.LocationId;
 
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId, FirstName = "Hello", LastName = "There", IsEnabled = true, HomeLocationId = locationId1 });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = courtAdminId, FirstName = "Hello", LastName = "There", IsEnabled = true, HomeLocationId = locationId1 });
             await Db.Assignment.AddAsync(new Assignment { Id = 5, LocationId = locationId1, LookupCode = new LookupCode() { Id = 9000 }});
             await Db.SaveChangesAsync();
 
@@ -568,8 +568,8 @@ namespace tests.controllers
             shift.EndDate = DateTimeOffset.UtcNow.AddDays(6).Date;
             shift.LocationId = locationId1; // This shouldn't change 
             shift.ExpiryDate = DateTimeOffset.UtcNow; // this shouldn't change
-            shift.SheriffId = sheriffId;
-            shift.Sheriff = new SheriffDto(); // shouldn't change
+            shift.CourtAdminId = courtAdminId;
+            shift.CourtAdmin = new CourtAdminDto(); // shouldn't change
             shift.AnticipatedAssignment = new AssignmentDto(); //this shouldn't create new. 
             shift.AnticipatedAssignmentId = 5;
             shift.Location = new LocationDto(); // shouldn't change
@@ -580,26 +580,26 @@ namespace tests.controllers
             Assert.Equal(shiftDto.LocationId,updatedShift.LocationId);
             Assert.Null(updatedShift.ExpiryDate);
             Assert.Equal(5, updatedShift.AnticipatedAssignmentId);
-            Assert.Equal(sheriffId, updatedShift.SheriffId);
+            Assert.Equal(courtAdminId, updatedShift.CourtAdminId);
 
-            //Create the same shift, without sheriff, should conflict.
-            shiftDto.SheriffId = sheriffId;
+            //Create the same shift, without courtAdmin, should conflict.
+            shiftDto.CourtAdminId = courtAdminId;
             shiftDto.StartDate = DateTimeOffset.UtcNow.AddDays(5).Date;
             shiftDto.EndDate = DateTimeOffset.UtcNow.AddDays(6).Date;
             shifts = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await ShiftController.AddShifts(shiftDtos.Adapt<List<AddShiftDto>>()));
             shift = shifts.First();
 
-            shift.SheriffId = sheriffId;
+            shift.CourtAdminId = courtAdminId;
             await Assert.ThrowsAsync<BusinessLayerException>(() => ShiftController.UpdateShifts(shifts.Adapt<List<UpdateShiftDto>>()));
 
-            //Create a shift that sits side by side, without sheriff, shouldn't conflict.
-            shiftDto.SheriffId = sheriffId;
+            //Create a shift that sits side by side, without courtAdmin, shouldn't conflict.
+            shiftDto.CourtAdminId = courtAdminId;
             shiftDto.StartDate = DateTimeOffset.UtcNow.AddDays(4).Date;
             shiftDto.EndDate = DateTimeOffset.UtcNow.AddDays(5).Date;
             shifts = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await ShiftController.AddShifts(shiftDtos.Adapt<List<AddShiftDto>>()));
             shift = shifts.First();
 
-            shift.SheriffId = sheriffId;
+            shift.CourtAdminId = courtAdminId;
             updatedShifts = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await ShiftController.UpdateShifts(shifts.Adapt<List<UpdateShiftDto>>()));
 
             var firstShift = updatedShifts.OrderBy(s => s.StartDate).First();
@@ -628,26 +628,26 @@ namespace tests.controllers
         [Fact]
         public async Task ImportWeeklyShifts()
         {
-            var sheriffId = Guid.NewGuid();
-            var sheriffId2 = Guid.NewGuid();
+            var courtAdminId = Guid.NewGuid();
+            var courtAdminId2 = Guid.NewGuid();
             var shiftDto = await CreateShift();
-            await Db.Sheriff.AddAsync(new Sheriff {Id = sheriffId, IsEnabled = true, HomeLocationId = 50000 });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin {Id = courtAdminId, IsEnabled = true, HomeLocationId = 50000 });
             await Db.Location.AddAsync(new Location { Id = 50002, AgencyId = "3z", Timezone = "America/Vancouver" });
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId2, IsEnabled = true, HomeLocationId = 50002 });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = courtAdminId2, IsEnabled = true, HomeLocationId = 50002 });
             await Db.SaveChangesAsync();
             shiftDto.LocationId = 50000;
             shiftDto.StartDate = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 6).AddYears(5); //Last week monday
             shiftDto.EndDate = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 5).AddYears(5); //Last week tuesday
-            shiftDto.SheriffId = sheriffId;
+            shiftDto.CourtAdminId = courtAdminId;
 
             var shiftDtos = new List<ShiftDto> {shiftDto};
             var shift = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(await ShiftController.AddShifts(shiftDtos.Adapt<List<AddShiftDto>>()));
 
-            //Add in shift at a location, with a Sheriff that has no away location or home location.. to simulate a move. This shift shouldn't be picked up. 
+            //Add in shift at a location, with a CourtAdmin that has no away location or home location.. to simulate a move. This shift shouldn't be picked up. 
             shiftDto.LocationId = 50000;
             shiftDto.StartDate = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 6).AddYears(5); //Last week monday
             shiftDto.EndDate = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 5).AddYears(5); //Last week tuesday
-            shiftDto.SheriffId = sheriffId2;
+            shiftDto.CourtAdminId = courtAdminId2;
 
             var importedShiftsResponse = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(
                 await ShiftController.ImportWeeklyShifts(50000, shiftDto.StartDate));
@@ -657,7 +657,7 @@ namespace tests.controllers
             Assert.True(importedShifts.Count == 3); // 3 due to splitting
             Assert.Equal(shiftDto.StartDate.AddDays(7).DateTime, importedShifts.First().StartDate.DateTime, TimeSpan.FromSeconds(10)); //This week monday
             Assert.Equal(shiftDto.EndDate.AddDays(7).DateTime, importedShifts.Last().EndDate.DateTime, TimeSpan.FromSeconds(10)); //This week monday
-            Assert.Equal(sheriffId, importedShifts.First().SheriffId);
+            Assert.Equal(courtAdminId, importedShifts.First().CourtAdminId);
         }
 
         [Fact]
@@ -665,8 +665,8 @@ namespace tests.controllers
         {
             //Create Location, shift.. get 
             var locationId = await CreateLocation();
-            var sheriffId = Guid.NewGuid();
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId, IsEnabled = true, HomeLocationId = locationId });
+            var courtAdminId = Guid.NewGuid();
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = courtAdminId, IsEnabled = true, HomeLocationId = locationId });
             await Db.SaveChangesAsync();
 
             var shiftStartDate = DateTimeOffset.UtcNow.AddYears(5).ConvertToTimezone("America/Vancouver").DateOnly();
@@ -678,7 +678,7 @@ namespace tests.controllers
                     StartDate = shiftStartDate.AddHours(24),
                     EndDate = shiftStartDate.AddHours(25),
                     ExpiryDate = null,
-                    SheriffId = sheriffId,
+                    CourtAdminId = courtAdminId,
                     Timezone = "America/Vancouver"
                 },
                 new Shift
@@ -687,7 +687,7 @@ namespace tests.controllers
                     StartDate = shiftStartDate,
                     EndDate = shiftStartDate.AddHours(5),
                     ExpiryDate = null,
-                    SheriffId = sheriffId,
+                    CourtAdminId = courtAdminId,
                     Timezone = "America/Vancouver"
                 },
                 new Shift
@@ -695,7 +695,7 @@ namespace tests.controllers
                     LocationId = locationId,
                     StartDate = shiftStartDate.AddHours(5),
                     EndDate = shiftStartDate.AddHours(6),
-                    SheriffId = sheriffId,
+                    CourtAdminId = courtAdminId,
                     Timezone = "America/Vancouver"
                 },
                 new Shift
@@ -703,7 +703,7 @@ namespace tests.controllers
                     LocationId = locationId,
                     StartDate = shiftStartDate.AddHours(9),
                     EndDate = shiftStartDate.AddHours(18),
-                    SheriffId = sheriffId,
+                    CourtAdminId = courtAdminId,
                     Timezone = "America/Vancouver"
                 }
             };
@@ -730,18 +730,18 @@ namespace tests.controllers
 
         private async Task<ShiftDto> CreateShift()
         {
-            var sheriffId = Guid.NewGuid();
+            var courtAdminId = Guid.NewGuid();
             await Db.Location.AddAsync(new Location { Id = 50000, AgencyId = "zz", Timezone = "America/Vancouver"});
-            await Db.Sheriff.AddAsync(new Sheriff { Id = sheriffId, HomeLocationId = 50000, FirstName = "First", LastName = "Sheriff", IsEnabled = true });
+            await Db.CourtAdmin.AddAsync(new CourtAdmin { Id = courtAdminId, HomeLocationId = 50000, FirstName = "First", LastName = "CourtAdmin", IsEnabled = true });
             await Db.SaveChangesAsync();
 
             var shiftDto = new ShiftDto
             {
                 ExpiryDate = DateTimeOffset.UtcNow, // should be null.
-                SheriffId = sheriffId, // should be null.
+                CourtAdminId = courtAdminId, // should be null.
                 StartDate = DateTimeOffset.UtcNow,
                 EndDate = DateTimeOffset.UtcNow.AddHours(5),
-                Sheriff = new SheriffDto(),
+                CourtAdmin = new CourtAdminDto(),
                 AnticipatedAssignment = null,
                 Location = new LocationDto { Id = 55, AgencyId = "55" },
                 LocationId = 50000,

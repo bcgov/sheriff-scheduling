@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SS.Api.models
+namespace CAS.API.models
 {
     public class ShiftBucket
     {

@@ -38,10 +38,10 @@ export interface userInfoType {
 }
 
 export interface commonInfoType {
-    sheriffRankList: sheriffRankInfoType[]    
+    courtAdminRankList: courtAdminRankInfoType[]    
 }
 
-export interface sheriffRankInfoType {
+export interface courtAdminRankInfoType {
     id: number;
     name: string;
 }
@@ -60,7 +60,7 @@ export interface reportInfoType {
     reportSubtype: string;
     region: string;
     location: string;
-    sheriffName: string;
+    courtAdminName: string;
 }
 
 export interface dateRangeInfoType {

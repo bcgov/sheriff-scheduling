@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace SS.Db.models.audit.notmapped
+namespace CAS.DB.models.audit.notmapped
 {
     public class AuditEntry
     {

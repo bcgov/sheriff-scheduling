@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Mapster;
-using SS.Api.Models.DB;
-using SS.Db.models.sheriff;
+using CAS.API.Models.DB;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Db.models.scheduling.notmapped
+namespace CAS.DB.models.scheduling.notmapped
 {
     [AdaptTo("[name]Dto")]
     public class ShiftAvailability
@@ -20,16 +20,16 @@ namespace SS.Db.models.scheduling.notmapped
         public List<ShiftAvailabilityConflict> Conflicts { get; set; }
 
         [NotMapped]
-        public Sheriff Sheriff { get; set; }
+        public CourtAdmin CourtAdmin { get; set; }
 
         [NotMapped]
-        public Guid? SheriffId { get; set; }
+        public Guid? CourtAdminId { get; set; }
     }
 
     [AdaptTo("[name]Dto")]
     public class ShiftAvailabilityConflict
     {
-        public Guid? SheriffId { get; set; }
+        public Guid? CourtAdminId { get; set; }
         public ShiftConflictType Conflict { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
@@ -39,7 +39,7 @@ namespace SS.Db.models.scheduling.notmapped
         public string WorkSection { get; set; }
         public string Timezone { get; set; }
         public double OvertimeHours { get; set; }
-        public string SheriffEventType { get; set; }
+        public string CourtAdminEventType { get; set; }
         public string Comment { get; set; }
 
         public ICollection<DutySlot> DutySlots { get; set; }

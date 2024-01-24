@@ -36,7 +36,7 @@ const router = new VueRouter({
 	routes: routes
 });
 
-//Redirect from / to /sheriff-scheduling/
+//Redirect from / to /court-admin-scheduling/
 if (location.pathname == "/")
 	history.pushState({page: "home"}, "", process.env.BASE_URL)
 

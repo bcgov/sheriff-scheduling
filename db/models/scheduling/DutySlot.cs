@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using db.models;
 using Mapster;
-using SS.Api.Models.DB;
-using SS.Common.attributes.mapping;
-using ss.db.models;
-using SS.Db.models.sheriff;
+using CAS.API.Models.DB;
+using CAS.COMMON.attributes.mapping;
+using CAS.DB.models;
+using CAS.DB.models.courtAdmin;
 
-namespace SS.Db.models.scheduling
+namespace CAS.DB.models.scheduling
 {
     [AdaptTo("[name]Dto")]
     [GenerateUpdateDto, GenerateAddDto]
@@ -28,9 +28,9 @@ namespace SS.Db.models.scheduling
         public int DutyId { get; set; }
 
         [ExcludeFromAddAndUpdateDto]
-        public Sheriff Sheriff { get; set; }
+        public CourtAdmin CourtAdmin { get; set; }
 
-        public Guid? SheriffId { get; set; }
+        public Guid? CourtAdminId { get; set; }
 
         [ExcludeFromAddAndUpdateDto]
         public Location Location { get; set; }

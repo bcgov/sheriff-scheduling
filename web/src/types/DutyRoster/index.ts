@@ -11,7 +11,7 @@ export interface dutyRangeInfoType {
 }
 
 export interface myTeamShiftInfoType {
-    sheriffId: string;
+    courtAdminId: string;
     shifts: shiftInfoType[];
     badgeNumber: number;
     firstName: string;
@@ -152,7 +152,7 @@ export interface dutySlotInfoType {
     startDate: string;
     endDate: string;
     dutyId: number;
-    sheriffId: string|null;
+    courtAdminId: string|null;
     shiftId: number|null;
     timezone: string;
     isNotRequired: boolean;
@@ -169,7 +169,7 @@ export interface dutyBlockInfoType {
     id: string;
     firstName: string;
     lastName: string;
-    sheriffId: string;
+    courtAdminId: string;
     startTime: number;
     startTimeString: string;
     title: string;
@@ -187,7 +187,7 @@ export interface viewDutyInfoType {
     rank: string;
     rankOrder: number;
     displayName: string;
-    sheriffId: string;    
+    courtAdminId: string;    
     startTime: string;
     endTime: string;
     assignment: string;       
@@ -202,7 +202,7 @@ export interface dutyBlockWeekInfoType {
     id: string;
     firstName: string;
     lastName: string;
-    sheriffId: string;
+    courtAdminId: string;
     startTime: number;
     startTimeString: string;
     title: string;
@@ -265,7 +265,7 @@ export interface manageAssignmentsInfoType {
 }
 
 export interface manageScheduleInfoType {
-    sheriffId: string;
+    courtAdminId: string;
     conflicts: manageAssignmentsScheduleInfoType[];
     name: string;
     homeLocation: string;
@@ -292,7 +292,7 @@ export interface manageAssignmentsScheduleInfoType {
 }
 
 export interface conflictsJsonAwayLocationInfoType {
-    sheriffId: string;
+    courtAdminId: string;
     conflict: string;
     start: string;
     end: string;

@@ -10,8 +10,8 @@ class DutyRosterInformation extends VuexModule {
   public shiftAvailabilityInfo: myTeamShiftInfoType[] = [];
   public dutyToBeEdited = '';
   public view24h = false;
-  public sheriffFullview = false;
-  public printSheriffFullview = false;
+  public courtAdminFullview = false;
+  public printCourtAdminFullview = false;
   public displayFuelGauge = false;
 
   public zoomLevel = 100;
@@ -62,12 +62,12 @@ class DutyRosterInformation extends VuexModule {
   }
 
   @Mutation
-  public setSheriffFullview(sheriffFullview: boolean): void {   
-    this.sheriffFullview = sheriffFullview;
+  public setCourtAdminFullview(courtAdminFullview: boolean): void {   
+    this.courtAdminFullview = courtAdminFullview;
   }
   @Action
-  public UpdateSheriffFullview(newSheriffFullview: boolean): void {
-    this.context.commit('setSheriffFullview', newSheriffFullview)
+  public UpdateCourtAdminFullview(newCourtAdminFullview: boolean): void {
+    this.context.commit('setCourtAdminFullview', newCourtAdminFullview)
   }
 
   @Mutation
@@ -80,12 +80,12 @@ class DutyRosterInformation extends VuexModule {
   }
 
   @Mutation
-  public setPrintSheriffFullview(printSheriffFullview: boolean): void {   
-    this.printSheriffFullview = printSheriffFullview;
+  public setPrintCourtAdminFullview(printCourtAdminFullview: boolean): void {   
+    this.printCourtAdminFullview = printCourtAdminFullview;
   }
   @Action
-  public UpdatePrintSheriffFullview(newPrintSheriffFullview: boolean): void {
-    this.context.commit('setPrintSheriffFullview', newPrintSheriffFullview)
+  public UpdatePrintCourtAdminFullview(newPrintCourtAdminFullview: boolean): void {
+    this.context.commit('setPrintCourtAdminFullview', newPrintCourtAdminFullview)
   }
 
   @Mutation

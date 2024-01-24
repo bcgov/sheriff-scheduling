@@ -3,7 +3,7 @@
 
         <b-card style="width:50rem; margin: 2rem auto 0 auto;" bg-variant="dark" class="text-center text-white" >
             <b-card-header class="h3 bg-secondary mb-5">
-                You currently don't have access to the Sheriff Scheduling Application!                
+                You currently don't have access to the Court Admin Scheduling Application!                
             </b-card-header>
             <b-row style="">                
                 <img 
@@ -13,7 +13,7 @@
                     height="44"
                     alt="B.C. Government Logo"
                 /> 
-                <div class="mt-4 h3" >Requesting Access To Sheriff Scheduling:</div>
+                <div class="mt-4 h3" >Requesting Access To Court Admin Scheduling:</div>
             </b-row>
             <b-row class="mx-auto my-0 p-0">
                 <b-form-group class="mx-auto my-4" style="width: 20rem">

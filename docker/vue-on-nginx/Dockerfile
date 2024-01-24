@@ -1,4 +1,4 @@
-FROM ss-web-artifacts:latest as builder
+FROM cas-web-artifacts:latest as builder
 FROM nginx-runtime:latest
 
 # Copy the build artifacts from the 'builder' image

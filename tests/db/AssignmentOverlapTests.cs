@@ -1,6 +1,6 @@
 ﻿using System;
-using SS.Common.helpers.extensions;
-using SS.Db.models.scheduling;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models.scheduling;
 using Xunit;
 
 namespace tests.db

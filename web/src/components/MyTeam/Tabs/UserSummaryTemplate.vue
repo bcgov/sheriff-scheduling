@@ -157,7 +157,7 @@
             const formData = new FormData();
             formData.append('file', imageBlob);
 
-            const url = 'api/sheriff/uploadphoto?id='+this.user.id;        
+            const url = 'api/courtAdmin/uploadphoto?id='+this.user.id;        
             this.showPhotoReplacementWarning = false
             this.$http.post(url, formData)
                 .then(response => {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SS.Api.controllers.scheduling;
-using SS.Api.Models.DB;
-using SS.Api.services.scheduling;
-using ss.db.models;
-using SS.Db.models.scheduling;
+using CAS.API.controllers.scheduling;
+using CAS.API.Models.DB;
+using CAS.API.services.scheduling;
+using CAS.DB.models;
+using CAS.DB.models.scheduling;
 using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;

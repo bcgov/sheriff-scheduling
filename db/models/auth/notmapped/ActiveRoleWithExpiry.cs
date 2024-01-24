@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Mapster;
 
-namespace SS.Db.models.auth.notmapped
+namespace CAS.DB.models.auth.notmapped
 {
     /// <summary>
     /// Needed two separate classes, so DTO generation would work correctly. 

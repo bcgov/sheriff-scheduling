@@ -1,13 +1,13 @@
 <template>
     <b-card bg-variant="white" class="home" no-body>
         <b-row  class="mx-0 mt-0 mb-0 p-0" cols="2" >
-            <b-col  class="m-0 p-0" :cols="(sheriffFullview && !weekView)? 12: 11" >
+            <b-col  class="m-0 p-0" :cols="(courtAdminFullview && !weekView)? 12: 11" >
                 <duty-roster-header v-on:change="reloadDutyRosters" :runMethod="headerAddAssignment" />
                 <duty-roster-week-view :runMethod="dutyRosterWeekViewMethods" v-if="weekView" :key="updateDutyRoster" v-on:addAssignmentClicked="addAssignment" v-on:dataready="reloadMyTeam()" />
                 <duty-roster-day-view id="duty-pdf" :runMethod="dutyRosterDayViewMethods" v-if="!weekView&&headerReady" :key="updateDutyRoster" v-on:addAssignmentClicked="addAssignment" v-on:dataready="reloadMyTeam()"/>
                 
             </b-col>
-            <b-col v-if="!sheriffFullview || weekView" class="p-0 " cols="1"  style="overflow: auto;">
+            <b-col v-if="!courtAdminFullview || weekView" class="p-0 " cols="1"  style="overflow: auto;">
                 <b-card
                     v-if="isDutyRosterDataMounted"
                     :key="updateMyTeam"                     
@@ -27,12 +27,12 @@
                                     <b-icon-bar-chart-steps /> 
                             </b-button>                           
                         </b-card-header>
-                        <duty-roster-team-member-card :sheriffInfo="memberNotRequired" :weekView="weekView"/>
-                        <duty-roster-team-member-card :sheriffInfo="memberNotAvailable" :weekView="weekView"/>
-                        <duty-roster-team-member-card :sheriffInfo="memberIsClosed" :weekView="weekView"/>  
+                        <duty-roster-team-member-card :courtAdminInfo="memberNotRequired" :weekView="weekView"/>
+                        <duty-roster-team-member-card :courtAdminInfo="memberNotAvailable" :weekView="weekView"/>
+                        <duty-roster-team-member-card :courtAdminInfo="memberIsClosed" :weekView="weekView"/>  
                     </div>                   
                     <div id="dutyrosterteammember" :style="{overflowX: 'hidden', overflowY: 'auto', height: getHeight}">
-                        <duty-roster-team-member-card v-on:change="updateDutyRosterPage()" v-for="member in sortedShiftAvailabilityInfo" :key="member.sheriffId" :sheriffInfo="member" :weekView="weekView"/>
+                        <duty-roster-team-member-card v-on:change="updateDutyRosterPage()" v-for="member in sortedShiftAvailabilityInfo" :key="member.courtAdminId" :courtAdminInfo="member" :weekView="weekView"/>
                     </div>
                 </b-card>
             </b-col>
@@ -90,7 +90,7 @@
         public UpdateDisplayFuelGauge!: (newDisplayFuelGauge: boolean) => void
 
         @dutyState.State
-        public sheriffFullview!: boolean;
+        public courtAdminFullview!: boolean;
         
 
         @dutyState.State
@@ -102,9 +102,9 @@
         @dutyState.Action
 		public UpdateZoomLevel!: (newZoomLevel: number) => void;
 
-        memberNotRequired = { sheriffId: '00000-00000-11111' } as myTeamShiftInfoType;
-        memberNotAvailable = { sheriffId: '00000-00000-22222' } as myTeamShiftInfoType;
-        memberIsClosed = { sheriffId: '00000-00000-33333' } as myTeamShiftInfoType;
+        memberNotRequired = { courtAdminId: '00000-00000-11111' } as myTeamShiftInfoType;
+        memberNotAvailable = { courtAdminId: '00000-00000-22222' } as myTeamShiftInfoType;
+        memberIsClosed = { courtAdminId: '00000-00000-33333' } as myTeamShiftInfoType;
         
         isDutyRosterDataMounted = false;
         updateDutyRoster = 0;
@@ -140,7 +140,7 @@
 
         mounted()
         {
-            this.maxRank = this.commonInfo.sheriffRankList.reduce((max, rank) => rank.id > max ? rank.id : max, this.commonInfo.sheriffRankList[0].id);
+            this.maxRank = this.commonInfo.courtAdminRankList.reduce((max, rank) => rank.id > max ? rank.id : max, this.commonInfo.courtAdminRankList[0].id);
             this.isDutyRosterDataMounted = false;
             this.timeHandle1 = window.setTimeout(this.updateCurrentTimeCallBack, 1000);
             window.addEventListener('resize', this.getWindowHeight);
@@ -161,7 +161,7 @@
             // console.log(type)
             // console.log('reload dutyroster')                
             this.updateCurrentTime();
-            if(type=='Day' && this.sheriffFullview){
+            if(type=='Day' && this.courtAdminFullview){
                 this.weekView = false
 
             }else if(type=='Day'){

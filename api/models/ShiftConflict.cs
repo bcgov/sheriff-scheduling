@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SS.Db.models.scheduling;
+using CAS.DB.models.scheduling;
 
-namespace SS.Api.models
+namespace CAS.API.models
 {
     public class ShiftConflict
     {

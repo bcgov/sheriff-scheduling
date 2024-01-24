@@ -2,7 +2,7 @@
     <div class="grid796c">
         <div v-for="i in 7" :key="i" :style="{backgroundColor: '#F9F9F9', gridColumnStart: ((i-1)*96)+1,gridColumnEnd:(i*96+2), gridRow:'1/7'}"></div>       
         <div
-            @click="editDutySheriffModal(block.day, $event, block.id)"
+            @click="editDutyCourtAdminModal(block.day, $event, block.id)"
             v-for="block in dutyBlocks" 
             :key="block.id"
             :id="block.id"
@@ -119,13 +119,13 @@
                                 <b-button style="width:1.2rem;float:right" 
                                         class="ml-1 mr-0 my-0 py-0"
                                         size="sm" 
-                                        :disabled="data.item.sheriffId?false:true" 
+                                        :disabled="data.item.courtAdminId?false:true" 
                                         variant="transparent" 
                                         @click="confirmUnassignDutySlot(data.item)"
                                         v-b-tooltip.hover                                
                                         title="Unassign"
                                         ><b-icon 
-                                            v-if="data.item.sheriffId" 
+                                            v-if="data.item.courtAdminId" 
                                             icon="person-x-fill" 
                                             font-scale="1.25" 
                                             variant="danger" 
@@ -255,15 +255,15 @@
             </template>
         </b-modal>  
 
-        <b-modal v-model="showEditDutySheriffModal" size="lg sheriff-modal" footer-class="d-none" no-close-on-backdrop centered header-class="bg-primary pt-3 pb-2 text-light">            			
-            <sheriff-modal @drop="drop"
+        <b-modal v-model="showEditDutyCourtAdminModal" size="lg court-admin-modal" footer-class="d-none" no-close-on-backdrop centered header-class="bg-primary pt-3 pb-2 text-light">            			
+            <court-admin-modal @drop="drop"
                 @editDuty="editDuty"
                 :weekView="true"
                 :dutyBlock="getDutyBlock()"
                 :assignmentName="assignmentName"
                 :assignmentBlock="getAssignmentBlock()" />
             <template v-slot:modal-header-close>                 
-                <b-button style="margin:-2.95rem -0.75rem -2rem 1rem; width:2.5rem; height:2.5rem;" variant="outline-warning" class="text-light" @click="closeEditDutySheriffModalWindow()"
+                <b-button style="margin:-2.95rem -0.75rem -2rem 1rem; width:2.5rem; height:2.5rem;" variant="outline-warning" class="text-light" @click="closeEditDutyCourtAdminModalWindow()"
                 ><div style="transform:translate(0px,1px)">&times;</div></b-button>
             </template>
         </b-modal>  
@@ -279,7 +279,7 @@
     import AddDutySlotWeekForm from './AddDutySlotWeekForm.vue'
     import {dutyRangeInfoType, dutySlotInfoType, assignDutySlotsInfoType, assignDutyInfoType, assignmentCardInfoType, dutyBlockWeekInfoType, myTeamShiftInfoType, selectedDutyCardInfoType, assignmentCardWeekInfoType } from '@/types/DutyRoster';
     import {localTimeInfoType, userInfoType} from '@/types/common';
-    import SheriffModal from './SheriffModal.vue'
+    import CourtAdminModal from './CourtAdminModal.vue'
 
     import { namespace } from "vuex-class";
     import "@store/modules/CommonInformation";
@@ -290,7 +290,7 @@
     @Component({
         components: {
             AddDutySlotWeekForm,
-            SheriffModal
+            CourtAdminModal
         }        
     })  
     export default class DutyCardWeekView extends Vue {
@@ -346,7 +346,7 @@
 
         isMounted = false;
 
-        overTimeSheriffId = '';
+        overTimeCourtAdminId = '';
         overTimeTimeRangeDate = {startTime: '', endTime: '', day: 0}
         confirmAssignOverTimeDuty = false;
 
@@ -367,7 +367,7 @@
         latestEditData;
         timezone = 'UTC';
 
-        showEditDutySheriffModal = false;
+        showEditDutyCourtAdminModal = false;
         editingBlockId=''
 
         editDutyError = false;
@@ -387,7 +387,7 @@
         dutyWeekDates: string[] = []
 
         fields = [      
-            {key:'title', label:'Sheriff',sortable:false, tdClass: 'border-top'  },
+            {key:'title', label:'CourtAdmin',sortable:false, tdClass: 'border-top'  },
             {key:'startTimeString', label:'Start Time',  sortable:false, tdClass: 'border-top', thClass:'h6 align-middle',},
             {key:'endTimeString',   label:'End Time',  sortable:false, tdClass: 'border-top', thClass:'h6 align-middle',},  
             {key:'note', label:'Note',sortable:false, tdClass: 'border-top', thClass:'h6 align-middle'  },
@@ -424,7 +424,7 @@
         }
 
         
-        public editDutySheriffModal(day, e?, blkId?){    
+        public editDutyCourtAdminModal(day, e?, blkId?){    
             if(e?.ctrlKey == true){                
                 const block = this.dutyBlocks.filter(blk => blk.id==blkId)
                 const assignment = this.dutyRosterInfo.assignment+'D'+day
@@ -448,7 +448,7 @@
                 this.isDutyDataMounted = false; 
                 this.editingBlockId = blkId              
                 this.UpdateDutyToBeEdited(this.dutyRosterInfo.assignment+'D'+day);
-                this.showEditDutySheriffModal = true;
+                this.showEditDutyCourtAdminModal = true;
                 this.isDutyDataMounted = true;
             }
         }
@@ -459,7 +459,7 @@
             this.selectedComment = this.dutyBlocksDay[0].comment
             this.UpdateDutyToBeEdited(this.dutyRosterInfo.assignment+'D'+day);
             this.showEditDutyDetails = true;
-            this.showEditDutySheriffModal = false;
+            this.showEditDutyCourtAdminModal = false;
             this.isDutyDataMounted = true;
         }
 
@@ -528,7 +528,7 @@
                     dutySlotId:this.dutySlotToUnassign.dutySlotId
                 }]
                 
-                const body: assignDutyInfoType[] = this.assignDuty(this.dutySlotToUnassign.sheriffId, editedDutySlots, true, this.dutyBlocksDay[0].day, this.dutyRosterInfo);
+                const body: assignDutyInfoType[] = this.assignDuty(this.dutySlotToUnassign.courtAdminId, editedDutySlots, true, this.dutyBlocksDay[0].day, this.dutyRosterInfo);
                 this.postModifiedDutyRosters(body)      
             }
         }
@@ -539,9 +539,9 @@
 			this.showEditDutyDetails = false;
 		}
 
-        public closeEditDutySheriffModalWindow(){            
+        public closeEditDutyCourtAdminModalWindow(){            
             this.UpdateDutyToBeEdited('');            
-			this.showEditDutySheriffModal = false;
+			this.showEditDutyCourtAdminModal = false;
 		}
 
         public closeDutySlotForm() {                     
@@ -604,11 +604,11 @@
                         const assignedBins = this.convert12h24hView(assignedDutyBin);
                         
                         unassignedArray = this.fillInArray(unassignedArray,0,assignedDutyBin.startBin, assignedDutyBin.endBin);
-                        const sheriff = this.shiftAvailabilityInfo.filter(sheriff=>{if(sheriff.sheriffId==dutySlot.sheriffId)return true})[0];
+                        const courtAdmin = this.shiftAvailabilityInfo.filter(courtAdmin=>{if(courtAdmin.courtAdminId==dutySlot.courtAdminId)return true})[0];
                         const isOvertime = this.getOverTime(dutySlot.shiftId, dutySlot.isNotAvailable, dutySlot.isNotRequired,dutySlot.isClosed, dutySlot.isOvertime);                    
                         const isNotRequiredOrAvailable = (dutySlot.isNotAvailable || dutySlot.isNotRequired || dutySlot.isClosed)
                         const isNotRequiredOrAvailableTitle = dutySlot.isNotRequired? 'Not Required':(dutySlot.isClosed?'Closed':'Not Available')
-                        const isNotRequiredOrAvailableSheriffId = dutySlot.isNotRequired? '00000-00000-11111':(dutySlot.isClosed?'00000-00000-33333':'00000-00000-22222')
+                        const isNotRequiredOrAvailableCourtAdminId = dutySlot.isNotRequired? '00000-00000-11111':(dutySlot.isClosed?'00000-00000-33333':'00000-00000-22222')
 
                         this.dutyBlocks.push({
                             id: 'dutySlot'+dutySlot.id+'i'+dutyInfo.id+'D'+day+'n'+id++, 
@@ -620,10 +620,10 @@
                             
                             color: this.getDutyColor(this.dutyRosterInfo.type.colorCode, dutySlot.isNotAvailable,dutySlot.isNotRequired, dutySlot.isClosed, isOvertime),
                             height: '2/6',
-                            title: this.getTitle(sheriff,dutySlot.isNotAvailable,dutySlot.isNotRequired,dutySlot.isClosed),
-                            lastName: isNotRequiredOrAvailable? isNotRequiredOrAvailableTitle: (sheriff? Vue.filter('capitalize')(sheriff.lastName):''),
-                            firstName: isNotRequiredOrAvailable? '' : (sheriff? Vue.filter('capitalize')(sheriff.firstName):''),
-                            sheriffId: isNotRequiredOrAvailable? isNotRequiredOrAvailableSheriffId: (sheriff? sheriff.sheriffId: ''),
+                            title: this.getTitle(courtAdmin,dutySlot.isNotAvailable,dutySlot.isNotRequired,dutySlot.isClosed),
+                            lastName: isNotRequiredOrAvailable? isNotRequiredOrAvailableTitle: (courtAdmin? Vue.filter('capitalize')(courtAdmin.lastName):''),
+                            firstName: isNotRequiredOrAvailable? '' : (courtAdmin? Vue.filter('capitalize')(courtAdmin.firstName):''),
+                            courtAdminId: isNotRequiredOrAvailable? isNotRequiredOrAvailableCourtAdminId: (courtAdmin? courtAdmin.courtAdminId: ''),
                             startTimeString: moment(dutySlot.startDate).tz(dutySlot.timezone).format('HH:mm'),
                             endTimeString: moment(dutySlot.endDate).tz(dutySlot.timezone).format('HH:mm'),
                             timezone: dutySlot.timezone, 
@@ -658,7 +658,7 @@
                             color: this.dutyRosterInfo.type.colorCode,
                             height: '2/6',
                             title: '',
-                            sheriffId: '',
+                            courtAdminId: '',
                             firstName: '',
                             lastName: '',
                             startTimeString: unassignedSlotTime.startTime.substring(11,16),
@@ -733,11 +733,11 @@
             else return color;
         }
 
-        public getTitle(sheriff,isNotAvailable,isNotRequired, isClosed){
+        public getTitle(courtAdmin,isNotAvailable,isNotRequired, isClosed){
             if(isNotAvailable) return 'Not Available';
             else if(isNotRequired) return  'Not Required';
             else if(isClosed) return  'Closed';
-            else if(sheriff) return Vue.filter('capitalize')(sheriff.lastName)+', '+Vue.filter('capitalize')(sheriff.firstName);
+            else if(courtAdmin) return Vue.filter('capitalize')(courtAdmin.lastName)+', '+Vue.filter('capitalize')(courtAdmin.firstName);
             else return ' ';
         }
 
@@ -767,7 +767,7 @@
             let targetId = ''                                  
             if(modal){
                 targetId = this.editingBlockId
-                this.closeEditDutySheriffModalWindow()
+                this.closeEditDutyCourtAdminModalWindow()
             }else{
                 targetId = event.target.id
             }
@@ -775,16 +775,16 @@
             
             if(targetId){
                 const cardid = modal?  event: event.dataTransfer.getData('text');
-                const sheriffId = cardid.slice(7);
+                const courtAdminId = cardid.slice(7);
 
                 let specialCases = false
-                if(sheriffId=='00000-00000-11111'||sheriffId=='00000-00000-22222'||sheriffId=='00000-00000-33333')
+                if(courtAdminId=='00000-00000-11111'||courtAdminId=='00000-00000-22222'||courtAdminId=='00000-00000-33333')
                     specialCases = true
 
                 if(this.selectedDuties.length>0){
 
-                    const sheriffInStore = this.shiftAvailabilityInfo.filter(sheriff=>{if(sheriff.sheriffId==sheriffId)return true})[0];                    
-                    const sheriff = specialCases? null :JSON.parse(JSON.stringify(sheriffInStore));
+                    const courtAdminInStore = this.shiftAvailabilityInfo.filter(courtAdmin=>{if(courtAdmin.courtAdminId==courtAdminId)return true})[0];                    
+                    const courtAdmin = specialCases? null :JSON.parse(JSON.stringify(courtAdminInStore));
                     
                     let ct = 1;
 
@@ -800,7 +800,7 @@
 
                         const dutyRosterInfo = this.dutyRosterAssignmentsWeek.filter(dutyRoster =>dutyRoster.assignment==assignmentId)[0]
                         const times = this.getDutyBlockTimes(duty.dutyBlock, modal, dutyRosterInfo[dutySlotDay], dutySlotDay)
-                        const editedDutySlots = this.getEditedDutySlots(unassignedBlockId, sheriffId, dutySlotDay, dutyRosterInfo, times.startDate, times.endDate, times.modal, sheriff)
+                        const editedDutySlots = this.getEditedDutySlots(unassignedBlockId, courtAdminId, dutySlotDay, dutyRosterInfo, times.startDate, times.endDate, times.modal, courtAdmin)
 
                         if(editedDutySlots){
                             const startOfDay = moment(editedDutySlots[0].startDate).startOf("day");
@@ -811,7 +811,7 @@
                             ct++;
 
                             if(!specialCases){
-                                sheriff.dutiesDetail.push({
+                                courtAdmin.dutiesDetail.push({
                                     id: ct , 
                                     startBin: rangeBins.startBin,
                                     endBin: rangeBins.endBin,
@@ -826,7 +826,7 @@
                             }
 
                                                    
-                            const assignedDuties = this.assignDuty(sheriffId, editedDutySlots, false, dutySlotDay, dutyRosterInfo);
+                            const assignedDuties = this.assignDuty(courtAdminId, editedDutySlots, false, dutySlotDay, dutyRosterInfo);
                             bodyArray = [...bodyArray, ...assignedDuties]
 
                         }
@@ -841,10 +841,10 @@
                     const dutySlotDay = Number(blockId.substring(positionD+1,positionD+2));
                     const dutyblock = this.dutyBlocks.filter(dutyBlock => dutyBlock.id == this.editingBlockId)
                     const times = this.getDutyBlockTimes(dutyblock, modal, this.dutyRosterInfo[dutySlotDay], dutySlotDay)
-                    const editedDutySlots = this.getEditedDutySlots(unassignedBlockId, sheriffId, dutySlotDay, this.dutyRosterInfo, times.startDate, times.endDate, times.modal)
+                    const editedDutySlots = this.getEditedDutySlots(unassignedBlockId, courtAdminId, dutySlotDay, this.dutyRosterInfo, times.startDate, times.endDate, times.modal)
 
                     if(editedDutySlots){
-                        bodyArray = this.assignDuty(sheriffId, editedDutySlots, false, dutySlotDay, this.dutyRosterInfo);                                 
+                        bodyArray = this.assignDuty(courtAdminId, editedDutySlots, false, dutySlotDay, this.dutyRosterInfo);                                 
                         this.postModifiedDutyRosters(bodyArray)
                     }
                 }
@@ -852,12 +852,12 @@
             }
         }
 
-        public getEditedDutySlots(unassignedBlockId: number, sheriffId: string, dutySlotDay: number, dutyRosterInfo, startDate, endDate, modal, newSheriff?){
+        public getEditedDutySlots(unassignedBlockId: number, courtAdminId: string, dutySlotDay: number, dutyRosterInfo, startDate, endDate, modal, newCourtAdmin?){
             
             if(unassignedBlockId!=0) return null
             if(!modal && dutyRosterInfo[dutySlotDay].dutySlots.length > 0) return null
             
-            if(sheriffId=='00000-00000-11111'||sheriffId=='00000-00000-22222'||sheriffId=='00000-00000-33333'){                    
+            if(courtAdminId=='00000-00000-11111'||courtAdminId=='00000-00000-22222'||courtAdminId=='00000-00000-33333'){                    
                 const editedDutySlots: assignDutySlotsInfoType[] =[{
                     startDate: startDate,
                     endDate: endDate,
@@ -873,11 +873,11 @@
             const rangeBin = this.getTimeRangeBins(startDate, endDate, this.dutyWeekDates[dutySlotDay], timezone);
             const unassignedArray= this.fillInArray(Array(96).fill(0), 1 , rangeBin.startBin,rangeBin.endBin)
 
-            const sheriff = newSheriff? newSheriff: this.shiftAvailabilityInfo.filter(sheriff=>{if(sheriff.sheriffId==sheriffId)return true})[0];
+            const courtAdmin = newCourtAdmin? newCourtAdmin: this.shiftAvailabilityInfo.filter(courtAdmin=>{if(courtAdmin.courtAdminId==courtAdminId)return true})[0];
         
-            let availability = this.getSheriffAvailability(sheriff, this.dutyWeekDates[dutySlotDay], timezone)
+            let availability = this.getCourtAdminAvailability(courtAdmin, this.dutyWeekDates[dutySlotDay], timezone)
 
-            const duties = this.getSheriffDuties(sheriff, this.dutyWeekDates[dutySlotDay])
+            const duties = this.getCourtAdminDuties(courtAdmin, this.dutyWeekDates[dutySlotDay])
 
             if(this.sumOfArrayElements(availability)==0 && this.sumOfArrayElements(duties)==0) return null
 
@@ -911,7 +911,7 @@
                 return editedDutySlots
                 
                 
-            }else if (newSheriff){
+            }else if (newCourtAdmin){
                 return null;            
             }else{
                 const unionUnassignDuties = this.unionArrays(unassignedArray, duties)
@@ -924,7 +924,7 @@
                     this.overTimeTimeRangeDate.startTime = slotTime.startTime
                     this.overTimeTimeRangeDate.endTime = slotTime.endTime
                     this.overTimeTimeRangeDate.day = dutySlotDay
-                    this.overTimeSheriffId = sheriffId;
+                    this.overTimeCourtAdminId = courtAdminId;
                     this.assignDutyError = false;
                     this.assignDutyErrorMsg = '';
                     this.confirmAssignOverTimeDuty = true;
@@ -943,13 +943,13 @@
                 dutySlotId:null
             }]
 
-            const body: assignDutyInfoType[] = this.assignDuty(this.overTimeSheriffId, editedDutySlots, false, this.overTimeTimeRangeDate.day, this.dutyRosterInfo);
+            const body: assignDutyInfoType[] = this.assignDuty(this.overTimeCourtAdminId, editedDutySlots, false, this.overTimeTimeRangeDate.day, this.dutyRosterInfo);
             this.postModifiedDutyRosters(body);            
         }
 
-        public getSheriffAvailability(sheriff, startOfDay, timezone){
-            if(sheriff){
-                const shifts = sheriff.shifts.filter(shift=>{if(shift.startDate.substring(0,10)==startOfDay.substring(0,10))return true}) 
+        public getCourtAdminAvailability(courtAdmin, startOfDay, timezone){
+            if(courtAdmin){
+                const shifts = courtAdmin.shifts.filter(shift=>{if(shift.startDate.substring(0,10)==startOfDay.substring(0,10))return true}) 
                 let availability = Array(96).fill(0)
                 for(const shift of shifts){
                     if(shift.overtimeHours==0){
@@ -963,9 +963,9 @@
             }
         }
 
-        public getSheriffDuties(sheriff,startOfDay){
-            if(sheriff){
-                const dutiesDetail = sheriff.dutiesDetail.filter(duty=>{if(duty.startTime.substring(0,10)==startOfDay.substring(0,10))return true})
+        public getCourtAdminDuties(courtAdmin,startOfDay){
+            if(courtAdmin){
+                const dutiesDetail = courtAdmin.dutiesDetail.filter(duty=>{if(duty.startTime.substring(0,10)==startOfDay.substring(0,10))return true})
                 let duties = Array(96).fill(0)
                 for(const duty of dutiesDetail){                    
                     duties = this.fillInArray(duties, duty.id , duty.startBin, duty.endBin)
@@ -1035,27 +1035,27 @@
             return( {startBin: startBin, endBin:endBin } )
         }
 
-        public assignDutyOverPopup(sheriffId ,editedDutySlotsInfo, unassignSheriff, day){
+        public assignDutyOverPopup(courtAdminId ,editedDutySlotsInfo, unassignCourtAdmin, day){
 
-            const body: assignDutyInfoType[] = this.assignDuty(sheriffId, editedDutySlotsInfo, unassignSheriff, day, this.dutyRosterInfo);
+            const body: assignDutyInfoType[] = this.assignDuty(courtAdminId, editedDutySlotsInfo, unassignCourtAdmin, day, this.dutyRosterInfo);
             this.postModifiedDutyRosters(body)
         }
 
-        public assignDuty(sheriffId: string|null, editedDutySlots: assignDutySlotsInfoType[], unassignSheriff: boolean, day: number, dutyRosterInfo) {
+        public assignDuty(courtAdminId: string|null, editedDutySlots: assignDutySlotsInfoType[], unassignCourtAdmin: boolean, day: number, dutyRosterInfo) {
 
             if(dutyRosterInfo[day]){
                 const dutyInfo = dutyRosterInfo[day];
                 let isNotRequired = false;
                 let isNotAvailable = false;
                 let isClosed = false;
-                if(sheriffId=='00000-00000-11111'){
-                    sheriffId = null;
+                if(courtAdminId=='00000-00000-11111'){
+                    courtAdminId = null;
                     isNotRequired = true;
-                }else if(sheriffId=='00000-00000-22222'){
-                    sheriffId = null;
+                }else if(courtAdminId=='00000-00000-22222'){
+                    courtAdminId = null;
                     isNotAvailable = true;
-                }else if(sheriffId=='00000-00000-33333'){
-                    sheriffId = null;
+                }else if(courtAdminId=='00000-00000-33333'){
+                    courtAdminId = null;
                     isClosed = true;
                 }
                 
@@ -1066,13 +1066,13 @@
 
                     if(dutySlot.dutySlotId) dutySlotIds.push(dutySlot.dutySlotId)
 
-                    if(!unassignSheriff)
+                    if(!unassignCourtAdmin)
                         dutySlots.push( { 
                             id: dutySlot.dutySlotId,                      
                             startDate: dutySlot.startDate,
                             endDate: dutySlot.endDate,
                             dutyId: dutyInfo.id,
-                            sheriffId: sheriffId,
+                            courtAdminId: courtAdminId,
                             shiftId: null,//dutySlot.shiftId,
                             timezone: dutyInfo.timezone,
                             isNotRequired: isNotRequired,
@@ -1092,7 +1092,7 @@
                         startDate: dutySlot.startDate,
                         endDate: dutySlot.endDate,
                         dutyId: dutySlot.dutyId,
-                        sheriffId: dutySlot.sheriffId,
+                        courtAdminId: dutySlot.courtAdminId,
                         shiftId: dutySlot.shiftId,
                         timezone: dutySlot.timezone,
                         isNotRequired: dutySlot.isNotRequired,

@@ -1,42 +1,42 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.Models.DB;
-using SS.Api.services.usermanagement;
-using SS.Common.helpers.extensions;
-using SS.Db.models;
-using SS.Db.models.scheduling.notmapped;
-using SS.Db.models.sheriff;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.Models.DB;
+using CAS.API.services.usermanagement;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.scheduling.notmapped;
+using CAS.DB.models.courtAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.Extensions.Configuration;
-using SS.Api.helpers;
-using SS.Api.models;
-using SS.Db.models.lookupcodes;
-using Shift = SS.Db.models.scheduling.Shift;
+using CAS.API.helpers;
+using CAS.API.models;
+using CAS.DB.models.lookupcodes;
+using Shift = CAS.DB.models.scheduling.Shift;
 
-namespace SS.Api.services.scheduling
+namespace CAS.API.services.scheduling
 {
     public class ShiftService
     {
-        private SheriffDbContext Db { get; }
-        private SheriffService SheriffService { get; }
+        private CourtAdminDbContext Db { get; }
+        private CourtAdminService CourtAdminService { get; }
         public double OvertimeHoursPerDay { get; }
 
-        public ShiftService(SheriffDbContext db, SheriffService sheriffService, IConfiguration configuration)
+        public ShiftService(CourtAdminDbContext db, CourtAdminService courtAdminService, IConfiguration configuration)
         {
             Db = db;
-            SheriffService = sheriffService;
+            CourtAdminService = courtAdminService;
             OvertimeHoursPerDay = double.Parse(configuration.GetNonEmptyValue("OvertimeHoursPerDay"));
         }
 
         public async Task<List<Shift>> GetShiftsForLocation(int locationId, DateTimeOffset start, DateTimeOffset end, bool includeDuties)
         {
             var lookupCode = await Db.LookupCode.AsNoTracking()
-                .Where(lc => lc.Type == LookupTypes.SheriffRank)
+                .Where(lc => lc.Type == LookupTypes.CourtAdminRank)
                 .Include(s => s.SortOrder)
                 .ToListAsync();
 
@@ -44,7 +44,7 @@ namespace SS.Api.services.scheduling
 
             var shifts = await Db.Shift.AsSingleQuery().AsNoTracking()
                 .Include(s => s.Location)
-                .Include(s => s.Sheriff)
+                .Include(s => s.CourtAdmin)
                 .ThenInclude(s => s.ActingRank.Where(ar =>
                     (ar.StartDate <= rankStartDate && rankStartDate < ar.EndDate)
                     && ar.ExpiryDate == null))
@@ -68,15 +68,15 @@ namespace SS.Api.services.scheduling
 
             foreach (var shift in shifts)
                 shift.DutySlots = dutySlots.Where(ds =>
-                        ds.SheriffId == shift.SheriffId && ds.StartDate < shift.EndDate &&
+                        ds.CourtAdminId == shift.CourtAdminId && ds.StartDate < shift.EndDate &&
                         shift.StartDate < ds.EndDate)
                     .ToList();
 
-            return shifts.OrderBy(s => lookupCode.FirstOrDefault(so => so.Code == s.Sheriff?.Rank)
+            return shifts.OrderBy(s => lookupCode.FirstOrDefault(so => so.Code == s.CourtAdmin?.Rank)
                 ?.SortOrder.FirstOrDefault()
                 ?.SortOrder)
-            .ThenBy(s => s.Sheriff.LastName)
-            .ThenBy(s => s.Sheriff.FirstName)
+            .ThenBy(s => s.CourtAdmin.LastName)
+            .ThenBy(s => s.CourtAdmin.FirstName)
             .ToList();
         }
 
@@ -137,7 +137,7 @@ namespace SS.Api.services.scheduling
                 Db.Entry(savedShift).Property(x => x.LocationId).IsModified = false;
                 Db.Entry(savedShift).Property(x => x.ExpiryDate).IsModified = false;
 
-                savedShift.Sheriff = await Db.Sheriff.FindAsync(shift.SheriffId);
+                savedShift.CourtAdmin = await Db.CourtAdmin.FindAsync(shift.CourtAdminId);
                 savedShift.AnticipatedAssignment = await Db.Assignment.FindAsync(shift.AnticipatedAssignmentId);
             }
             await Db.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace SS.Api.services.scheduling
                 shift!.ExpiryDate = DateTimeOffset.UtcNow;
                 var dutySlots = Db.DutySlot.Where(d =>
                     d.ExpiryDate == null &&
-                    d.SheriffId == shift.SheriffId &&
+                    d.CourtAdminId == shift.CourtAdminId &&
                     shift.StartDate <= d.StartDate &&
                     shift.EndDate >= d.EndDate);
                 await dutySlots.ForEachAsync(ds =>
@@ -184,14 +184,14 @@ namespace SS.Api.services.scheduling
             var targetStartDate = start.ConvertToTimezone(timezone);
             var targetEndDate = targetStartDate.TranslateDateForDaylightSavings(timezone, 7);
 
-            var sheriffsAvailableAtLocation = await SheriffService.GetSheriffsForShiftAvailabilityForLocation(locationId, targetStartDate, targetEndDate);
-            var sheriffIds = sheriffsAvailableAtLocation.SelectDistinctToList(s => s.Id);
+            var courtAdminsAvailableAtLocation = await CourtAdminService.GetCourtAdminsForShiftAvailabilityForLocation(locationId, targetStartDate, targetEndDate);
+            var courtAdminIds = courtAdminsAvailableAtLocation.SelectDistinctToList(s => s.Id);
 
             var shiftsToImport = Db.Shift
                 .Include(s => s.Location)
-                .Include(s => s.Sheriff)
+                .Include(s => s.CourtAdmin)
                 .AsNoTracking()
-                .In(sheriffIds, s => s.SheriffId)
+                .In(courtAdminIds, s => s.CourtAdminId)
                 .Where(s => s.LocationId == locationId &&
                             s.ExpiryDate == null &&
                             s.StartDate < targetEndDate && targetStartDate < s.EndDate
@@ -208,7 +208,7 @@ namespace SS.Api.services.scheduling
             var filteredImportedShifts = importedShifts.WhereToList(s => overlaps.All(o => o.Shift.Id != s.Id) &&
                                                                          !overlaps.Any(ts =>
                                                                              s.Id != ts.Shift.Id && ts.Shift.StartDate < s.EndDate && s.StartDate < ts.Shift.EndDate &&
-                                                                             ts.Shift.SheriffId == s.SheriffId));
+                                                                             ts.Shift.CourtAdminId == s.CourtAdminId));
 
             filteredImportedShifts.ForEach(s => s.Id = 0);
             await Db.Shift.AddRangeAsync(filteredImportedShifts);
@@ -226,38 +226,38 @@ namespace SS.Api.services.scheduling
         /// </summary>
         public async Task<List<ShiftAvailability>> GetShiftAvailability(DateTimeOffset start, DateTimeOffset end, int locationId)
         {
-            var sheriffs = await SheriffService.GetSheriffsForShiftAvailabilityForLocation(locationId, start, end);
+            var courtAdmins = await CourtAdminService.GetCourtAdminsForShiftAvailabilityForLocation(locationId, start, end);
 
-            //Include sheriffs that have a shift, but their home location / away location doesn't match.
+            //Include courtAdmins that have a shift, but their home location / away location doesn't match.
             //Grey out on the GUI if HomeLocationId and AwayLocation doesn't match.
-            var sheriffIdsFromShifts = await Db.Shift.AsNoTracking()
+            var courtAdminIdsFromShifts = await Db.Shift.AsNoTracking()
                 .Where(s => s.StartDate < end && start < s.EndDate && s.ExpiryDate == null &&
                             s.LocationId == locationId)
-                .Select(s => s.SheriffId)
+                .Select(s => s.CourtAdminId)
                 .ToListAsync();
 
-            var sheriffsOutOfLocationWithShiftIds = sheriffIdsFromShifts.Except(sheriffs.Select(s => s.Id));
+            var courtAdminsOutOfLocationWithShiftIds = courtAdminIdsFromShifts.Except(courtAdmins.Select(s => s.Id));
 
             //Note their AwayLocation, Leave, Training should be entirely empty, this is intentional.
-            var sheriffsOutOfLocationWithShift = await
-               Db.Sheriff.AsNoTracking()
+            var courtAdminsOutOfLocationWithShift = await
+               Db.CourtAdmin.AsNoTracking()
                    .Include(s => s.HomeLocation)
-                   .In(sheriffsOutOfLocationWithShiftIds,
+                   .In(courtAdminsOutOfLocationWithShiftIds,
                        s => s.Id)
                    .Where(s => s.IsEnabled)
                    .ToListAsync();
 
-            sheriffs = sheriffs.Concat(sheriffsOutOfLocationWithShift).ToList();
+            courtAdmins = courtAdmins.Concat(courtAdminsOutOfLocationWithShift).ToList();
 
-            var shiftsForSheriffs = await GetShiftsForSheriffs(sheriffs.Select(s => s.Id), start, end);
+            var shiftsForCourtAdmins = await GetShiftsForCourtAdmins(courtAdmins.Select(s => s.Id), start, end);
 
-            var sheriffEventConflicts = new List<ShiftAvailabilityConflict>();
-            sheriffs.ForEach(sheriff =>
+            var courtAdminEventConflicts = new List<ShiftAvailabilityConflict>();
+            courtAdmins.ForEach(courtAdmin =>
             {
-                sheriffEventConflicts.AddRange(sheriff.AwayLocation.Select(s => new ShiftAvailabilityConflict
+                courtAdminEventConflicts.AddRange(courtAdmin.AwayLocation.Select(s => new ShiftAvailabilityConflict
                 {
                     Conflict = ShiftConflictType.AwayLocation,
-                    SheriffId = sheriff.Id,
+                    CourtAdminId = courtAdmin.Id,
                     Start = s.StartDate,
                     End = s.EndDate,
                     LocationId = s.LocationId,
@@ -265,32 +265,32 @@ namespace SS.Api.services.scheduling
                     Timezone = s.Timezone,
                     Comment = s.Comment
                 }));
-                sheriffEventConflicts.AddRange(sheriff.Leave.Select(s => new ShiftAvailabilityConflict
+                courtAdminEventConflicts.AddRange(courtAdmin.Leave.Select(s => new ShiftAvailabilityConflict
                 {
                     Conflict = ShiftConflictType.Leave,
-                    SheriffId = sheriff.Id,
+                    CourtAdminId = courtAdmin.Id,
                     Start = s.StartDate,
                     End = s.EndDate,
                     Timezone = s.Timezone,
-                    SheriffEventType = s.LeaveType?.Code,
+                    CourtAdminEventType = s.LeaveType?.Code,
                     Comment = s.Comment
                 }));
-                sheriffEventConflicts.AddRange(sheriff.Training.Select(s => new ShiftAvailabilityConflict
+                courtAdminEventConflicts.AddRange(courtAdmin.Training.Select(s => new ShiftAvailabilityConflict
                 {
                     Conflict = ShiftConflictType.Training,
-                    SheriffId = sheriff.Id,
+                    CourtAdminId = courtAdmin.Id,
                     Start = s.StartDate,
                     End = s.EndDate,
                     Timezone = s.Timezone,
-                    SheriffEventType = s.TrainingType?.Code,
+                    CourtAdminEventType = s.TrainingType?.Code,
                     Comment = s.Note
                 }));
             });
 
-            var existingShiftConflicts = shiftsForSheriffs.Select(s => new ShiftAvailabilityConflict
+            var existingShiftConflicts = shiftsForCourtAdmins.Select(s => new ShiftAvailabilityConflict
             {
                 Conflict = ShiftConflictType.Scheduled,
-                SheriffId = s.SheriffId,
+                CourtAdminId = s.CourtAdminId,
                 Location = s.Location,
                 LocationId = s.LocationId,
                 Start = s.StartDate,
@@ -302,30 +302,30 @@ namespace SS.Api.services.scheduling
             });
 
             //We've already included this information in the conflicts.
-            sheriffs.ForEach(s => s.AwayLocation = null);
-            sheriffs.ForEach(s => s.Leave = null);
-            sheriffs.ForEach(s => s.Training = null);
+            courtAdmins.ForEach(s => s.AwayLocation = null);
+            courtAdmins.ForEach(s => s.Leave = null);
+            courtAdmins.ForEach(s => s.Training = null);
 
-            var allShiftConflicts = sheriffEventConflicts.Concat(existingShiftConflicts).ToList();
+            var allShiftConflicts = courtAdminEventConflicts.Concat(existingShiftConflicts).ToList();
 
             var lookupCode = await Db.LookupCode.AsNoTracking()
-                .Where(lc => lc.Type == LookupTypes.SheriffRank)
+                .Where(lc => lc.Type == LookupTypes.CourtAdminRank)
                 .Include(s => s.SortOrder)
                 .ToListAsync();
 
-            return sheriffs.SelectToList(s => new ShiftAvailability
+            return courtAdmins.SelectToList(s => new ShiftAvailability
             {
                 Start = start,
                 End = end,
-                Sheriff = s,
-                SheriffId = s.Id,
-                Conflicts = allShiftConflicts.WhereToList(asc => asc.SheriffId == s.Id)
+                CourtAdmin = s,
+                CourtAdminId = s.Id,
+                Conflicts = allShiftConflicts.WhereToList(asc => asc.CourtAdminId == s.Id)
             })
-                .OrderBy(s => lookupCode.FirstOrDefault(so => so.Code == s.Sheriff.Rank)
+                .OrderBy(s => lookupCode.FirstOrDefault(so => so.Code == s.CourtAdmin.Rank)
                     ?.SortOrder.FirstOrDefault()
                     ?.SortOrder)
-                .ThenBy(s => s.Sheriff.LastName)
-                .ThenBy(s => s.Sheriff.FirstName)
+                .ThenBy(s => s.CourtAdmin.LastName)
+                .ThenBy(s => s.CourtAdmin.FirstName)
                 .ToList();
         }
 
@@ -333,44 +333,44 @@ namespace SS.Api.services.scheduling
 
         public async Task CalculateOvertimeHoursForShifts(List<Shift> shifts)
         {
-            var sheriffsAndDates = shifts.SelectDistinctToList(s => new { s.SheriffId, s.StartDate, s.Timezone });
-            foreach (var sheriffAndDate in sheriffsAndDates)
+            var courtAdminsAndDates = shifts.SelectDistinctToList(s => new { s.CourtAdminId, s.StartDate, s.Timezone });
+            foreach (var courtAdminAndDate in courtAdminsAndDates)
             {
-                await CalculateOvertimeHoursForSheriffOnDay(sheriffAndDate.SheriffId, sheriffAndDate.StartDate,
-                    sheriffAndDate.Timezone);
+                await CalculateOvertimeHoursForCourtAdminOnDay(courtAdminAndDate.CourtAdminId, courtAdminAndDate.StartDate,
+                    courtAdminAndDate.Timezone);
             }
             await Db.SaveChangesAsync();
         }
 
-        public async Task<double> CalculateOvertimeHoursForSheriffOnDay(Guid? sheriffId, DateTimeOffset startDate, string timezone)
+        public async Task<double> CalculateOvertimeHoursForCourtAdminOnDay(Guid? courtAdminId, DateTimeOffset startDate, string timezone)
         {
             var startOfDayInTimezone = startDate.ConvertToTimezone(timezone).DateOnly();
             var endOfDayInTimezone = startOfDayInTimezone.TranslateDateForDaylightSavings(timezone, 1);
 
-            var shiftsForSheriffOnDay = await Db.Shift.Where(s =>
-                s.ExpiryDate == null && s.SheriffId == sheriffId &&
+            var shiftsForCourtAdminOnDay = await Db.Shift.Where(s =>
+                s.ExpiryDate == null && s.CourtAdminId == courtAdminId &&
                 startOfDayInTimezone <= s.StartDate && endOfDayInTimezone >= s.EndDate)
                 .OrderBy(s => s.StartDate)
                 .ToListAsync();
 
-            if (!shiftsForSheriffOnDay.Any())
+            if (!shiftsForCourtAdminOnDay.Any())
                 return 0.0;
 
-            foreach (var shift in shiftsForSheriffOnDay)
+            foreach (var shift in shiftsForCourtAdminOnDay)
                 shift.OvertimeHours = 0;
 
-            var hoursForSheriffOnDay = shiftsForSheriffOnDay.Sum(s => s.StartDate.HourDifference(s.EndDate, s.Timezone));
-            var overtimeHoursForDay = Math.Max(hoursForSheriffOnDay - OvertimeHoursPerDay, 0);
+            var hoursForCourtAdminOnDay = shiftsForCourtAdminOnDay.Sum(s => s.StartDate.HourDifference(s.EndDate, s.Timezone));
+            var overtimeHoursForDay = Math.Max(hoursForCourtAdminOnDay - OvertimeHoursPerDay, 0);
 
             //See if we have multiple shifts && a shift that is equal our OT hours
-            if (shiftsForSheriffOnDay.Count > 1 && shiftsForSheriffOnDay.Any(s => s.StartDate.HourDifference(s.EndDate, s.Timezone).Equals(OvertimeHoursPerDay)))
+            if (shiftsForCourtAdminOnDay.Count > 1 && shiftsForCourtAdminOnDay.Any(s => s.StartDate.HourDifference(s.EndDate, s.Timezone).Equals(OvertimeHoursPerDay)))
             {
                 //Place the overtime on the other shifts. This is the scenario where an outside shift(s) are created, and the OT needs to be placed on the outer shifts.
                 //For example 8-9am, 9am-5pm, 5pm-6pm
-                var earliestBeforeOvertimeThresholdShift = shiftsForSheriffOnDay.First(s =>
+                var earliestBeforeOvertimeThresholdShift = shiftsForCourtAdminOnDay.First(s =>
                     s.StartDate.HourDifference(s.EndDate, s.Timezone).Equals(OvertimeHoursPerDay));
 
-                var outsideShifts = shiftsForSheriffOnDay.Where(s => s.Id != earliestBeforeOvertimeThresholdShift.Id);
+                var outsideShifts = shiftsForCourtAdminOnDay.Where(s => s.Id != earliestBeforeOvertimeThresholdShift.Id);
 
                 foreach (var shift in outsideShifts)
                     shift.OvertimeHours = shift.StartDate.HourDifference(shift.EndDate, shift.Timezone);
@@ -378,7 +378,7 @@ namespace SS.Api.services.scheduling
             else
             {
                 var overtimeHourTally = overtimeHoursForDay;
-                foreach (var shift in shiftsForSheriffOnDay.OrderByDescending(s => s.EndDate))
+                foreach (var shift in shiftsForCourtAdminOnDay.OrderByDescending(s => s.EndDate))
                 {
                     var shiftHours = shift.StartDate.HourDifference(shift.EndDate, shift.Timezone);
                     shift.OvertimeHours = Math.Min(shiftHours, overtimeHourTally);
@@ -419,7 +419,7 @@ namespace SS.Api.services.scheduling
         private async Task AddShift(Shift shift)
         {
             shift.ExpiryDate = null;
-            shift.Sheriff = await Db.Sheriff.FindAsync(shift.SheriffId);
+            shift.CourtAdmin = await Db.CourtAdmin.FindAsync(shift.CourtAdminId);
             shift.AnticipatedAssignment = await Db.Assignment.FindAsync(shift.AnticipatedAssignmentId);
             shift.Location = await Db.Location.FindAsync(shift.LocationId);
             await Db.Shift.AddAsync(shift);
@@ -429,7 +429,7 @@ namespace SS.Api.services.scheduling
 
         #region Override
 
-        public async Task HandleShiftOverrides<T>(T data, DutyRosterService dutyRosterService, List<Shift> shiftConflicts) where T : SheriffEvent
+        public async Task HandleShiftOverrides<T>(T data, DutyRosterService dutyRosterService, List<Shift> shiftConflicts) where T : CourtAdminEvent
         {
             var adjustShifts = new List<Shift>();
             var expireShiftIds = new List<int>();
@@ -477,8 +477,8 @@ namespace SS.Api.services.scheduling
         public async Task<List<ShiftConflict>> GetShiftConflicts(List<Shift> shifts)
         {
             var overlappingShifts = await CheckForShiftOverlap(shifts);
-            var sheriffEventOverlaps = await CheckSheriffEventsOverlap(shifts);
-            return overlappingShifts.Concat(sheriffEventOverlaps).OrderBy(o => o.Shift.StartDate).ToList();
+            var courtAdminEventOverlaps = await CheckCourtAdminEventsOverlap(shifts);
+            return overlappingShifts.Concat(courtAdminEventOverlaps).OrderBy(o => o.Shift.StartDate).ToList();
         }
 
         private async Task<List<ShiftConflict>> CheckForShiftOverlap(List<Shift> shifts)
@@ -488,7 +488,7 @@ namespace SS.Api.services.scheduling
             {
                 ConflictMessages = new List<string>
                 {
-                    ConflictingSheriffAndSchedule(ol.Sheriff, ol)
+                    ConflictingCourtAdminAndSchedule(ol.CourtAdmin, ol)
                 },
                 Shift = ol
             });
@@ -498,17 +498,17 @@ namespace SS.Api.services.scheduling
         {
             if (!targetShifts.Any()) throw new BusinessLayerException("No shifts were provided.");
             if (targetShifts.Any(a =>
-                targetShifts.Any(b => a != b && b.StartDate < a.EndDate && a.StartDate < b.EndDate && a.SheriffId == b.SheriffId)))
+                targetShifts.Any(b => a != b && b.StartDate < a.EndDate && a.StartDate < b.EndDate && a.CourtAdminId == b.CourtAdminId)))
                 throw new BusinessLayerException("Shifts provided overlap with themselves.");
 
-            var sheriffIds = targetShifts.Select(ts => ts.SheriffId).Distinct().ToList();
+            var courtAdminIds = targetShifts.Select(ts => ts.CourtAdminId).Distinct().ToList();
 
             var conflictingShifts = new List<Shift>();
             foreach (var ts in targetShifts)
             {
                 conflictingShifts.AddRange(await Db.Shift.AsNoTracking()
-                    .Include(s => s.Sheriff)
-                    .In(sheriffIds, s => s.SheriffId)
+                    .Include(s => s.CourtAdmin)
+                    .In(courtAdminIds, s => s.CourtAdminId)
                     .Where(s =>
                         s.ExpiryDate == null &&
                         s.StartDate < ts.EndDate && ts.StartDate < s.EndDate
@@ -518,61 +518,61 @@ namespace SS.Api.services.scheduling
             conflictingShifts = conflictingShifts.Distinct().WhereToList(s =>
                 targetShifts.Any(ts =>
                     ts.ExpiryDate == null && s.Id != ts.Id && ts.StartDate < s.EndDate && s.StartDate < ts.EndDate &&
-                    ts.SheriffId == s.SheriffId) &&
+                    ts.CourtAdminId == s.CourtAdminId) &&
                 targetShifts.All(ts => ts.Id != s.Id)
             );
 
             return conflictingShifts;
         }
 
-        private async Task<List<ShiftConflict>> CheckSheriffEventsOverlap(List<Shift> shifts)
+        private async Task<List<ShiftConflict>> CheckCourtAdminEventsOverlap(List<Shift> shifts)
         {
-            var sheriffEventConflicts = new List<ShiftConflict>();
+            var courtAdminEventConflicts = new List<ShiftConflict>();
             foreach (var shift in shifts)
             {
                 var locationId = shift.LocationId;
-                var sheriffs = await SheriffService.GetSheriffsForShiftAvailabilityForLocation(locationId, shift.StartDate, shift.EndDate, shift.SheriffId);
-                var sheriff = sheriffs.FirstOrDefault();
+                var courtAdmins = await CourtAdminService.GetCourtAdminsForShiftAvailabilityForLocation(locationId, shift.StartDate, shift.EndDate, shift.CourtAdminId);
+                var courtAdmin = courtAdmins.FirstOrDefault();
                 var validationErrors = new List<string>();
-                if (sheriff == null)
+                if (courtAdmin == null)
                 {
-                    var unavailableSheriff =
-                        await Db.Sheriff.AsNoTracking().FirstOrDefaultAsync(s => s.Id == shift.SheriffId);
-                    validationErrors.Add($"{unavailableSheriff?.LastName}, {unavailableSheriff?.FirstName} is not active in this location for {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatDate()} {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)} to {shift.EndDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)}");
+                    var unavailableCourtAdmin =
+                        await Db.CourtAdmin.AsNoTracking().FirstOrDefaultAsync(s => s.Id == shift.CourtAdminId);
+                    validationErrors.Add($"{unavailableCourtAdmin?.LastName}, {unavailableCourtAdmin?.FirstName} is not active in this location for {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatDate()} {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)} to {shift.EndDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)}");
                 }
                 else
                 {
-                    validationErrors.AddRange(sheriff!.AwayLocation.Where(aw => aw.LocationId != shift.LocationId)
-                        .Select(aw => PrintSheriffEventConflict<SheriffAwayLocation>(aw.Sheriff,
+                    validationErrors.AddRange(courtAdmin!.AwayLocation.Where(aw => aw.LocationId != shift.LocationId)
+                        .Select(aw => PrintCourtAdminEventConflict<CourtAdminAwayLocation>(aw.CourtAdmin,
                             aw.StartDate,
                             aw.EndDate,
                             aw.Timezone)));
-                    validationErrors.AddRange(sheriff.Leave.Select(aw => PrintSheriffEventConflict<SheriffLeave>(
-                        aw.Sheriff,
+                    validationErrors.AddRange(courtAdmin.Leave.Select(aw => PrintCourtAdminEventConflict<CourtAdminLeave>(
+                        aw.CourtAdmin,
                         aw.StartDate,
                         aw.EndDate,
                         aw.Timezone)));
-                    validationErrors.AddRange(sheriff.Training.Select(aw => PrintSheriffEventConflict<SheriffTraining>(
-                        aw.Sheriff,
+                    validationErrors.AddRange(courtAdmin.Training.Select(aw => PrintCourtAdminEventConflict<CourtAdminTraining>(
+                        aw.CourtAdmin,
                         aw.StartDate,
                         aw.EndDate,
                         aw.Timezone)));
                 }
 
                 if (validationErrors.Any())
-                    sheriffEventConflicts.Add(new ShiftConflict
+                    courtAdminEventConflicts.Add(new ShiftConflict
                     {
                         Shift = shift,
                         ConflictMessages = validationErrors
                     });
             }
-            return sheriffEventConflicts;
+            return courtAdminEventConflicts;
         }
 
-        private async Task<List<Shift>> GetShiftsForSheriffs(IEnumerable<Guid> sheriffIds, DateTimeOffset startDate, DateTimeOffset endDate) =>
+        private async Task<List<Shift>> GetShiftsForCourtAdmins(IEnumerable<Guid> courtAdminIds, DateTimeOffset startDate, DateTimeOffset endDate) =>
             await Db.Shift.AsSingleQuery().AsNoTracking()
                     .Include(s => s.Location)
-                    .In(sheriffIds, s => s.SheriffId)
+                    .In(courtAdminIds, s => s.CourtAdminId)
                     .Where(s =>
                         s.StartDate < endDate && startDate < s.EndDate &&
                         s.ExpiryDate == null)
@@ -582,17 +582,17 @@ namespace SS.Api.services.scheduling
 
         #region String Helpers
 
-        private static string ConflictingSheriffAndSchedule(Sheriff sheriff, Shift shift)
+        private static string ConflictingCourtAdminAndSchedule(CourtAdmin courtAdmin, Shift shift)
         {
             shift.Timezone.GetTimezone().ThrowBusinessExceptionIfNull("Shift - Timezone was invalid.");
-            return $"{sheriff.LastName}, {sheriff.FirstName} has a shift {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatDate()} {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)} to {shift.EndDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)}";
+            return $"{courtAdmin.LastName}, {courtAdmin.FirstName} has a shift {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatDate()} {shift.StartDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)} to {shift.EndDate.ConvertToTimezone(shift.Timezone).PrintFormatTime(shift.Timezone)}";
         }
 
-        private static string PrintSheriffEventConflict<T>(Sheriff sheriff, DateTimeOffset start, DateTimeOffset end,
+        private static string PrintCourtAdminEventConflict<T>(CourtAdmin courtAdmin, DateTimeOffset start, DateTimeOffset end,
             string timezone)
         {
-            timezone.GetTimezone().ThrowBusinessExceptionIfNull("SheriffEvent - Timezone was invalid.");
-            return $"{sheriff.LastName}, {sheriff.FirstName} has {typeof(T).Name.Replace("Sheriff", "").ConvertCamelCaseToMultiWord()} {start.ConvertToTimezone(timezone).PrintFormatDateTime(timezone)} to {end.ConvertToTimezone(timezone).PrintFormatDateTime(timezone)}";
+            timezone.GetTimezone().ThrowBusinessExceptionIfNull("CourtAdminEvent - Timezone was invalid.");
+            return $"{courtAdmin.LastName}, {courtAdmin.FirstName} has {typeof(T).Name.Replace("CourtAdmin", "").ConvertCamelCaseToMultiWord()} {start.ConvertToTimezone(timezone).PrintFormatDateTime(timezone)} to {end.ConvertToTimezone(timezone).PrintFormatDateTime(timezone)}";
         }
 
         #endregion String Helpers

@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>SS.Common</AssemblyName>
-    <RootNamespace>SS.Common</RootNamespace>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>CAS.COMMON</AssemblyName>
+    <RootNamespace>CAS.COMMON</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mapster" Version="7.3.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
-    <PackageReference Include="NodaTime" Version="3.0.3" />
-    <PackageReference Include="TimeZoneNames" Version="4.1.0" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
+    <PackageReference Include="NodaTime" Version="3.1.9" />
+    <PackageReference Include="TimeZoneNames" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

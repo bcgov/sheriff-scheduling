@@ -12,7 +12,7 @@
 							width="177"
 							height="44"
 							alt="B.C. Government Logo"
-						/> Login To Sheriff Scheduling</b-button>
+						/> Login To Court Admin Scheduling</b-button>
         </b-card>
 
     </b-card>
@@ -28,7 +28,7 @@
 
         public login(){
             Vue.$cookies.remove("logout");
-            window.location.replace(`${process.env.BASE_URL}api/auth/login?redirectUri=%2Fsheriff-scheduling`);
+            window.location.replace(`${process.env.BASE_URL}api/auth/login?redirectUri=%2Fcourt-admin-scheduling`);
         }
 
         mounted(){

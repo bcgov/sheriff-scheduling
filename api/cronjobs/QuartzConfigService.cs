@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Quartz;
 
-namespace SS.Api.cronjobs
+namespace CAS.API.cronjobs
 {
     public static class QuartzConfigService
     {

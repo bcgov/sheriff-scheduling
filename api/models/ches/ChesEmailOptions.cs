@@ -1,6 +1,6 @@
-﻿using SS.Api.helpers.extensions;
+﻿using CAS.API.helpers.extensions;
 
-namespace SS.Api.models.ches
+namespace CAS.API.models.ches
 {
     public class ChesEmailOptions
     {

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto.generated;
-using SS.Api.services.scheduling;
-using SS.Db.models;
-using SS.Db.models.auth;
-using SS.Db.models.scheduling;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto.generated;
+using CAS.API.services.scheduling;
+using CAS.DB.models;
+using CAS.DB.models.auth;
+using CAS.DB.models.scheduling;
 
-namespace SS.Api.controllers.scheduling
+namespace CAS.API.controllers.scheduling
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -18,9 +18,9 @@ namespace SS.Api.controllers.scheduling
     {
         public const string InvalidAssignmentError = "Invalid Assignment.";
         private AssignmentService AssignmentService { get; }
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public AssignmentController(AssignmentService assignmentService, SheriffDbContext db)
+        public AssignmentController(AssignmentService assignmentService, CourtAdminDbContext db)
         {
             AssignmentService = assignmentService;
             Db = db;

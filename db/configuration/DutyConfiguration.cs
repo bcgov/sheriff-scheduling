@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.DB.Configuration;
-using SS.Db.models.scheduling;
+using CAS.DB.Configuration;
+using CAS.DB.models.scheduling;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class DutyConfiguration : BaseEntityConfiguration<Duty>
     {

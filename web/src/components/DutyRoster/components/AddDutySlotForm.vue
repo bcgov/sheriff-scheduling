@@ -6,22 +6,22 @@
                     <b-td >
                         <b-tr class="bg-white">
                             <b-form-group style="margin: 0.25rem 0 0 0.5rem;width: 15rem">                            
-                                <label class="h6 m-0 p-0">Sheriff<span class="text-danger">*</span></label>
+                                <label class="h6 m-0 p-0">CourtAdmin<span class="text-danger">*</span></label>
                                 <b-form-select 
                                     size="sm"
-                                    v-model="selectedSheriff"
-                                    :state = "sheriffState?null:false">
+                                    v-model="selectedCourtAdmin"
+                                    :state = "courtAdminState?null:false">
                                         <b-form-select-option
-                                            v-for="sheriff in notAvailableNotRequired"
-                                            :key="sheriff.sheriffId"
-                                            :value="sheriff">
-                                                    {{sheriff.lastName}}
+                                            v-for="courtAdmin in notAvailableNotRequired"
+                                            :key="courtAdmin.courtAdminId"
+                                            :value="courtAdmin">
+                                                    {{courtAdmin.lastName}}
                                         </b-form-select-option>
                                         <b-form-select-option
-                                            v-for="sheriff in shiftAvailabilityInfo"
-                                            :key="sheriff.sheriffId"
-                                            :value="sheriff">
-                                                    {{sheriff.lastName|capitalize}}, {{sheriff.firstName|capitalize}} 
+                                            v-for="courtAdmin in shiftAvailabilityInfo"
+                                            :key="courtAdmin.courtAdminId"
+                                            :value="courtAdmin">
+                                                    {{courtAdmin.lastName|capitalize}}, {{courtAdmin.firstName|capitalize}} 
                                         </b-form-select-option>
                                 </b-form-select>
                             </b-form-group>
@@ -93,7 +93,7 @@
                 </b-tr>
                 <b-tr v-else class="bg-warning">
                     <b-form-group style="margin: 0.25rem 0 0 0.5rem;width: 15rem">                            
-                        <label class="h6 m-0 p-0">Reassign <b class="text-danger">{{selectedSheriff.lastName|capitalize}}, {{selectedSheriff.firstName|capitalize}}</b> to <span class="text-danger">*</span></label>
+                        <label class="h6 m-0 p-0">Reassign <b class="text-danger">{{selectedCourtAdmin.lastName|capitalize}}, {{selectedCourtAdmin.firstName|capitalize}}</b> to <span class="text-danger">*</span></label>
                         <b-form-select 
                             size="sm"
                             @change="reassignDutyChanged"
@@ -167,7 +167,7 @@
             <template v-slot:modal-title>
                 <h2 class="mb-0 text-light">Confirm Assign Overtime</h2>                   
             </template>
-            <h4 style="line-height:1.5rem" v-if="selectedSheriff" >Are you sure you want to assign a duty that extends {{selectedSheriff.firstName|capitalize}} {{selectedSheriff.lastName|capitalize}}'s shift?</h4>
+            <h4 style="line-height:1.5rem" v-if="selectedCourtAdmin" >Are you sure you want to assign a duty that extends {{selectedCourtAdmin.firstName|capitalize}} {{selectedCourtAdmin.lastName|capitalize}}'s shift?</h4>
             <template v-slot:modal-footer>
                 <b-button variant="danger" @click="confirmedAssignOverTimeDuty()">Confirm</b-button>
                 <b-button variant="primary" @click="$bvModal.hide('bv-modal-confirm-assign-edit-overtime')">Cancel</b-button>
@@ -215,8 +215,8 @@
         @Prop({required: true})
         startOfDay!: string;        
 
-        selectedSheriff = {} as myTeamShiftInfoType | undefined;
-        sheriffState = true;        
+        selectedCourtAdmin = {} as myTeamShiftInfoType | undefined;
+        courtAdminState = true;        
 
         selectedStartTime = '';
         startTimeState = true;
@@ -230,7 +230,7 @@
         reassignEndTime = '';
         reassignEndTimeState = true; 
 
-        originalSheriff = {} as myTeamShiftInfoType | undefined;       
+        originalCourtAdmin = {} as myTeamShiftInfoType | undefined;       
         originalStartTime = '';
         originalEndTime = '';
 
@@ -266,7 +266,7 @@
         public addNotAvailableNotRequired(){
             this.notAvailableNotRequired = [];
             this.notAvailableNotRequired.push({
-                sheriffId: '00000-00000-11111',
+                courtAdminId: '00000-00000-11111',
                 shifts: [],
                 badgeNumber: 0,
                 firstName: ' ',
@@ -277,7 +277,7 @@
                 dutiesDetail: []
             })
             this.notAvailableNotRequired.push({
-                sheriffId: '00000-00000-22222',
+                courtAdminId: '00000-00000-22222',
                 shifts: [],
                 badgeNumber: 0,
                 firstName: ' ',
@@ -288,7 +288,7 @@
                 dutiesDetail: []
             })
             this.notAvailableNotRequired.push({
-                sheriffId: '00000-00000-33333',
+                courtAdminId: '00000-00000-33333',
                 shifts: [],
                 badgeNumber: 0,
                 firstName: ' ',
@@ -303,9 +303,9 @@
         public extractFormInfo(){
             this.formDataId = this.formData.id? this.formData.id:'0';
             
-            const index = this.shiftAvailabilityInfo.findIndex(sheriff=>{if(sheriff.sheriffId == this.formData.sheriffId)return true})
-            const indexNANQ = this.notAvailableNotRequired.findIndex(sheriff=>{if(sheriff.sheriffId == this.formData.sheriffId)return true})
-            this.originalSheriff = this.selectedSheriff = (index>=0)? this.shiftAvailabilityInfo[index]: (indexNANQ>=0)? this.notAvailableNotRequired[indexNANQ]: {} as myTeamShiftInfoType;            
+            const index = this.shiftAvailabilityInfo.findIndex(courtAdmin=>{if(courtAdmin.courtAdminId == this.formData.courtAdminId)return true})
+            const indexNANQ = this.notAvailableNotRequired.findIndex(courtAdmin=>{if(courtAdmin.courtAdminId == this.formData.courtAdminId)return true})
+            this.originalCourtAdmin = this.selectedCourtAdmin = (index>=0)? this.shiftAvailabilityInfo[index]: (indexNANQ>=0)? this.notAvailableNotRequired[indexNANQ]: {} as myTeamShiftInfoType;            
               
             this.originalStartTime = this.selectedStartTime = this.formData.startTimeString;            
             this.originalEndTime = this.selectedEndTime = this.formData.endTimeString;
@@ -371,17 +371,17 @@
 		}
 
         public saveForm(){
-            this.sheriffState  = true;                
+            this.courtAdminState  = true;                
             this.startTimeState = true;
             this.endTimeState   = true;
             this.showErrorMsg = false;
             let requiredError = false;
 
-            if(!this.selectedSheriff || (this.selectedSheriff && !this.selectedSheriff.sheriffId) ){
-                this.sheriffState  = false;
+            if(!this.selectedCourtAdmin || (this.selectedCourtAdmin && !this.selectedCourtAdmin.courtAdminId) ){
+                this.courtAdminState  = false;
                 requiredError = true;            
             } else {
-                this.sheriffState  = true;
+                this.courtAdminState  = true;
             }
             
             if (!this.selectedStartTime) {
@@ -416,7 +416,7 @@
             
             if (!requiredError) {
                    
-                this.sheriffState  = true;                    
+                this.courtAdminState  = true;                    
                 this.endTimeState   = true;
                 this.startTimeState = true;
                 this.reassignStartTimeState = true
@@ -433,19 +433,19 @@
         public submitEditingSlotInfo(selectedTimeBins){
             const selectedTimeArray = this.fillInArray(Array(96).fill(0), 1, selectedTimeBins.startBin, selectedTimeBins.endBin);
             
-            if(this.selectedSheriff){
-                const sheriffId = this.selectedSheriff.sheriffId
-                let sheriff = this.shiftAvailabilityInfo.filter(sheriff=>{if(sheriff.sheriffId==sheriffId)return true})[0];
-                if(!sheriff) sheriff =  this.selectedSheriff;
+            if(this.selectedCourtAdmin){
+                const courtAdminId = this.selectedCourtAdmin.courtAdminId
+                let courtAdmin = this.shiftAvailabilityInfo.filter(courtAdmin=>{if(courtAdmin.courtAdminId==courtAdminId)return true})[0];
+                if(!courtAdmin) courtAdmin =  this.selectedCourtAdmin;
                 
-                let availability = sheriff.availability
-                let duties = sheriff.duties
+                let availability = courtAdmin.availability
+                let duties = courtAdmin.duties
                 let shiftId = this.formData.shiftId
 
-                const isNotRequiredOrAvailable = (sheriffId =='00000-00000-11111' || sheriffId =='00000-00000-22222' || sheriffId =='00000-00000-33333')
+                const isNotRequiredOrAvailable = (courtAdminId =='00000-00000-11111' || courtAdminId =='00000-00000-22222' || courtAdminId =='00000-00000-33333')
 
                 
-                if(!isNotRequiredOrAvailable  && sheriffId == this.formData.sheriffId){
+                if(!isNotRequiredOrAvailable  && courtAdminId == this.formData.courtAdminId){
                     const dutyArrayOfOriginalSlot = this.fillInArray(Array(96).fill(0), 1, this.formData.startTime-1, this.formData.endTime-1);
                     availability = this.addArrays(dutyArrayOfOriginalSlot, availability);
                     duties = this.subtractUnionOfArrays(duties,dutyArrayOfOriginalSlot)                    
@@ -453,7 +453,7 @@
 
                 const dutiesConflictWithNewTimeSlot = this.unionArrays(selectedTimeArray, duties);
                 if(this.sumOfArrayElements(dutiesConflictWithNewTimeSlot)>0){
-                    this.errorMsg = "The Sheriff has conflicting duties with the selected time range." 
+                    this.errorMsg = "The CourtAdmin has conflicting duties with the selected time range." 
                     this.showErrorMsg = true;
                     return
                 }
@@ -527,7 +527,7 @@
                     })
                 }
                 
-                this.$emit('submit',this.selectedSheriff?this.selectedSheriff.sheriffId:0, allEditingDutySlots , false);  
+                this.$emit('submit',this.selectedCourtAdmin?this.selectedCourtAdmin.courtAdminId:0, allEditingDutySlots , false);  
             }
         }
 
@@ -548,7 +548,7 @@
             }
 
             for(const dutyBlock of this.dutyBlocks){
-                if(dutyBlock.sheriffId && (dutyBlock.startTime != this.formData.startTime)){
+                if(dutyBlock.courtAdminId && (dutyBlock.startTime != this.formData.startTime)){
                 
                     const name = dutyBlock.firstName? dutyBlock.lastName+", "+dutyBlock.firstName:dutyBlock.lastName
 
@@ -566,7 +566,7 @@
                         return false;
                     }
 
-                    // if(this.selectedSheriff?.sheriffId == dutyBlock.sheriffId && (selectedTimeBins.startBin == (dutyBlock.endTime-1)||selectedTimeBins.endBin == (dutyBlock.startTime-1)) ){
+                    // if(this.selectedCourtAdmin?.courtAdminId == dutyBlock.courtAdminId && (selectedTimeBins.startBin == (dutyBlock.endTime-1)||selectedTimeBins.endBin == (dutyBlock.startTime-1)) ){
                     //     this.errorMsg = "Please modify the duty of "+name +" instead."
                     //     this.showErrorMsg = true; 
                     //     return false;   
@@ -578,7 +578,7 @@
 
         public confirmedAssignOverTimeDuty(){
             this.confirmAssignOverTimeDuty = false;
-            this.$emit('submit',this.selectedSheriff?this.selectedSheriff.sheriffId:0, this.editedDutySlots , false);
+            this.$emit('submit',this.selectedCourtAdmin?this.selectedCourtAdmin.courtAdminId:0, this.editedDutySlots , false);
         }
 
         public closeForm(){
@@ -589,7 +589,7 @@
         }
 
         public isChanged(){            
-            if((this.originalSheriff && this.selectedSheriff && (this.originalSheriff.sheriffId != this.selectedSheriff.sheriffId)) ||
+            if((this.originalCourtAdmin && this.selectedCourtAdmin && (this.originalCourtAdmin.courtAdminId != this.selectedCourtAdmin.courtAdminId)) ||
                 (this.originalStartTime != this.selectedStartTime) || 
                 (this.originalEndTime != this.selectedEndTime)) return true;
             return false;
@@ -602,10 +602,10 @@
         }
 
         public clearSelections(){
-            this.selectedSheriff = {} as myTeamShiftInfoType;           
+            this.selectedCourtAdmin = {} as myTeamShiftInfoType;           
             this.selectedStartTime = '';
             this.selectedEndTime = '';
-            this.sheriffState  = true;
+            this.courtAdminState  = true;
             this.startTimeState = true;
             this.endTimeState   = true;            
         }
@@ -713,7 +713,7 @@
                 const occupiedArray = this.fillInArray(Array(96).fill(0), 1, occupiedDutyBin.startBin, occupiedDutyBin.endBin)
                 const conflictArray = this.unionArrays(reassignArray, occupiedArray)
                 if(this.sumOfArrayElements(conflictArray)>0){
-                    this.errorMsg = `The reassign range has conflict with another sheriff (${startTime} to ${endTime}).`
+                    this.errorMsg = `The reassign range has conflict with another courtAdmin (${startTime} to ${endTime}).`
                     this.showErrorMsg = true;
                     return true
                 }

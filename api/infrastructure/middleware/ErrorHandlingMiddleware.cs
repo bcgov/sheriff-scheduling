@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SS.Api.infrastructure.exceptions;
+using CAS.API.infrastructure.exceptions;
 
-namespace SS.Api.infrastructure.middleware
+namespace CAS.API.infrastructure.middleware
 {
     /// <summary>
     /// ErrorHandlingMiddleware class, provides a way to catch and handle unhandled errors in a generic way.

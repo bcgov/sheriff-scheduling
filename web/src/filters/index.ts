@@ -317,7 +317,7 @@ Vue.filter('printPdf', function(html, pageFooterLeft, pageFooterRight){
         <html lang="en">
         <head>		
         <meta charset="UTF-8">
-        <title>Sheriff Scheduling</title>`+
+        <title>Court Admin Scheduling</title>`+
         `<style>`+
             `@page {
                 size: 11in 8.5in !important;
@@ -336,14 +336,14 @@ Vue.filter('printPdf', function(html, pageFooterLeft, pageFooterRight){
                 }
             }`+
             `@media print{
-                div.ss-header {
+                div.cas-header {
 					position: fixed;
 					top: 0in;
                     bottom: 1.5in;
 					width:100%; 
 					display:inline-block;
 				}
-                div.ss-body {
+                div.cas-body {
                     margin-top: 6rem;
                 }                
                 .new-page{

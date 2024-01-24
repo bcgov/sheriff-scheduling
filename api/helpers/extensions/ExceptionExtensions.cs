@@ -1,7 +1,7 @@
 ﻿using System;
-using SS.Api.infrastructure.exceptions;
+using CAS.API.infrastructure.exceptions;
 
-namespace SS.Api.helpers.extensions
+namespace CAS.API.helpers.extensions
 {
     /// <summary>
     /// ExceptionExtensions static class, provides extension methods for exceptions.

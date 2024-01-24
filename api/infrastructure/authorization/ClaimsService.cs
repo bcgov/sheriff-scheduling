@@ -3,21 +3,21 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Common.authorization;
-using SS.Db.models;
-using SS.Db.models.auth;
+using CAS.API.helpers.extensions;
+using CAS.COMMON.authorization;
+using CAS.DB.models;
+using CAS.DB.models.auth;
 
-namespace SS.Api.infrastructure.authorization
+namespace CAS.API.infrastructure.authorization
 {
     /// <summary>
     /// This should load up our User context with claims from the database. 
     /// </summary>
     public class ClaimsService
     {
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public ClaimsService(SheriffDbContext dbContext)
+        public ClaimsService(CourtAdminDbContext dbContext)
         {
             Db = dbContext;
         }

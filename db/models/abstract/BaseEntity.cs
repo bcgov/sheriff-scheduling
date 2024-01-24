@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Mapster;
-using SS.Db.models.auth;
+using CAS.DB.models.auth;
 
 /// <summary>
 /// Credit to PIMS for this. 

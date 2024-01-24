@@ -1,4 +1,4 @@
-﻿namespace SS.Api.models.dto
+﻿namespace CAS.API.models.dto
 {
     public class PdfHtml
     {

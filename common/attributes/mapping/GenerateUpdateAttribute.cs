@@ -2,7 +2,7 @@
 using Mapster;
 
 //Thanks to Mapster for this from Sample.Codegen.
-namespace SS.Common.attributes.mapping
+namespace CAS.COMMON.attributes.mapping
 {
     public sealed class GenerateUpdateDto : AdaptFromAttribute
     {

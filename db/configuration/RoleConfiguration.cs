@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SS.DB.Configuration;
-using SS.Db.models.auth;
+using CAS.DB.Configuration;
+using CAS.DB.models.auth;
 
-namespace SS.Db.configuration
+namespace CAS.DB.configuration
 {
     public class RoleConfiguration : BaseEntityConfiguration<Role>
     {
@@ -14,7 +14,7 @@ namespace SS.Db.configuration
             builder.HasData(
                 new Role { CreatedById = User.SystemUser, Id = 1, Name = Role.Administrator, Description = "Administrator" },
                 new Role { CreatedById = User.SystemUser, Id = 2, Name = Role.Manager, Description = "Manager" },
-                new Role { CreatedById = User.SystemUser, Id = 3, Name = Role.Sheriff, Description = "Sheriff" }
+                new Role { CreatedById = User.SystemUser, Id = 3, Name = Role.CourtAdmin, Description = "CourtAdmin" }
             );
 
             base.Configure(builder);

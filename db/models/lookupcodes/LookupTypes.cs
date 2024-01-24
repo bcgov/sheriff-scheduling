@@ -1,4 +1,4 @@
-﻿namespace SS.Db.models.lookupcodes
+﻿namespace CAS.DB.models.lookupcodes
 {
     public enum LookupTypes
     {
@@ -9,6 +9,6 @@
         OtherAssignment,
         LeaveType,
         TrainingType,
-        SheriffRank
+        CourtAdminRank
     }
 }

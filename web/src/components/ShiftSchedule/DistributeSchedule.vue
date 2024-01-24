@@ -5,7 +5,7 @@
 
         <b-card id="pdf" v-if="isDistributeDataMounted" class="container" no-body>
             
-            <div class="ss-header">
+            <div class="cas-header">
                 <div class="row m-0">
                     <div style="width:45%" >
                         <div class="row m-0">                           
@@ -15,7 +15,7 @@
                                     alt="B.C. Gov"/>                                                                   
                             </div>                                
                             <div style="width:70%; margin-top:1.5rem;">
-                                <div style="font-size:13pt;"><b>B.C. Sheriff Service</b></div>
+                                <div style="font-size:13pt;"><b>B.C. CourtAdmin Service</b></div>
                                 <div style="font-size:12pt;" class="text-secondary font-italic"><b>Honour - Integrity - Commitment</b></div>
                             </div>
                         </div>
@@ -37,14 +37,14 @@
                 <template #overlay>
                     <loading-spinner :inline="true"/>
                 </template> 
-                <div v-for="page,inx in sheriffPages" :key="'pdf-'+inx" class="ss-body">   
-                    <weekly-schedule :key="updateTable" :fields="fields"  :sheriffSchedules="sheriffSchedules.slice(page.start,page.end)" v-if="weekView" />
-                    <daily-schedule :key="updateDailyTable" :dailySheriffSchedules="dailySheriffSchedules.slice(page.start,page.end)" v-else/>
+                <div v-for="page,inx in courtAdminPages" :key="'pdf-'+inx" class="cas-body">   
+                    <weekly-schedule :key="updateTable" :fields="fields"  :courtAdminSchedules="courtAdminSchedules.slice(page.start,page.end)" v-if="weekView" />
+                    <daily-schedule :key="updateDailyTable" :dailyCourtAdminSchedules="dailyCourtAdminSchedules.slice(page.start,page.end)" v-else/>
 
-                    <div v-if="!isDistributeDataMounted && sheriffSchedules.length == 0" style="min-height:115.6px;">
+                    <div v-if="!isDistributeDataMounted && courtAdminSchedules.length == 0" style="min-height:115.6px;">
                     </div>
                 
-                    <div v-if="(inx+1)<sheriffPages.length" class="new-page" />
+                    <div v-if="(inx+1)<courtAdminPages.length" class="new-page" />
                 </div>
             </b-overlay>
 
@@ -82,8 +82,8 @@
     const commonState = namespace("CommonInformation");    
 
     import { locationInfoType } from '@/types/common';
-    import { shiftRangeInfoType, scheduleInfoType, weekScheduleInfoType, distributeScheduleInfoType, distributeTeamMemberInfoType, sheriffPagesInfoType, distributeScheduleDutyInfoType } from '@/types/ShiftSchedule/index'
-    import { sheriffsAvailabilityJsonType, conflictJsonType } from '@/types/ShiftSchedule/jsonTypes';
+    import { shiftRangeInfoType, scheduleInfoType, weekScheduleInfoType, distributeScheduleInfoType, distributeTeamMemberInfoType, courtAdminPagesInfoType, distributeScheduleDutyInfoType } from '@/types/ShiftSchedule/index'
+    import { courtAdminsAvailabilityJsonType, conflictJsonType } from '@/types/ShiftSchedule/jsonTypes';
 
     import {srcFile} from "./components/Logo";
 
@@ -142,11 +142,11 @@
 
         src="";
 
-        sheriffSchedules: weekScheduleInfoType[] =[];
-        dailySheriffSchedules: distributeScheduleInfoType[] = [];
-        sheriffSchedulesLength = 0;
+        courtAdminSchedules: weekScheduleInfoType[] =[];
+        dailyCourtAdminSchedules: distributeScheduleInfoType[] = [];
+        courtAdminSchedulesLength = 0;
 
-        sheriffPages: sheriffPagesInfoType[]=[];
+        courtAdminPages: courtAdminPagesInfoType[]=[];
         marginToLastPageRows = '0rem';
 
         @Watch('location.id', { immediate: true })
@@ -164,7 +164,7 @@
             this.today = moment().tz(this.location.timezone).format();
         }
 
-        public loadScheduleInformation(weekView: boolean, sheriffId: string) {                       
+        public loadScheduleInformation(weekView: boolean, courtAdminId: string) {                       
             
             this.isDistributeDataMounted=false;
             this.weekView = weekView;
@@ -188,12 +188,12 @@
                         this.extractTeamInfo(response.data);
 
                         let info = [];
-                        if (sheriffId.length == 0) {
+                        if (courtAdminId.length == 0) {
                             info = response.data;
                         } else {
-                            info = response.data.filter(data =>{if(data.sheriffId == sheriffId ) return true})
+                            info = response.data.filter(data =>{if(data.courtAdminId == courtAdminId ) return true})
                         }
-                        this.sheriffSchedulesLength = info.length
+                        this.courtAdminSchedulesLength = info.length
                         //console.log(info)
                         if (this.weekView){
                             this.extractTeamScheduleInfo(info);
@@ -208,7 +208,7 @@
                         this.openErrorModal=true;
                     }      
                     this.teamMembers = [];
-                    this.sheriffSchedules = [];
+                    this.courtAdminSchedules = [];
                     this.isDistributeDataMounted=true;
                 })            
         }
@@ -216,14 +216,14 @@
         public extractTeamInfo (teamJson) {
             this.teamMembers = [];
             
-            for(const sheriffJson of teamJson) {
-                const sheriff = {} as distributeTeamMemberInfoType;
-                //console.log(sheriffJson)
-                sheriff.sheriffId = sheriffJson.sheriffId;           
-                sheriff.email = sheriffJson.sheriff.email;     
-                sheriff.name = Vue.filter('capitalize')(sheriffJson.sheriff.lastName) 
-                                        + ', ' + Vue.filter('capitalize')(sheriffJson.sheriff.firstName);
-                this.teamMembers.push(sheriff);
+            for(const courtAdminJson of teamJson) {
+                const courtAdmin = {} as distributeTeamMemberInfoType;
+                //console.log(courtAdminJson)
+                courtAdmin.courtAdminId = courtAdminJson.courtAdminId;           
+                courtAdmin.email = courtAdminJson.courtAdmin.email;     
+                courtAdmin.name = Vue.filter('capitalize')(courtAdminJson.courtAdmin.lastName) 
+                                        + ', ' + Vue.filter('capitalize')(courtAdminJson.courtAdmin.firstName);
+                this.teamMembers.push(courtAdmin);
             }
             this.UpdateTeamMemberList(this.teamMembers);
         }
@@ -246,58 +246,58 @@
             
         }
 
-        public extractTeamScheduleInfo(sheriffsScheduleJson: sheriffsAvailabilityJsonType[]) {
+        public extractTeamScheduleInfo(courtAdminsScheduleJson: courtAdminsAvailabilityJsonType[]) {
             
-            this.sheriffSchedules = [];
+            this.courtAdminSchedules = [];
             
-            for(const sheriffScheduleJson of sheriffsScheduleJson) {
-                //console.log(sheriffScheduleJson)
-                const sheriffSchedule = {} as distributeScheduleInfoType;
-                sheriffSchedule.sheriffId = sheriffScheduleJson.sheriffId;                
-                sheriffSchedule.name = Vue.filter('capitalizefirst')(sheriffScheduleJson.sheriff.lastName) 
-                                        + ', ' + Vue.filter('capitalizefirst')(sheriffScheduleJson.sheriff.firstName);
-                sheriffSchedule.rank = sheriffScheduleJson.sheriff.rank;
-                sheriffSchedule.actingRank = sheriffScheduleJson.sheriff.actingRank;
-                sheriffSchedule.badgeNumber = sheriffScheduleJson.sheriff.badgeNumber; 
-                sheriffSchedule.homeLocation = sheriffScheduleJson.sheriff.homeLocation.name;                                        
-                const isInLoanLocation = (sheriffScheduleJson.sheriff.homeLocation.id !=this.location.id)
-                sheriffSchedule.conflicts =isInLoanLocation? this.extractInLoanLocationConflicts(sheriffScheduleJson.conflicts) :this.extractSchedules(sheriffScheduleJson.conflicts, false);        
+            for(const courtAdminScheduleJson of courtAdminsScheduleJson) {
+                //console.log(courtAdminScheduleJson)
+                const courtAdminSchedule = {} as distributeScheduleInfoType;
+                courtAdminSchedule.courtAdminId = courtAdminScheduleJson.courtAdminId;                
+                courtAdminSchedule.name = Vue.filter('capitalizefirst')(courtAdminScheduleJson.courtAdmin.lastName) 
+                                        + ', ' + Vue.filter('capitalizefirst')(courtAdminScheduleJson.courtAdmin.firstName);
+                courtAdminSchedule.rank = courtAdminScheduleJson.courtAdmin.rank;
+                courtAdminSchedule.actingRank = courtAdminScheduleJson.courtAdmin.actingRank;
+                courtAdminSchedule.badgeNumber = courtAdminScheduleJson.courtAdmin.badgeNumber; 
+                courtAdminSchedule.homeLocation = courtAdminScheduleJson.courtAdmin.homeLocation.name;                                        
+                const isInLoanLocation = (courtAdminScheduleJson.courtAdmin.homeLocation.id !=this.location.id)
+                courtAdminSchedule.conflicts =isInLoanLocation? this.extractInLoanLocationConflicts(courtAdminScheduleJson.conflicts) :this.extractSchedules(courtAdminScheduleJson.conflicts, false);        
                 
                 
-                this.sheriffSchedules.push({
-                    myteam: sheriffSchedule,
-                    Sun: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==0) return true}),
-                    Mon: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==1) return true}),
-                    Tue: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==2) return true}),
-                    Wed: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==3) return true}),
-                    Thu: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==4) return true}),
-                    Fri: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==5) return true}),
-                    Sat: sheriffSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==6) return true})
+                this.courtAdminSchedules.push({
+                    myteam: courtAdminSchedule,
+                    Sun: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==0) return true}),
+                    Mon: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==1) return true}),
+                    Tue: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==2) return true}),
+                    Wed: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==3) return true}),
+                    Thu: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==4) return true}),
+                    Fri: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==5) return true}),
+                    Sat: courtAdminSchedule.conflicts.filter(conflict=>{if(conflict.dayOffset ==6) return true})
                 })
             }          
-            this.splitSheriffPages()
+            this.splitCourtAdminPages()
             this.isDistributeDataMounted = true;            
             this.updateTable++;
         }
    
-        public extractTeamDailyScheduleInfo(sheriffsScheduleJson: sheriffsAvailabilityJsonType[]) {
+        public extractTeamDailyScheduleInfo(courtAdminsScheduleJson: courtAdminsAvailabilityJsonType[]) {
             
-            this.dailySheriffSchedules = [];
+            this.dailyCourtAdminSchedules = [];
             
-            for(const sheriffScheduleJson of sheriffsScheduleJson) {                
-                const sheriffSchedule = {} as distributeScheduleInfoType;
-                sheriffSchedule.sheriffId = sheriffScheduleJson.sheriffId;                
-                sheriffSchedule.name = Vue.filter('capitalizefirst')(sheriffScheduleJson.sheriff.lastName) 
-                                        + ', ' + Vue.filter('capitalizefirst')(sheriffScheduleJson.sheriff.firstName);
-                sheriffSchedule.homeLocation = sheriffScheduleJson.sheriff.homeLocation.name;   
-                sheriffSchedule.rank = sheriffScheduleJson.sheriff.rank;
-                sheriffSchedule.actingRank = sheriffScheduleJson.sheriff.actingRank;
-                sheriffSchedule.badgeNumber = sheriffScheduleJson.sheriff.badgeNumber;                                                     
-                const isInLoanLocation = (sheriffScheduleJson.sheriff.homeLocation.id !=this.location.id)
-                sheriffSchedule.conflicts =isInLoanLocation? this.extractInLoanLocationConflicts(sheriffScheduleJson.conflicts) :this.extractSchedules(sheriffScheduleJson.conflicts, false);
-                this.dailySheriffSchedules.push(sheriffSchedule)
+            for(const courtAdminScheduleJson of courtAdminsScheduleJson) {                
+                const courtAdminSchedule = {} as distributeScheduleInfoType;
+                courtAdminSchedule.courtAdminId = courtAdminScheduleJson.courtAdminId;                
+                courtAdminSchedule.name = Vue.filter('capitalizefirst')(courtAdminScheduleJson.courtAdmin.lastName) 
+                                        + ', ' + Vue.filter('capitalizefirst')(courtAdminScheduleJson.courtAdmin.firstName);
+                courtAdminSchedule.homeLocation = courtAdminScheduleJson.courtAdmin.homeLocation.name;   
+                courtAdminSchedule.rank = courtAdminScheduleJson.courtAdmin.rank;
+                courtAdminSchedule.actingRank = courtAdminScheduleJson.courtAdmin.actingRank;
+                courtAdminSchedule.badgeNumber = courtAdminScheduleJson.courtAdmin.badgeNumber;                                                     
+                const isInLoanLocation = (courtAdminScheduleJson.courtAdmin.homeLocation.id !=this.location.id)
+                courtAdminSchedule.conflicts =isInLoanLocation? this.extractInLoanLocationConflicts(courtAdminScheduleJson.conflicts) :this.extractSchedules(courtAdminScheduleJson.conflicts, false);
+                this.dailyCourtAdminSchedules.push(courtAdminSchedule)
             }          
-            this.splitSheriffPages();
+            this.splitCourtAdminPages();
             this.isDistributeDataMounted = true;            
             this.updateDailyTable++;
         }
@@ -420,7 +420,7 @@
                                     startTime:'', 
                                     endTime:'',
                                     type:this.getConflictsType(conflict),
-                                    subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'',
+                                    subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'',
                                     duties: duties,
                                     workSection: '',
                                     workSectionColor: '',
@@ -445,7 +445,7 @@
                                 startTime:Vue.filter('beautify-time')(conflict.start), 
                                 endTime:Vue.filter('beautify-time')(conflict.end), 
                                 type:this.getConflictsType(conflict),                                
-                                subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                 duties: duties,
                                 workSection:'',
                                 workSectionColor: '',
@@ -466,7 +466,7 @@
                                 startTime:Vue.filter('beautify-time')(conflict.start), 
                                 endTime:Vue.filter('beautify-time')(midnight.format()),
                                 type:this.getConflictsType(conflict),
-                                subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                 duties: duties,
                                 workSection: '',
                                 workSectionColor: '',
@@ -482,7 +482,7 @@
                                 startTime:'00:00', 
                                 endTime:Vue.filter('beautify-time')(conflict.end),
                                 type:this.getConflictsType(conflict),
-                                subType: (conflict.sheriffEventType)?conflict.sheriffEventType:'', 
+                                subType: (conflict.courtAdminEventType)?conflict.courtAdminEventType:'', 
                                 duties: duties,
                                 workSection: '',
                                 workSectionColor: '',
@@ -498,17 +498,17 @@
             return schedules
         } 
         
-        public splitSheriffPages(){
-            this.sheriffPages =[]
+        public splitCourtAdminPages(){
+            this.courtAdminPages =[]
             const PAGE_ITEMS=10
-            const len = this.sheriffSchedulesLength
+            const len = this.courtAdminSchedulesLength
             for(let page=1; page<=(Math.ceil(len/PAGE_ITEMS)); page++){
-                this.sheriffPages.push({
+                this.courtAdminPages.push({
                     start:(page-1)*PAGE_ITEMS,
                     end:Math.min(len, page*PAGE_ITEMS)
                 })
             }  
-            const mod = this.sheriffSchedulesLength % PAGE_ITEMS
+            const mod = this.courtAdminSchedulesLength % PAGE_ITEMS
             this.marginToLastPageRows = (mod==0)? '0rem' :((PAGE_ITEMS-mod)*2.1)+'rem'
         }
 

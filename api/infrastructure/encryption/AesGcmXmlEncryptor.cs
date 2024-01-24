@@ -3,9 +3,9 @@ using System.Text;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.Extensions.DependencyInjection;
-using SS.Api.infrastructure.exceptions;
+using CAS.API.infrastructure.exceptions;
 
-namespace SS.Api.infrastructure.encryption
+namespace CAS.API.infrastructure.encryption
 {
     public class AesGcmXmlEncryptor : IXmlEncryptor
     {
@@ -16,7 +16,7 @@ namespace SS.Api.infrastructure.encryption
             var options = services.GetRequiredService<AesGcmEncryptionOptions>();
             _key = Encoding.UTF8.GetBytes(options.Key);
             if (_key.Length != 32)
-                throw new ConfigurationException("Key length not 32 bytes (256 bits)");
+                throw new ConfigurationException("Key length not 32 bytes (256 bits), it is currently " + _key.Length);
         }
 
         public EncryptedXmlInfo Encrypt(XElement plaintextElement)

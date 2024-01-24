@@ -536,7 +536,7 @@
 					endDate: newEndDate,
 					timezone: shift.timezone,
 					locationId: shift.locationId ,     
-					sheriffId: shift.sheriffId,
+					courtAdminId: shift.courtAdminId,
 					overtimeHours: shift.overtimeHours
 				};
 

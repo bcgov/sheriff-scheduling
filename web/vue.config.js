@@ -1,7 +1,23 @@
+const crypto = require('crypto');
+
+/**
+ * The MD4 algorithm is not available anymore in Node.js 17+ (because of library SSL 3).
+ * In that case, silently replace MD4 by the MD5 algorithm.
+ */
+try {
+  crypto.createHash('md4');
+} catch (e) {
+  console.warn('Crypto "MD4" is not supported anymore by this Node.js version');
+  const origCreateHash = crypto.createHash;
+  crypto.createHash = (alg, opts) => {
+    return origCreateHash(alg === 'md4' ? 'md5' : alg, opts);
+  };
+}
+
 const path = require("path");
 const vueSrc = "src";
 
-const webBaseHref = process.env.WEB_BASE_HREF || '/sheriff-scheduling/';
+const webBaseHref = process.env.WEB_BASE_HREF || '/court-admin-scheduling/';
 module.exports = {
 	publicPath: webBaseHref,
 	configureWebpack: {
@@ -12,17 +28,17 @@ module.exports = {
 			port: 1338,
 			proxy: {
 				//Development purposes, if WEB_BASE_HREF changes, this will have to change as well. 
-				'^/sheriff-scheduling/api': {
+				'^/court-admin-scheduling/api': {
 					target: 'https://localhost:44370',
-					pathRewrite: { '^/sheriff-scheduling/api': '/api' },
+					pathRewrite: { '^/court-admin-scheduling/api': '/api' },
 					headers: {
 						Connection: 'keep-alive',
 						'X-Forwarded-Host': 'localhost',
 						'X-Forwarded-Port': '1338'
 					},
 					cookiePathRewrite: {
-						"/api/auth": "/sheriff-scheduling/api/auth",
-						"/api/auth/signin-oidc": "/sheriff-scheduling/api/auth/signin-oidc",
+						"/api/auth": "/court-admin-scheduling/api/auth",
+						"/api/auth/signin-oidc": "/court-admin-scheduling/api/auth/signin-oidc",
 						"*": ""
 					},
 					changeOrigin: true

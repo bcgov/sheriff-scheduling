@@ -91,7 +91,7 @@
             </template>
         </b-modal>
 
-        <confirm-overtime-modal :showModal="showOvertimeConfirm" @assign="saveForm()" :sheriffName="sheriffName" />
+        <confirm-overtime-modal :showModal="showOvertimeConfirm" @assign="saveForm()" :courtAdminName="courtAdminName" />
     </div>
 </template>
 
@@ -119,7 +119,7 @@
         public location!: locationInfoType;
 
         @Prop({required: true})
-        sheriffName!: string;
+        courtAdminName!: string;
 
         @Prop({required: true})
         dutySlot!: manageAssignmentDutyInfoType
@@ -131,7 +131,7 @@
         duties!: any[];
 
         @Prop({required: true})
-        sheriffAvailabilityArray!: number[]|null;
+        courtAdminAvailabilityArray!: number[]|null;
 
         @Prop({required: true})
         dutyDate!: string;
@@ -171,7 +171,7 @@
             this.selectedStartTime = Vue.filter('autoCompleteTime')(this.selectedStartTime)
             this.selectedEndTime = Vue.filter('autoCompleteTime')(this.selectedEndTime)
             const newDutyArray = Vue.filter('startEndTimesToArray')(null,1, this.dutyDate.slice(0,10), this.selectedStartTime, this.selectedEndTime, this.location.timezone)
-            const overtimeArray = Vue.filter('subtractUnionOfArrays')(newDutyArray, this.sheriffAvailabilityArray)
+            const overtimeArray = Vue.filter('subtractUnionOfArrays')(newDutyArray, this.courtAdminAvailabilityArray)
             const isOvertime = Vue.filter('sumOfArrayElements')(overtimeArray)>0
             // console.log(overtimeArray)
             // console.log(isOvertime)

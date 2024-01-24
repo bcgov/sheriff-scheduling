@@ -6,10 +6,10 @@ using System.Linq;
 using db.models;
 using Mapster;
 using Newtonsoft.Json;
-using SS.Api.Models.DB;
-using SS.Db.models.auth.notmapped;
+using CAS.API.Models.DB;
+using CAS.DB.models.auth.notmapped;
 
-namespace SS.Db.models.auth
+namespace CAS.DB.models.auth
 {
     public class User : BaseEntity
     {

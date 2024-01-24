@@ -29,7 +29,7 @@
             </b-col>
             <b-col style="padding: 0;">
                 <div :class="expiredViewChecked?'my-4 bg-warning':'my-4'" :style="expiredViewChecked?'max-width: 160px;':''">
-                    <b-form-checkbox v-model="expiredViewChecked" :style="expiredViewChecked?'max-width: 160px; margin-left:10px;':''" @change="getSheriffs()" size="lg"  switch>
+                    <b-form-checkbox v-model="expiredViewChecked" :style="expiredViewChecked?'max-width: 160px; margin-left:10px;':''" @change="getCourtAdmins()" size="lg"  switch>
                         {{viewStatus}}
                     </b-form-checkbox>
                 </div>                
@@ -54,7 +54,7 @@
                             <user-summary-template v-on:photoChange="photoChanged" :user="teamMember" :editMode="false" />
                         </div>
                         <div class="card-footer text-white bg-dark border-dark mt-0 pt-0" style="width: 13.4rem; height: 2.5rem;">                                                
-                            <expire-sheriff-profile :disabled="!hasPermissionToExpireUsers" :userID="teamMember.id" :userIsEnable="teamMember.isEnabled" @change="getSheriffs()" />                        
+                            <expire-court-admin-profile :disabled="!hasPermissionToExpireUsers" :userID="teamMember.id" :userIsEnable="teamMember.isEnabled" @change="getCourtAdmins()" />                        
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                                     <identification-tab 
                                         :runMethod="identificationTabMethods"                                         
                                         v-on:closeMemberDetails="closeMemberDetailWindow()" 
-                                        v-on:profileUpdated="getSheriffs()"
+                                        v-on:profileUpdated="getCourtAdmins()"
                                         v-on:enableSave="enableSave()"   
                                         v-on:changeTab="changeTab"                                     
                                         :createMode="createMode" 
@@ -87,14 +87,14 @@
 
                                 <b-tab v-if="editMode" title="Locations"> 
                                     <location-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                   
                                 </b-tab>
 
                                 <b-tab v-if="editMode" title="Leaves">
                                     <leave-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                    
                                 </b-tab>
@@ -102,18 +102,18 @@
                                 <b-tab v-if="editMode"  title="Training"> 
                                     <training-tab
                                         v-on:refresh="refreshProfile"
-                                        v-on:change="getSheriffs()"/>
+                                        v-on:change="getCourtAdmins()"/>
                                 </b-tab>
 
                                 <b-tab v-if="editMode && hasPermissionToAssignRoles" title="Roles" class="p-0">
                                     <role-assignment-tab  
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>
                                 </b-tab>
 
                                 <b-tab v-if="editMode" title="Acting Rank"> 
                                     <rank-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                   
                                 </b-tab>
@@ -176,7 +176,7 @@
     
     import PageHeader from "@components/common/PageHeader.vue";    
     
-    import ExpireSheriffProfile from './Tabs/ExpireSheriffProfile.vue';
+    import ExpireCourtAdminProfile from './Tabs/ExpireCourtAdminProfile.vue';
     import RoleAssignmentTab from './Tabs/RoleAssignmentTab.vue';
     import IdentificationTab from './Tabs/IdentificationTab.vue';
     import UserSummaryTemplate from "./Tabs/UserSummaryTemplate.vue";
@@ -201,7 +201,7 @@
             UserLocationSummary,
             UserTrainingSummary,
             UserLeaveSummary,
-            ExpireSheriffProfile,
+            ExpireCourtAdminProfile,
             RoleAssignmentTab,
             IdentificationTab,
             LocationTab,
@@ -274,18 +274,18 @@
         locationChange()
         {
             if (this.isMyTeamDataMounted) {
-                this.getSheriffs()
+                this.getCourtAdmins()
                 this.sectionHeader = "My Team - " + this.location.name;
             }            
         }  
 
         mounted() {
-            this.maxRank = this.commonInfo.sheriffRankList.reduce((max, rank) => rank.id > max ? rank.id : max, this.commonInfo.sheriffRankList[0].id);
+            this.maxRank = this.commonInfo.courtAdminRankList.reduce((max, rank) => rank.id > max ? rank.id : max, this.commonInfo.courtAdminRankList[0].id);
             this.hasPermissionToAddNewUsers = this.userDetails.permissions.includes("CreateUsers");
             this.hasPermissionToExpireUsers = this.userDetails.permissions.includes("ExpireUsers");
             this.hasPermissionToEditUsers = this.userDetails.permissions.includes("EditUsers");
             this.hasPermissionToAssignRoles = this.userDetails.permissions.includes("CreateAndAssignRoles");
-            this.getSheriffs();
+            this.getCourtAdmins();
             this.sectionHeader = "My Team - " + this.location.name;
             this.itemsPerPage = this.itemsPerRow * this.rowsPerPage;
         }
@@ -294,13 +294,13 @@
             if(this.expiredViewChecked) return 'All Profiles';else return 'Active Profiles'
         }
 
-        public getSheriffs() {            
+        public getCourtAdmins() {            
             this.isMyTeamDataMounted = false;
-            const url = 'api/sheriff';
+            const url = 'api/courtAdmin';
             this.$http.get(url)
                 .then(response => {
                     if(response.data){
-                        this.extractMyTeamFromSheriffs(response.data);                        
+                        this.extractMyTeamFromCourtAdmins(response.data);                        
                     }
                     this.isMyTeamDataMounted = true;
                 },err => {
@@ -326,7 +326,7 @@
             Vue.nextTick().then(()=>{this.firstNavigation = true;});
         }
 
-        public extractMyTeamFromSheriffs(data: teamMemberJsonType[]) {    
+        public extractMyTeamFromCourtAdmins(data: teamMemberJsonType[]) {    
             this.allMyTeamData = [];
             // let myteaminfo:             
             for(const myteaminfo of data)
@@ -393,7 +393,7 @@
         public getRankOrder(rankName: string) {
             if(rankName?.includes(' (A)'))
                 rankName = rankName.replace(' (A)','');
-            return this.commonInfo.sheriffRankList.filter(rank => {
+            return this.commonInfo.courtAdminRankList.filter(rank => {
                 if (rank.name == rankName) {
                     return true;
                 }
@@ -468,7 +468,7 @@
         public loadUserDetails(userId): void {
             this.resetProfileWindowState();  
             this.editMode = true;            
-            const url = 'api/sheriff/' + userId;
+            const url = 'api/courtAdmin/' + userId;
             this.$http.get(url)
                 .then(response => {
                     if(response.data){                                              

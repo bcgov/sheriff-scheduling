@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.helpers.extensions;
-using SS.Db.models;
-using SS.Db.models.auth;
+using CAS.API.helpers.extensions;
+using CAS.DB.models;
+using CAS.DB.models.auth;
 
-namespace SS.Api.services.usermanagement
+namespace CAS.API.services.usermanagement
 {
     public class UserService
     {
-        private SheriffDbContext Db { get; }
-        public UserService(SheriffDbContext sheriffDbContext)
+        private CourtAdminDbContext Db { get; }
+        public UserService(CourtAdminDbContext courtAdminDbContext)
         {
-            Db = sheriffDbContext;
+            Db = courtAdminDbContext;
         }
         
         public async Task<User> DisableUser(Guid id)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SS.Api.infrastructure.exceptions
+namespace CAS.API.infrastructure.exceptions
 {
     /// <summary>
     /// BadRequestException class, provides a way to handle bad request exceptions so that they are returned by the middleware in a standardized way.

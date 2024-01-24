@@ -5,9 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SS.Api.helpers;
+using CAS.API.helpers;
 
-namespace SS.Api.services.jc
+namespace CAS.API.services.jc
 {
     internal class TimedDataUpdaterService : IHostedService, IDisposable
     {

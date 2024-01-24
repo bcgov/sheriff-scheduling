@@ -20,10 +20,10 @@
                                             Select a rank*
                                         </b-form-select-option>
                                          <b-form-select-option
-                                            v-for="sheriffRank in sheriffRankList" 
-                                            :key="sheriffRank.id"
-                                            :value="sheriffRank.name">
-                                                {{sheriffRank.name}}
+                                            v-for="courtAdminRank in courtAdminRankList" 
+                                            :key="courtAdminRank.id"
+                                            :value="courtAdminRank.name">
+                                                {{courtAdminRank.name}}
                                         </b-form-select-option>    
                                 </b-form-select>
                             </b-form-group>
@@ -384,8 +384,8 @@
 			return value.slice(0,100);
 		}
 
-        get sheriffRankList(){
-        return _.sortBy(this.commonInfo.sheriffRankList, 'id')
+        get courtAdminRankList(){
+        return _.sortBy(this.commonInfo.courtAdminRankList, 'id')
     }
     }
 </script>

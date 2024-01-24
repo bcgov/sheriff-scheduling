@@ -6,22 +6,22 @@
                     <b-td >
                         <b-tr class="bg-white">
                             <b-form-group style="margin: 0.25rem 0 0 0.5rem;width: 15rem">                            
-                                <label class="h6 m-0 p-0">Sheriff<span class="text-danger">*</span></label>
+                                <label class="h6 m-0 p-0">CourtAdmin<span class="text-danger">*</span></label>
                                 <b-form-select 
                                     size="sm"
-                                    v-model="selectedSheriff"
-                                    :state = "sheriffState?null:false">
+                                    v-model="selectedCourtAdmin"
+                                    :state = "courtAdminState?null:false">
                                         <b-form-select-option
-                                            v-for="sheriff in notAvailableNotRequired"
-                                            :key="sheriff.sheriffId"
-                                            :value="sheriff">
-                                                    {{sheriff.lastName}}
+                                            v-for="courtAdmin in notAvailableNotRequired"
+                                            :key="courtAdmin.courtAdminId"
+                                            :value="courtAdmin">
+                                                    {{courtAdmin.lastName}}
                                         </b-form-select-option>
                                         <b-form-select-option
-                                            v-for="sheriff in filteredShiftAvailabilityInfo"
-                                            :key="sheriff.sheriffId"
-                                            :value="sheriff">
-                                                    {{sheriff.lastName|capitalize}}, {{sheriff.firstName|capitalize}} 
+                                            v-for="courtAdmin in filteredShiftAvailabilityInfo"
+                                            :key="courtAdmin.courtAdminId"
+                                            :value="courtAdmin">
+                                                    {{courtAdmin.lastName|capitalize}}, {{courtAdmin.firstName|capitalize}} 
                                         </b-form-select-option>
                                 </b-form-select>
                             </b-form-group>
@@ -111,7 +111,7 @@
             <template v-slot:modal-title>
                 <h2 class="mb-0 text-light">Confirm Assign Overtime</h2>                   
             </template>
-            <h4 style="line-height:1.5rem" v-if="selectedSheriff" >Are you sure you want to assign a duty that extends {{selectedSheriff.firstName|capitalize}} {{selectedSheriff.lastName|capitalize}}'s shift?</h4>
+            <h4 style="line-height:1.5rem" v-if="selectedCourtAdmin" >Are you sure you want to assign a duty that extends {{selectedCourtAdmin.firstName|capitalize}} {{selectedCourtAdmin.lastName|capitalize}}'s shift?</h4>
             <template v-slot:modal-footer>
                 <b-button variant="danger" @click="confirmedAssignOverTimeDuty()">Confirm</b-button>
                 <b-button variant="primary" @click="$bvModal.hide('bv-modal-confirm-assign-edit-overtime')">Cancel</b-button>
@@ -158,8 +158,8 @@
         
         filteredShiftAvailabilityInfo: myTeamShiftInfoType[] = [];
 
-        selectedSheriff = {} as myTeamShiftInfoType | undefined;
-        sheriffState = true;        
+        selectedCourtAdmin = {} as myTeamShiftInfoType | undefined;
+        courtAdminState = true;        
 
         selectedStartTime = '';
         startTimeState = true;
@@ -167,7 +167,7 @@
         selectedEndTime = '';
         endTimeState = true; 
 
-        originalSheriff = {} as myTeamShiftInfoType | undefined;       
+        originalCourtAdmin = {} as myTeamShiftInfoType | undefined;       
         originalStartTime = '';
         originalEndTime = '';
 
@@ -187,7 +187,7 @@
         mounted()
         { 
             this.isDataReady = false;
-            this.filterSheriffs()
+            this.filterCourtAdmins()
             this.addNotAvailableNotRequired();
             this.clearSelections();
             if(this.formData.id) {
@@ -196,9 +196,9 @@
             this.isDataReady = true;             
         }
         
-        public filterSheriffs(){
-            this.filteredShiftAvailabilityInfo = this.shiftAvailabilityInfo.filter(sheriff=>{
-                for(const shift of sheriff.shifts){
+        public filterCourtAdmins(){
+            this.filteredShiftAvailabilityInfo = this.shiftAvailabilityInfo.filter(courtAdmin=>{
+                for(const shift of courtAdmin.shifts){
                     if(shift.startDate.substring(0,10)==this.formData.dutyDate.substring(0,10)) return true
                 }
             })
@@ -207,7 +207,7 @@
         public addNotAvailableNotRequired(){
             this.notAvailableNotRequired = [];
             this.notAvailableNotRequired.push({
-                sheriffId: '00000-00000-11111',
+                courtAdminId: '00000-00000-11111',
                 shifts: [],
                 badgeNumber: 0,
                 firstName: ' ',
@@ -218,7 +218,7 @@
                 dutiesDetail: []
             })
             this.notAvailableNotRequired.push({
-                sheriffId: '00000-00000-22222',
+                courtAdminId: '00000-00000-22222',
                 shifts: [],
                 badgeNumber: 0,
                 firstName: ' ',
@@ -229,7 +229,7 @@
                 dutiesDetail: []
             })
             this.notAvailableNotRequired.push({
-                sheriffId: '00000-00000-33333',
+                courtAdminId: '00000-00000-33333',
                 shifts: [],
                 badgeNumber: 0,
                 firstName: ' ',
@@ -244,9 +244,9 @@
         public extractFormInfo(){
             this.formDataId = this.formData.id? this.formData.id:'0';
             
-            const index = this.shiftAvailabilityInfo.findIndex(sheriff=>{if(sheriff.sheriffId == this.formData.sheriffId)return true})
-            const indexNANQ = this.notAvailableNotRequired.findIndex(sheriff=>{if(sheriff.sheriffId == this.formData.sheriffId)return true})
-            this.originalSheriff = this.selectedSheriff = (index>=0)? this.shiftAvailabilityInfo[index]: (indexNANQ>=0)? this.notAvailableNotRequired[indexNANQ]: {} as myTeamShiftInfoType;            
+            const index = this.shiftAvailabilityInfo.findIndex(courtAdmin=>{if(courtAdmin.courtAdminId == this.formData.courtAdminId)return true})
+            const indexNANQ = this.notAvailableNotRequired.findIndex(courtAdmin=>{if(courtAdmin.courtAdminId == this.formData.courtAdminId)return true})
+            this.originalCourtAdmin = this.selectedCourtAdmin = (index>=0)? this.shiftAvailabilityInfo[index]: (indexNANQ>=0)? this.notAvailableNotRequired[indexNANQ]: {} as myTeamShiftInfoType;            
               
             this.originalStartTime = this.selectedStartTime = this.formData.startTimeString;            
             this.originalEndTime = this.selectedEndTime = this.formData.endTimeString;
@@ -296,17 +296,17 @@
 		}
 
         public saveForm(){
-            this.sheriffState  = true;                
+            this.courtAdminState  = true;                
             this.startTimeState = true;
             this.endTimeState   = true;
             this.showErrorMsg = false;
             let requiredError = false;
 
-            if(!this.selectedSheriff || (this.selectedSheriff && !this.selectedSheriff.sheriffId) ){
-                this.sheriffState  = false;
+            if(!this.selectedCourtAdmin || (this.selectedCourtAdmin && !this.selectedCourtAdmin.courtAdminId) ){
+                this.courtAdminState  = false;
                 requiredError = true;            
             } else {
-                this.sheriffState  = true;
+                this.courtAdminState  = true;
             }
             
             if (!this.selectedStartTime) {
@@ -335,7 +335,7 @@
             
             if (!requiredError) {
                    
-                this.sheriffState  = true;                    
+                this.courtAdminState  = true;                    
                 this.endTimeState   = true;
                 this.startTimeState = true;
 
@@ -347,9 +347,9 @@
             }
         }
 
-        public getSheriffAvailability(sheriff){
-            if(sheriff){
-                const shifts = sheriff.shifts.filter(shift=>{if(shift.startDate.substring(0,10)==this.startOfDay.substring(0,10))return true})
+        public getCourtAdminAvailability(courtAdmin){
+            if(courtAdmin){
+                const shifts = courtAdmin.shifts.filter(shift=>{if(shift.startDate.substring(0,10)==this.startOfDay.substring(0,10))return true})
                 let availability = Array(96).fill(0)
                 for(const shift of shifts){
                     const rangeBin = this.getTimeRangeBinsFullDate(shift.startDate, shift.endDate, this.timezone);
@@ -361,9 +361,9 @@
             }
         }
 
-        public getSheriffDuties(sheriff){
-            if(sheriff){
-                const dutiesDetail = sheriff.dutiesDetail.filter(duty=>{if(duty.startTime.substring(0,10)==this.startOfDay.substring(0,10))return true})
+        public getCourtAdminDuties(courtAdmin){
+            if(courtAdmin){
+                const dutiesDetail = courtAdmin.dutiesDetail.filter(duty=>{if(duty.startTime.substring(0,10)==this.startOfDay.substring(0,10))return true})
                 let duties = Array(96).fill(0)
                 for(const duty of dutiesDetail){                    
                     duties = this.fillInArray(duties, duty.id , duty.startBin, duty.endBin)
@@ -378,21 +378,21 @@
 
             const selectedTimeArray = this.fillInArray(Array(96).fill(0), 1, selectedTimeBins.startBin, selectedTimeBins.endBin);
             
-            if(this.selectedSheriff){
-                const sheriffId = this.selectedSheriff.sheriffId
-                const isNotRequiredOrAvailable = (sheriffId =='00000-00000-11111' || sheriffId =='00000-00000-22222' || sheriffId =='00000-00000-33333')
+            if(this.selectedCourtAdmin){
+                const courtAdminId = this.selectedCourtAdmin.courtAdminId
+                const isNotRequiredOrAvailable = (courtAdminId =='00000-00000-11111' || courtAdminId =='00000-00000-22222' || courtAdminId =='00000-00000-33333')
 
-                let sheriff = this.shiftAvailabilityInfo.filter(sheriff=>{if(sheriff.sheriffId==sheriffId)return true})[0];
+                let courtAdmin = this.shiftAvailabilityInfo.filter(courtAdmin=>{if(courtAdmin.courtAdminId==courtAdminId)return true})[0];
                                
-                if(!sheriff && !isNotRequiredOrAvailable) sheriff =  this.selectedSheriff;
+                if(!courtAdmin && !isNotRequiredOrAvailable) courtAdmin =  this.selectedCourtAdmin;
                 
-                let availability =  this.getSheriffAvailability(sheriff);
-                let duties = this.getSheriffDuties(sheriff);
+                let availability =  this.getCourtAdminAvailability(courtAdmin);
+                let duties = this.getCourtAdminDuties(courtAdmin);
                 availability = this.subtractUnionOfArrays(availability,duties)
                 let shiftId = this.formData.shiftId
 
                 
-                if(!isNotRequiredOrAvailable  && sheriffId == this.formData.sheriffId){
+                if(!isNotRequiredOrAvailable  && courtAdminId == this.formData.courtAdminId){
                     //console.log(this.formData)
                     const dutytimeBins = this.getTimeRangeBins(this.formData.startTimeString, this.formData.endTimeString, this.startOfDay, this.timezone);
                     const startTime = dutytimeBins.startBin;
@@ -405,7 +405,7 @@
 
                 const dutiesConflictWithNewTimeSlot = this.unionArrays(selectedTimeArray, duties);
                 if(this.sumOfArrayElements(dutiesConflictWithNewTimeSlot)>0){
-                    this.errorMsg = "The Sheriff has conflicting duties with the selected time range." 
+                    this.errorMsg = "The CourtAdmin has conflicting duties with the selected time range." 
                     this.showErrorMsg = true;
                     return
                 }
@@ -469,7 +469,7 @@
                     dutySlotId: this.formData.dutySlotId,
                 }]
 
-                this.$emit('submit',this.selectedSheriff?this.selectedSheriff.sheriffId:0, editedDutySlot , false, this.formData.day);  
+                this.$emit('submit',this.selectedCourtAdmin?this.selectedCourtAdmin.courtAdminId:0, editedDutySlot , false, this.formData.day);  
             }
         }
 
@@ -503,7 +503,7 @@
 
                 const name = dutyBlock.firstName? dutyBlock.lastName+", "+dutyBlock.firstName:dutyBlock.lastName
 
-                if(dutyBlock.sheriffId && (dutyBlock.startTime != this.formData.startTime)){
+                if(dutyBlock.courtAdminId && (dutyBlock.startTime != this.formData.startTime)){
                    
                     if(selectedTimeBins.startBin >= (startTime) && selectedTimeBins.startBin < (endTime)){
                         this.startTimeState = false;
@@ -520,7 +520,7 @@
                         return false;
                     }
 
-                    // if(this.selectedSheriff?.sheriffId == dutyBlock.sheriffId && (selectedTimeBins.startBin == (dutyBlock.endTime-1)||selectedTimeBins.endBin == (dutyBlock.startTime-1)) ){
+                    // if(this.selectedCourtAdmin?.courtAdminId == dutyBlock.courtAdminId && (selectedTimeBins.startBin == (dutyBlock.endTime-1)||selectedTimeBins.endBin == (dutyBlock.startTime-1)) ){
                     //     this.errorMsg = "Please modify the duty of "+name+" instead."
                     //     this.showErrorMsg = true; 
                     //     return false;   
@@ -532,7 +532,7 @@
 
         public confirmedAssignOverTimeDuty(){
             this.confirmAssignOverTimeDuty = false;
-            this.$emit('submit',this.selectedSheriff?this.selectedSheriff.sheriffId:0, this.editedDutySlots , false, this.formData.day);
+            this.$emit('submit',this.selectedCourtAdmin?this.selectedCourtAdmin.courtAdminId:0, this.editedDutySlots , false, this.formData.day);
         }
 
         public closeForm(){
@@ -543,7 +543,7 @@
         }
 
         public isChanged(){            
-            if((this.originalSheriff && this.selectedSheriff && (this.originalSheriff.sheriffId != this.selectedSheriff.sheriffId)) ||
+            if((this.originalCourtAdmin && this.selectedCourtAdmin && (this.originalCourtAdmin.courtAdminId != this.selectedCourtAdmin.courtAdminId)) ||
                 (this.originalStartTime != this.selectedStartTime) || 
                 (this.originalEndTime != this.selectedEndTime)) return true;
             return false;
@@ -556,10 +556,10 @@
         }
 
         public clearSelections(){
-            this.selectedSheriff = {} as myTeamShiftInfoType;           
+            this.selectedCourtAdmin = {} as myTeamShiftInfoType;           
             this.selectedStartTime = '';
             this.selectedEndTime = '';
-            this.sheriffState  = true;
+            this.courtAdminState  = true;
             this.startTimeState = true;
             this.endTimeState   = true;            
         }

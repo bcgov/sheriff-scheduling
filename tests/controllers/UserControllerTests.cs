@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using SS.Api.controllers.usermanagement;
-using SS.Api.models.dto;
-using SS.Api.services.scheduling;
-using SS.Api.services.usermanagement;
-using SS.Db.models.auth;
+using CAS.API.controllers.usermanagement;
+using CAS.API.models.dto;
+using CAS.API.services.scheduling;
+using CAS.API.services.usermanagement;
+using CAS.DB.models.auth;
 using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;
@@ -16,24 +16,24 @@ using Microsoft.Extensions.Logging;
 namespace tests.controllers
 {
     /// <summary>
-    /// This uses SheriffController which is derived from UserController.
+    /// This uses CourtAdminController which is derived from UserController.
     /// This tests the more general user operations.
     /// </summary>
     public class UserControllerTests : WrapInTransactionScope
     {
         #region Variables
-        private readonly SheriffController _controller;
+        private readonly CourtAdminController _controller;
         #endregion Variables
 
         public UserControllerTests() : base (false)
         {
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
             var httpContextAccessor = new HttpContextAccessor { HttpContext = HttpResponseTest.SetupHttpContext() };
-            var sheriffService = new SheriffService(Db, environment.Configuration, httpContextAccessor);
-            var shiftService = new ShiftService(Db, sheriffService, environment.Configuration);
+            var courtAdminService = new CourtAdminService(Db, environment.Configuration, httpContextAccessor);
+            var shiftService = new ShiftService(Db, courtAdminService, environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration,
                 shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
-            _controller = new SheriffController(sheriffService, dutyRosterService, shiftService, new UserService(Db), environment.Configuration, Db)
+            _controller = new CourtAdminController(courtAdminService, dutyRosterService, shiftService, new UserService(Db), environment.Configuration, Db)
             {
                 ControllerContext = HttpResponseTest.SetupMockControllerContext()
             };
@@ -69,9 +69,9 @@ namespace tests.controllers
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
 
-            var dbSheriff = await Db.User.FindAsync(userObject.Id);
-            Assert.NotNull(dbSheriff);
-            Assert.True(dbSheriff.IsEnabled);
+            var dbCourtAdmin = await Db.User.FindAsync(userObject.Id);
+            Assert.NotNull(dbCourtAdmin);
+            Assert.True(dbCourtAdmin.IsEnabled);
         }
 
         [Fact]
@@ -82,9 +82,9 @@ namespace tests.controllers
             var controllerResult = await _controller.DisableUser(userObject.Id);
             var response = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
-            var dbSheriff = await Db.User.FindAsync(response.Id);
-            Assert.NotNull(dbSheriff);
-            Assert.False(dbSheriff.IsEnabled);
+            var dbCourtAdmin = await Db.User.FindAsync(response.Id);
+            Assert.NotNull(dbCourtAdmin);
+            Assert.False(dbCourtAdmin.IsEnabled);
         }
 
         private async Task<Role> CreateRole()

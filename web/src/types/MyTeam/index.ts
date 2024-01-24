@@ -68,7 +68,7 @@ export interface loanedLocationInfoType{
     isFullDay: boolean;
     startDate: string;
     endDate: string;
-    sheriffId: string;
+    courtAdminId: string;
     comment?: string;      
 }
 
@@ -77,7 +77,7 @@ export interface awayLocationInfoType{
     locationId: number|null;
     startDate: string;
     endDate: string;
-    sheriffId: string;
+    courtAdminId: string;
     concurrencyToken?: number;
     comment?: string;      
 }
@@ -87,7 +87,7 @@ export interface userTrainingInfoType{
     trainingType: trainingInfoType;
     trainingTypeId?:number|null;
     trainingName?: string;
-    sheriffId?: string;
+    courtAdminId?: string;
     expiryDate: string;
     isFullDay?: boolean;
     startDate: string;
@@ -114,6 +114,6 @@ export interface trainingReportInfoType {
     end: string;
     expiryDate: string;
     excluded?: boolean;
-    sheriffId?: string;
+    courtAdminId?: string;
     status?: string;
 }

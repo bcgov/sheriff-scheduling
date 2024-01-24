@@ -16,7 +16,7 @@
 
         <b-card id="print" bg-variant="white" class="mt-2 mb-4 pdf-container" no-body>
             
-            <div v-for="page,inx in sheriffPages" :key="'pdf-'+inx">
+            <div v-for="page,inx in courtAdminPages" :key="'pdf-'+inx">
                 <b-row class="mt-4 mb-0 mx-4">
                     <b-col>
                         <b-row>
@@ -30,7 +30,7 @@
                                 </b-img>
                             </div>
                             <div style="width:80%" class="ml-0">
-                                    <h4 class="mt-3">B.C. Sheriff Service</h4>
+                                    <h4 class="mt-3">B.C. CourtAdmin Service</h4>
                                     <h5 class="mt-n2 text-secondary font-italic">Honour - Integrity - Commitment</h5>
                             </div>
                         </b-row>
@@ -69,22 +69,22 @@
                         </div>
                     </template>
                     <template v-slot:cell(availability)="data" >
-                        <sheriff-availability-card class="m-0 p-0 gridsheriff " :sheriffInfo="data.item" :pdfView="true"/>
+                        <court-admin-availability-card class="m-0 p-0 gridcourtAdmin " :courtAdminInfo="data.item" :pdfView="true"/>
                     </template>
                 </b-table>
            
-                <b-row :style="{marginTop:((inx==sheriffPages.length-1)?marginToLastPageRows:'0rem')}" >
-                    <div style="width:80%"> B.C. Sheriff Service </div>
-                    <div style="width:12%"> Page {{inx+1}} of {{sheriffPages.length}}</div>
+                <b-row :style="{marginTop:((inx==courtAdminPages.length-1)?marginToLastPageRows:'0rem')}" >
+                    <div style="width:80%"> B.C. CourtAdmin Service </div>
+                    <div style="width:12%"> Page {{inx+1}} of {{courtAdminPages.length}}</div>
                 </b-row>
                
-                <div v-if="(inx+1)<sheriffPages.length" class="new-page" />
+                <div v-if="(inx+1)<courtAdminPages.length" class="new-page" />
 
             </div>
 
         </b-card>
 
-        <b-row v-if="sheriffPages.length>1" class="border-top pt-1"> 
+        <b-row v-if="courtAdminPages.length>1" class="border-top pt-1"> 
             <b-col>          
                 <b-button class="mr-3" size="sm" variant="secondary" @click="closePrint()">
                     <b-icon-x /> Close
@@ -104,7 +104,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import moment from 'moment';
 import { Printd } from 'printd'
-import SheriffAvailabilityCard from '../SheriffAvailabilityCard.vue'
+import CourtAdminAvailabilityCard from '../CourtAdminAvailabilityCard.vue'
 import { locationInfoType } from '@/types/common';
 import { dutyRangeInfoType } from '@/types/DutyRoster';
 
@@ -121,7 +121,7 @@ const bootstrapCss = require('!!raw-loader!@/styles/bootstrapMIN.css').default;
 
 @Component({
     components:{        
-        SheriffAvailabilityCard
+        CourtAdminAvailabilityCard
     }
 })
 export default class DutyPDFView extends Vue {
@@ -136,22 +136,22 @@ export default class DutyPDFView extends Vue {
     public dutyRangeInfo!: dutyRangeInfoType;
 
     @dutyState.Action
-    public UpdatePrintSheriffFullview!: (newPrintSheriffFullview: boolean) => void;
+    public UpdatePrintCourtAdminFullview!: (newPrintCourtAdminFullview: boolean) => void;
 
     dataReady = false;
     today = ''
-    sheriffPages: any[] =[]
+    courtAdminPages: any[] =[]
     marginToLastPageRows = '0rem'
 
        
     gaugeFields = [
-        {key:'name', label:'Sheriff Name', stickyColumn: true, thClass:'text-center text-white', tdClass:'border-bottom py-0 my-0', thStyle:'margin:0; padding:0;'},
+        {key:'name', label:'CourtAdmin Name', stickyColumn: true, thClass:'text-center text-white', tdClass:'border-bottom py-0 my-0', thStyle:'margin:0; padding:0;'},
         {key:'availability', label:'', thClass:'', tdClass:'p-0 m-0 bg-white', thStyle:'margin:0; padding:0;'},        
     ]
 
     mounted(){
         this.today = moment().tz(this.location.timezone).format();
-        this.splitSheriffPages()
+        this.splitCourtAdminPages()
     }
 
     get sortedMyTeamMembers(){
@@ -159,11 +159,11 @@ export default class DutyPDFView extends Vue {
     }
 
 
-    public splitSheriffPages(){
+    public splitCourtAdminPages(){
         const PAGE_ITEMS=16
         const len = this.myTeamMembers.length
         for(let page=1; page<=(Math.ceil(len/PAGE_ITEMS)); page++){
-            this.sheriffPages.push({
+            this.courtAdminPages.push({
                 start:(page-1)*PAGE_ITEMS,
                 end:Math.min(len, page*PAGE_ITEMS)
             })
@@ -222,7 +222,7 @@ export default class DutyPDFView extends Vue {
                 color: white;
                 font-size: 9.5px;
             }
-            .gridsheriff {        
+            .gridcourtAdmin {        
                 display:grid;
                 grid-template-columns: repeat(96, 0.525rem);
                 grid-template-rows: repeat(1,1.95rem);
@@ -245,7 +245,7 @@ export default class DutyPDFView extends Vue {
                     text-align:center;
                 }
             }            
-            .gridsheriff  .text {
+            .gridcourtAdmin  .text {
                 margin-top: 0.5rem !important ;
                 line-height: 0.85rem !important;            
                 display:flex; 
@@ -253,7 +253,7 @@ export default class DutyPDFView extends Vue {
                 justify-content:center; 
                 text-align:center;
             }
-            .gridsheriff > div.grid {                          
+            .gridcourtAdmin > div.grid {                          
                 border: 1px dotted rgb(202, 202, 202);
             }
             `
@@ -272,7 +272,7 @@ export default class DutyPDFView extends Vue {
     }
 
     public closePrint(){
-        this.UpdatePrintSheriffFullview(false);
+        this.UpdatePrintCourtAdminFullview(false);
     }
 
     public getBeautifyTime(hour: number){
@@ -318,7 +318,7 @@ export default class DutyPDFView extends Vue {
         font-size: 9.5px;
     }
 
-    .gridsheriff {        
+    .gridcourtAdmin {        
         display:grid;
         grid-template-columns: repeat(96, 0.525rem);
         grid-template-rows: repeat(1,1.95rem);

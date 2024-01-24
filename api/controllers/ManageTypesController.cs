@@ -2,16 +2,15 @@
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto;
-using SS.Api.models.dto.generated;
-using SS.Api.services;
-using ss.db.models;
-using SS.Db.models;
-using SS.Db.models.auth;
-using SS.Db.models.lookupcodes;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto;
+using CAS.API.models.dto.generated;
+using CAS.API.services;
+using CAS.DB.models;
+using CAS.DB.models.auth;
+using CAS.DB.models.lookupcodes;
 
-namespace SS.Api.controllers
+namespace CAS.API.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -20,9 +19,9 @@ namespace SS.Api.controllers
         public const string InvalidLookupCodeError = "Invalid LookupCode.";
 
         private ManageTypesService ManageTypesService { get; }
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public ManageTypesController(ManageTypesService manageTypesService, SheriffDbContext db)
+        public ManageTypesController(ManageTypesService manageTypesService, CourtAdminDbContext db)
         {
             ManageTypesService = manageTypesService;
             Db = db;

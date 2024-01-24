@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using SS.Api.helpers;
-using SS.Common.authorization;
+using CAS.API.helpers;
+using CAS.COMMON.authorization;
 
-namespace SS.Api.infrastructure.authorization
+namespace CAS.API.infrastructure.authorization
 {
     public class ClaimsTransformer : IClaimsTransformation
     {

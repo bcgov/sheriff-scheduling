@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
-using SS.Db.models;
+using CAS.DB.models;
 using tests.api.Helpers;
 
 namespace tests.api.helpers
@@ -14,11 +14,11 @@ namespace tests.api.helpers
         private readonly TransactionScope _scope;
         public bool CommitTxn { get; set; }
 
-        protected SheriffDbContext Db { get; }
+        protected CourtAdminDbContext Db { get; }
 
         public WrapInTransactionScope(bool useMemoryDatabase)
         {
-            Db = new SheriffDbContext(EnvironmentBuilder.SetupDbOptions(useMemoryDatabase: useMemoryDatabase));
+            Db = new CourtAdminDbContext(EnvironmentBuilder.SetupDbOptions(useMemoryDatabase: useMemoryDatabase));
             _scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled);
         }
         

@@ -9,7 +9,7 @@ export interface shiftInfoType {
     endDate: string;    
     timezone: string;
     locationId: string;     
-    sheriffId: string;
+    courtAdminId: string;
     comment?: string;
     overtimeHours: number;
 }
@@ -20,19 +20,19 @@ export interface editedShiftInfoType {
     endDate: string;    
     timezone: string;
     locationId: number;     
-    sheriffId: string;
+    courtAdminId: string;
     comment?: string;
 }
 
 export interface distributeTeamMemberInfoType {        
-    sheriffId: string;
+    courtAdminId: string;
     name: string;
     email: string;
 }
 
 export interface weekShiftInfoType {
 
-    myteam:sheriffAvailabilityInfoType;
+    myteam:courtAdminAvailabilityInfoType;
     Sun: shiftInfoType | {};
     Mon: shiftInfoType | {};
     Tue: shiftInfoType | {};
@@ -52,8 +52,8 @@ export interface shiftSubTypeInfoType {
     id: number;
 }
 
-export interface sheriffAvailabilityInfoType {
-    sheriffId: string;
+export interface courtAdminAvailabilityInfoType {
+    courtAdminId: string;
     conflicts: conflictsInfoType[];
     firstName: string;
     lastName: string;
@@ -75,7 +75,7 @@ export interface conflictsInfoType {
     type: string; 
     subType?: string;
     fullday: boolean;
-    sheriffEventType?: string; 
+    courtAdminEventType?: string; 
     comment?: string;  
 }
 
@@ -127,9 +127,9 @@ export interface weekScheduleInfoType {
 }
 
 export interface distributeScheduleInfoType {
-    sheriffId: string;
+    courtAdminId: string;
     conflicts: scheduleInfoType[];
-    sheriffEvent?: manageAssignmentsScheduleInfoType;
+    courtAdminEvent?: manageAssignmentsScheduleInfoType;
     name: string;
     homeLocation: string;
     rank: string;
@@ -138,8 +138,8 @@ export interface distributeScheduleInfoType {
 }
 
 export interface dailyDistributeScheduleInfoType {
-    sheriffId: string;    
-    sheriffEvent: manageAssignmentsScheduleInfoType;
+    courtAdminId: string;    
+    courtAdminEvent: manageAssignmentsScheduleInfoType;
     name: string;
     homeLocation: string;
     rank: string;
@@ -179,7 +179,7 @@ export interface actingRankInfoType {
     rank: string;
 }
 
-export interface sheriffPagesInfoType {    
+export interface courtAdminPagesInfoType {    
     start:number;
     end:number;
 }
@@ -194,6 +194,6 @@ export interface sentEmailContentInfoType {
 
 export interface selectShiftInfoType {
     id: string;
-    sheriff: string;
+    courtAdmin: string;
     date: string;
 }

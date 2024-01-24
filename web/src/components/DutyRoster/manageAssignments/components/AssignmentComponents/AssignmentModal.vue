@@ -2,7 +2,7 @@
     <div>
         <b-modal v-model="showModal.show" no-close-on-backdrop hide-footer centered header-class="bg-primary text-light" size="lg">
             <template v-slot:modal-header>                
-                <div class="h3 my-auto text-light"> {{sheriffName}} </div>
+                <div class="h3 my-auto text-light"> {{courtAdminName}} </div>
                 <div>
                     <div class="h4 text-center ml-2 p-0 mb-0">{{shiftDate}}</div>             
                     <div class="h3 text-center text-warning ml-2 p-0 mb-0"> {{shiftStartTime}} - {{shiftEndTime}}</div>                        
@@ -168,9 +168,9 @@
                                         :dutyBlocks="dutyBlocks"     
                                         :duties="duties" 
                                         :date="dutyDate"
-                                        :sheriffName="sheriffName"
+                                        :courtAdminName="courtAdminName"
                                         :dutyDate="dutyDate"
-                                        :sheriffAvailabilityArray="sheriffAvailabilityArray"                                                                         
+                                        :courtAdminAvailabilityArray="courtAdminAvailabilityArray"                                                                         
                                         v-on:save="assignDuty" 
                                         v-on:cancel="closeDutySlotForm" />
                                 </b-card>
@@ -197,7 +197,7 @@
 
         <all-assignments-management-modal :showModal="showManageAssignments" :shiftDate="shiftDate" v-on:change="getData"/>
         <unassign-duty-modal :showModal="showUnassignConfirm" @unassign="assignDuty(true)" :dutySlot="dutySlotToUnassign"/>
-        <confirm-overtime-modal :showModal="showOvertimeConfirm" @assign="assignDuty(false)" :sheriffName="sheriffName" />
+        <confirm-overtime-modal :showModal="showOvertimeConfirm" @assign="assignDuty(false)" :courtAdminName="courtAdminName" />
     </div>    
 </template>
 
@@ -234,13 +234,13 @@
         showModal!: {show: boolean};
 
         @Prop({required: true})
-        sheriffId!: string;
+        courtAdminId!: string;
 
         @Prop({required: true})
-        sheriffName!: string;
+        courtAdminName!: string;
 
         @Prop({required: true})
-        sheriffAvailabilityArray!: number[]|null;
+        courtAdminAvailabilityArray!: number[]|null;
 
         @Prop({required: true})
         shiftStartTime!: string;
@@ -346,7 +346,7 @@
             // console.log( duties)
             this.extractAvailableDutySlots(duties, date);
             this.extractDutyBlocksExtra();
-            const manageModalID=this.dutyDate.slice(0,10)+'-'+this.sheriffId;
+            const manageModalID=this.dutyDate.slice(0,10)+'-'+this.courtAdminId;
             if(this.manageDutiesModalID==manageModalID) this.manageDuties()
             this.loadingData=false            
         }
@@ -404,7 +404,7 @@
         }
 
         public manageDuties(){
-            const manageModalID=this.dutyDate.slice(0,10)+'-'+this.sheriffId;
+            const manageModalID=this.dutyDate.slice(0,10)+'-'+this.courtAdminId;
             this.UpdateManageDutiesModalID(manageModalID)
             this.showManageAssignments.show = true
         }
@@ -484,7 +484,7 @@
             this.selectedStartTime = Vue.filter('autoCompleteTime')(this.selectedStartTime)
             this.selectedEndTime = Vue.filter('autoCompleteTime')(this.selectedEndTime)
             const newDutyArray = Vue.filter('startEndTimesToArray')(null,1, this.dutyDate.slice(0,10), this.selectedStartTime, this.selectedEndTime, this.location.timezone)
-            const overtimeArray = Vue.filter('subtractUnionOfArrays')(newDutyArray, this.sheriffAvailabilityArray)
+            const overtimeArray = Vue.filter('subtractUnionOfArrays')(newDutyArray, this.courtAdminAvailabilityArray)
             const isOvertime = Vue.filter('sumOfArrayElements')(overtimeArray)>0
             // console.log(overtimeArray)
             // console.log(isOvertime)
@@ -522,11 +522,11 @@
                 const selectedEndTime=end? Vue.filter('autoCompleteTime')(end):Vue.filter('autoCompleteTime')(this.selectedEndTime)
                 const dutySlotID=slotid? slotid:null
                 
-                if(this.checkSheriffConflict(selectedStartTime, selectedEndTime, dutySlotID)){
+                if(this.checkCourtAdminConflict(selectedStartTime, selectedEndTime, dutySlotID)){
                     const duties=this.dutyBlocks.map(d=>
                     d.dutyType=='Training' || d.dutyType=='Leave' || d.dutyType=='Loaned'?
                     ('<br/>'+d.startTime+'-'+d.endTime+' '+d.dutyType+' '+d.dutySubType):'')
-                    this.errMsg="The selected duty has a conflict with the Sheriff's other duties on this date."+duties.join(' ')
+                    this.errMsg="The selected duty has a conflict with the CourtAdmin's other duties on this date."+duties.join(' ')
                     return
                 }
                 
@@ -558,7 +558,7 @@
                             startDate: dutyOnShiftTime.startTime,
                             endDate: dutyOnShiftTime.endTime,
                             dutyId: dutyInfo.id,
-                            sheriffId: this.sheriffId,
+                            courtAdminId: this.courtAdminId,
                             shiftId: null,
                             timezone: dutyInfo.timezone,
                             isNotRequired: false,
@@ -586,7 +586,7 @@
                         startDate: dutyOnShiftTime.startTime,
                         endDate: dutyOnShiftTime.endTime,
                         dutyId: dutyInfo.id,
-                        sheriffId: this.sheriffId,
+                        courtAdminId: this.courtAdminId,
                         shiftId: null,
                         timezone: dutyInfo.timezone,
                         isNotRequired: false,
@@ -631,7 +631,7 @@
             }
         }
 
-        public checkSheriffConflict(startTime, endTime, blkID){
+        public checkCourtAdminConflict(startTime, endTime, blkID){
             const timezone = this.location.timezone
             const date = this.dutyDate.slice(0,10)
             const dutyslotArray = Vue.filter('startEndTimesToArray')(null, 1, date, startTime, endTime, timezone)          

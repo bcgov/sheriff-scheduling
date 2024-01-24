@@ -1,6 +1,6 @@
-using SS.Api.models.dto.generated;
+using CAS.API.models.dto.generated;
 
-namespace SS.Api.models.dto.generated
+namespace CAS.API.models.dto.generated
 {
     public partial class RolePermissionDto
     {

@@ -3,15 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.authorization;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.models.dto;
-using SS.Api.models.dto.generated;
-using SS.Api.services.usermanagement;
-using SS.Db.models.auth;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.authorization;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.models.dto;
+using CAS.API.models.dto.generated;
+using CAS.API.services.usermanagement;
+using CAS.DB.models.auth;
 
-namespace SS.Api.controllers.usermanagement
+namespace CAS.API.controllers.usermanagement
 {
     /// <summary>
     /// Used to manage roles. 

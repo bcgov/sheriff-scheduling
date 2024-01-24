@@ -1,16 +1,16 @@
 import { sortOrderForLocationJsonType } from '@/types/common/jsonTypes';
-import { actingRankJsontype, sheriffRoleJsonType, userLocationJsonType } from '@/types/MyTeam/jsonTypes';
+import { actingRankJsontype, courtAdminRoleJsonType, userLocationJsonType } from '@/types/MyTeam/jsonTypes';
 
-export interface sheriffsAvailabilityJsonType {    
+export interface courtAdminsAvailabilityJsonType {    
     start: string;
     end: string;
     conflicts: conflictJsonType[];
-    sheriff: sheriffsAvailabilityDataJsonType;
-    sheriffId: string;
+    courtAdmin: courtAdminsAvailabilityDataJsonType;
+    courtAdminId: string;
     timezone: string;
 }
 
-export interface sheriffsAvailabilityDataJsonType {
+export interface courtAdminsAvailabilityDataJsonType {
     gender: string;
     badgeNumber: string;
     rank: string;
@@ -27,13 +27,13 @@ export interface sheriffsAvailabilityDataJsonType {
     email: string;
     homeLocationId: number;
     homeLocation: userLocationJsonType;
-    activeRoles: sheriffRoleJsonType[];
-    roles: sheriffRoleJsonType[];
+    activeRoles: courtAdminRoleJsonType[];
+    roles: courtAdminRoleJsonType[];
     concurrencyToken: number;
 } 
 
 export interface conflictJsonType {
-    sheriffId: string;
+    courtAdminId: string;
     conflict: string;
     start: string;
     end: string;
@@ -49,7 +49,7 @@ export interface availabilityTrainingJsonType  {
     endDate: string;
     expiryDate:  string;
     expiryReason: string;
-    sheriffId:  string;
+    courtAdminId:  string;
     comment: string;
     timezone: string;
     concurrencyToken: number;
@@ -77,7 +77,7 @@ export interface availabilityAwayLocationJsonType {
     endDate: string;
     expiryDate: string;
     expiryReason: string;
-    sheriffId: string;
+    courtAdminId: string;
     comment: string;
     timezone: string;
     concurrencyToken: number;
@@ -91,7 +91,7 @@ export interface availabilityLeaveJsonType {
     endDate: string;
     expiryDate: string;
     expiryReason: string;
-    sheriffId:   string;
+    courtAdminId:   string;
     comment: string;
     timezone: string;
     concurrencyToken: number;

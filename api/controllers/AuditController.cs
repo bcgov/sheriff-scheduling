@@ -5,38 +5,38 @@ using System.Threading.Tasks;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SS.Api.infrastructure.authorization;
-using SS.Api.models.dto;
-using SS.Api.models.dto.generated;
-using SS.Api.services.usermanagement;
-using SS.Db.models;
-using SS.Db.models.auth;
+using CAS.API.infrastructure.authorization;
+using CAS.API.models.dto;
+using CAS.API.models.dto.generated;
+using CAS.API.services.usermanagement;
+using CAS.DB.models;
+using CAS.DB.models.auth;
 
-namespace SS.Api.controllers
+namespace CAS.API.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuditController : ControllerBase
     {
-        public SheriffService SheriffService { get; }
-        public SheriffDbContext Db { get; }
-        public const string CouldNotFindSheriffError = "Couldn't find sheriff.";
+        public CourtAdminService CourtAdminService { get; }
+        public CourtAdminDbContext Db { get; }
+        public const string CouldNotFindCourtAdminError = "Couldn't find court admin.";
 
-        public AuditController(SheriffService sheriffService, SheriffDbContext db)
+        public AuditController(CourtAdminService courtAdminService, CourtAdminDbContext db)
         {
-            SheriffService = sheriffService;
+            CourtAdminService = courtAdminService;
             Db = db;
         }
 
         [HttpGet("roleHistory")]
         [PermissionClaimAuthorize(perm: Permission.CreateAndAssignRoles)]
-        public async Task<ActionResult<List<AuditDto>>> ViewRoleHistory(Guid sheriffId)
+        public async Task<ActionResult<List<AuditDto>>> ViewRoleHistory(Guid courtAdminId)
         {
-            var sheriff = await SheriffService.GetSheriff(sheriffId, null);
-            if (sheriff == null) return NotFound(CouldNotFindSheriffError);
-            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, sheriff.HomeLocationId)) return Forbid();
+            var courtAdmin = await CourtAdminService.GetCourtAdmin(courtAdminId, null);
+            if (courtAdmin == null) return NotFound(CouldNotFindCourtAdminError);
+            if (!PermissionDataFiltersExtensions.HasAccessToLocation(User, Db, courtAdmin.HomeLocationId)) return Forbid();
 
-            var userRoleIds = Db.UserRole.AsNoTracking().Where(ur => ur.UserId == sheriffId).Select(ur => ur.Id);
+            var userRoleIds = Db.UserRole.AsNoTracking().Where(ur => ur.UserId == courtAdminId).Select(ur => ur.Id);
             var roleHistory = Db.Audit.AsNoTracking().Include(a => a.CreatedBy).Where(e => e.TableName == "UserRole" &&
                                                   userRoleIds.Contains(e.KeyValues.RootElement.GetProperty("Id")
                                                       .GetInt32()))
@@ -46,7 +46,7 @@ namespace SS.Api.controllers
             return Ok(roleHistory.Select(s =>
             {
                 var audit = s.Adapt<AuditDto>();
-                audit.CreatedBy = s.CreatedBy.Adapt<SheriffDto>();
+                audit.CreatedBy = s.CreatedBy.Adapt<CourtAdminDto>();
                 audit.CreatedOn = s.CreatedOn;
                 audit.CreatedById = s.CreatedById;
                 return audit;

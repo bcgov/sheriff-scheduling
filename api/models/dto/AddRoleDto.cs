@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SS.Api.models.dto.generated;
+using CAS.API.models.dto.generated;
 
-namespace SS.Api.models.dto
+namespace CAS.API.models.dto
 {
     public class AddRoleDto
     {

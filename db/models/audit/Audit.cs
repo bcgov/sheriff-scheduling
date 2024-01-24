@@ -6,7 +6,7 @@ using Mapster;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SS.Db.models.audit
+namespace CAS.DB.models.audit
 {
     public class Audit : BaseEntity
     {

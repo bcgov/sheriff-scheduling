@@ -12,13 +12,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using SS.Api.helpers;
-using SS.Api.helpers.extensions;
-using SS.Api.services;
-using SS.Common.authorization;
-using SS.Db.models;
+using CAS.API.helpers;
+using CAS.API.helpers.extensions;
+using CAS.API.services;
+using CAS.COMMON.authorization;
+using CAS.DB.models;
 
-namespace SS.Api.Controllers
+namespace CAS.API.Controllers
 {
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
@@ -27,8 +27,8 @@ namespace SS.Api.Controllers
         private double OvertimeHoursPerDay { get; }
         private ChesEmailService ChesEmailService { get; }
         private IConfiguration Configuration { get; }
-        private SheriffDbContext Db { get; }
-        public AuthController(IWebHostEnvironment env, IConfiguration configuration, ChesEmailService chesEmailService, SheriffDbContext db)
+        private CourtAdminDbContext Db { get; }
+        public AuthController(IWebHostEnvironment env, IConfiguration configuration, ChesEmailService chesEmailService, CourtAdminDbContext db)
         {
             Configuration = configuration;
             ChesEmailService = chesEmailService;
@@ -94,7 +94,7 @@ namespace SS.Api.Controllers
         public async Task<IActionResult> RequestAccess(string currentEmailAddress)
         {
             var emailString =
-                $"{User.FullName()} - {User.IdirUserName()} - {currentEmailAddress} - Has requested access to Sheriff Scheduling on {DateTime.Now}.";
+                $"{User.FullName()} - {User.IdirUserName()} - {currentEmailAddress} - Has requested access to Court Admin Scheduling on {DateTime.Now}.";
 
             var requestAccessEmailAddress = Configuration.GetNonEmptyValue("RequestAccessEmailAddress");
 

@@ -5,23 +5,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using Mapster;
-using SS.Api.helpers.extensions;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.models.dto;
-using ss.db.models;
-using SS.Db.models;
-using SS.Db.models.lookupcodes;
+using CAS.API.helpers.extensions;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.models.dto;
+using CAS.DB.models;
+using CAS.DB.models.lookupcodes;
 
-namespace SS.Api.services
+namespace CAS.API.services
 {
     public class ManageTypesService
     {
         /// <summary>
         /// Handles ManageTypes or LookupCodes. 
         /// </summary>
-        private SheriffDbContext Db { get; }
+        private CourtAdminDbContext Db { get; }
 
-        public ManageTypesService(SheriffDbContext dbContext )
+        public ManageTypesService(CourtAdminDbContext dbContext )
         {
             Db = dbContext;
         }

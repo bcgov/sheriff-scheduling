@@ -4,14 +4,14 @@
             style="width:100%; height:3rem;" 
             bg-variant="white"            
             class="ml-2 my-0 p-0">
-                <b-col cols="9" @click="openMemberDetails(sheriffInfo.sheriffId)" class="team-member-view">
-                    <b-row style="font-size:11px; line-height: 16px;"># {{sheriffInfo.badgeNumber}}</b-row>
-                    <b-row style="font-size:9px; line-height: 14px;">{{sheriffInfo.rank}}</b-row>
+                <b-col cols="9" @click="openMemberDetails(courtAdminInfo.courtAdminId)" class="team-member-view">
+                    <b-row style="font-size:11px; line-height: 16px;"># {{courtAdminInfo.badgeNumber}}</b-row>
+                    <b-row style="font-size:9px; line-height: 14px;">{{courtAdminInfo.rank}}</b-row>
                     <b-row 
                         style="font-size:12px; line-height: 16px; font-weight: bold; text-transform: Capitalize;" 
                         v-b-tooltip.hover.topleft                                
-                        :title="sheriffInfo.name.length>13?sheriffInfo.name:''">
-                            {{sheriffInfo.name|truncate(11)}}
+                        :title="courtAdminInfo.name.length>13?courtAdminInfo.name:''">
+                            {{courtAdminInfo.name|truncate(11)}}
                     </b-row>
                 </b-col>
                 <b-col cols="3" class="m-0 p-0">                    
@@ -40,7 +40,7 @@
             <template v-slot:modal-title>                
                 <span class="m-0 p-0" > 
                     <h3 class="m-0 p-0" >Creating Shift for </h3>
-                    <h4  class="m-0 pt-2 pb-0 text-warning" style="text-align: center"> {{sheriffInfo.name}}</h4>
+                    <h4  class="m-0 pt-2 pb-0 text-warning" style="text-align: center"> {{courtAdminInfo.name}}</h4>
                 </span>
             </template>
 
@@ -206,7 +206,7 @@
                                     <identification-tab 
                                         :runMethod="identificationTabMethods"                                         
                                         v-on:closeMemberDetails="closeMemberDetailWindow()" 
-                                        v-on:profileUpdated="getSheriffs()"
+                                        v-on:profileUpdated="getCourtAdmins()"
                                         v-on:enableSave="enableSave()"   
                                         v-on:changeTab="changeTab"                                     
                                         :createMode="false" 
@@ -215,14 +215,14 @@
 
                                 <b-tab title="Locations"> 
                                     <location-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                   
                                 </b-tab>
 
                                 <b-tab title="Leaves">
                                     <leave-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                    
                                 </b-tab>
@@ -230,17 +230,17 @@
                                 <b-tab title="Training"> 
                                     <training-tab
                                         v-on:refresh="refreshProfile"
-                                        v-on:change="getSheriffs()"/>
+                                        v-on:change="getCourtAdmins()"/>
                                 </b-tab>
 
                                 <b-tab v-if="hasPermissionToAssignRoles" title="Roles" class="p-0">
-                                    <role-assignment-tab  v-on:change="getSheriffs()"
+                                    <role-assignment-tab  v-on:change="getCourtAdmins()"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>
                                 </b-tab>
 
                                 <b-tab title="Acting Rank"> 
                                     <rank-tab 
-                                        v-on:change="getSheriffs()"
+                                        v-on:change="getCourtAdmins()"
                                         v-on:refresh="refreshProfile"
                                         v-on:closeMemberDetails="closeProfileWindow()"/>                                   
                                 </b-tab>
@@ -343,7 +343,7 @@
         public userDetails!: userInfoType;
 
         @Prop({required: true})
-        public sheriffInfo!: manageScheduleInfoType;
+        public courtAdminInfo!: manageScheduleInfoType;
 
         @TeamMemberState.State
         public userToEdit!: teamMemberInfoType;
@@ -353,7 +353,7 @@
 
         identificationTabMethods = new Vue();
 
-        sheriffId = '';
+        courtAdminId = '';
 
         isDataMounted = false;
         hasPermissionToCreateShifts = false; 
@@ -405,12 +405,12 @@
 
         
         mounted()
-        {   //console.log(this.sheriffInfo)
+        {   //console.log(this.courtAdminInfo)
             this.isDataMounted = false;
             this.hasPermissionToCreateShifts = this.userDetails.permissions.includes("CreateAndAssignShifts");        
             this.hasPermissionToEditUsers = this.userDetails.permissions.includes("EditUsers");
             this.hasPermissionToAssignRoles = this.userDetails.permissions.includes("CreateAndAssignRoles");
-            this.sheriffId = this.sheriffInfo.sheriffId;          
+            this.courtAdminId = this.courtAdminInfo.courtAdminId;          
            
 
             this.dayOptions = [
@@ -427,9 +427,9 @@
 
         public extractConflicts() {
             this.LoanedInDesc = '';
-            if(this.sheriffInfo.homeLocation != this.location.name) this.LoanedInDesc =  "Loaned In from " + this.sheriffInfo.homeLocation
+            if(this.courtAdminInfo.homeLocation != this.location.name) this.LoanedInDesc =  "Loaned In from " + this.courtAdminInfo.homeLocation
                       
-            for(const conflict of this.sheriffInfo.conflicts){
+            for(const conflict of this.courtAdminInfo.conflicts){
                 this.dayOptions[conflict.dayOffset].conflicts[conflict.type].push(conflict); 
                 this.dayOptions[conflict.dayOffset].fullday = this.dayOptions[conflict.dayOffset].fullday || conflict.fullday               
             }
@@ -580,7 +580,7 @@
                             id: 0,
                             startDate: moment(shift.start).utc().format(),
                             endDate: moment(shift.end).utc().format(),
-                            sheriffId: this.sheriffId,
+                            courtAdminId: this.courtAdminId,
                             locationId: this.location.id,
                             timezone: this.location.timezone
                         }
@@ -624,7 +624,7 @@
 			return value.slice(0,100);
         }
 
-        public getSheriffs() {
+        public getCourtAdmins() {
             this.$emit('change', false);
         }
         
@@ -639,7 +639,7 @@
 
         public loadUserDetails(userId): void {
             this.resetProfileWindowState();       
-            const url = 'api/sheriff/' + userId;
+            const url = 'api/courtAdmin/' + userId;
             this.$http.get(url)
                 .then(response => {
                     if(response.data){                                              

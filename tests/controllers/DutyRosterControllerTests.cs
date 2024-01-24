@@ -1,13 +1,13 @@
 ﻿using Mapster;
-using SS.Api.controllers.scheduling;
-using SS.Api.infrastructure.exceptions;
-using SS.Api.models.dto.generated;
-using SS.Api.Models.DB;
-using SS.Api.services.scheduling;
-using SS.Api.services.usermanagement;
-using SS.Common.helpers.extensions;
-using SS.Db.models.scheduling;
-using SS.Db.models.sheriff;
+using CAS.API.controllers.scheduling;
+using CAS.API.infrastructure.exceptions;
+using CAS.API.models.dto.generated;
+using CAS.API.Models.DB;
+using CAS.API.services.scheduling;
+using CAS.API.services.usermanagement;
+using CAS.COMMON.helpers.extensions;
+using CAS.DB.models.scheduling;
+using CAS.DB.models.courtAdmin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace tests.controllers
         public DutyRosterControllerTests() : base(false)
         {
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
-            var shiftService = new ShiftService(Db, new SheriffService(Db, environment.Configuration),
+            var shiftService = new ShiftService(Db, new CourtAdminService(Db, environment.Configuration),
                 environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration,
                  shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
@@ -117,7 +117,7 @@ namespace tests.controllers
         public async Task DutySlotOverlapSelf()
         {
             var locationId = await CreateLocation();
-            var newSheriffId = await CreateSheriff(locationId);
+            var newCourtAdminId = await CreateCourtAdmin(locationId);
 
             var startDate = DateTimeOffset.UtcNow.AddYears(5);
             var addDuty = new AddDutyDto
@@ -141,13 +141,13 @@ namespace tests.controllers
                 {
                     StartDate = startDate,
                     EndDate = startDate.AddDays(5),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 },
                 new UpdateDutySlotDto
                 {
                     StartDate = startDate,
                     EndDate = startDate.AddDays(5),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 }
             };
 
@@ -160,13 +160,13 @@ namespace tests.controllers
                 {
                     StartDate = startDate,
                     EndDate = startDate.AddDays(5),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 },
                 new UpdateDutySlotDto
                 {
                     StartDate = startDate.AddDays(5),
                     EndDate = startDate.AddDays(6),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 }
             };
 
@@ -180,7 +180,7 @@ namespace tests.controllers
         {
             var locationId = await CreateLocation();
 
-            var newSheriffId = await CreateSheriff(locationId);
+            var newCourtAdminId = await CreateCourtAdmin(locationId);
 
             var startDate = DateTimeOffset.UtcNow.AddYears(5);
 
@@ -219,7 +219,7 @@ namespace tests.controllers
                 {
                     StartDate = startDate,
                     EndDate = startDate.AddDays(5),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 }
             };
 
@@ -233,7 +233,7 @@ namespace tests.controllers
                 {
                     StartDate = startDate,
                     EndDate = startDate.AddDays(5),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 }
             };
 
@@ -245,7 +245,7 @@ namespace tests.controllers
         public async Task AddUpdateRemoveDutySlots()
         {
             var locationId = await CreateLocation();
-            var newSheriffId = await CreateSheriff(locationId);
+            var newCourtAdminId = await CreateCourtAdmin(locationId);
 
             var startDate = DateTimeOffset.UtcNow.AddYears(5);
 
@@ -274,14 +274,14 @@ namespace tests.controllers
                 {
                     StartDate = startDate,
                     EndDate = startDate.AddDays(5),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 },
                 //Add.
                 new UpdateDutySlotDto
                 {
                     StartDate = startDate.AddDays(5),
                     EndDate = startDate.AddDays(10),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 },
             };
 
@@ -296,14 +296,14 @@ namespace tests.controllers
                     Id = updateDuty2.First().DutySlots.First().Id,
                     StartDate = startDate.AddDays(10),
                     EndDate = startDate.AddDays(15),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 },
                 //Add
                 new UpdateDutySlotDto
                 {
                     StartDate = startDate,
                     EndDate = startDate.AddDays(5),
-                    SheriffId = newSheriffId
+                    CourtAdminId = newCourtAdminId
                 },
                 //Implicit remove of one. 
             };
@@ -316,7 +316,7 @@ namespace tests.controllers
         public async Task MoveDuty()
         {
             var locationId = await CreateLocation();
-            var newSheriffId = await CreateSheriff(locationId);
+            var newCourtAdminId = await CreateCourtAdmin(locationId);
 
             //Create a duty from 9 -> 5 pm
             var startDate = DateTimeOffset.UtcNow.AddYears(5).ConvertToTimezone("America/Vancouver");
@@ -329,7 +329,7 @@ namespace tests.controllers
                 DutyId = 50000,
                 StartDate = startDate,
                 EndDate = endDate,
-                SheriffId = newSheriffId,
+                CourtAdminId = newCourtAdminId,
                 LocationId = locationId
             };
 
@@ -353,7 +353,7 @@ namespace tests.controllers
                 StartDate = startDate,
                 EndDate = startDate.Date.AddHours(20),
                 Timezone = "America/Vancouver",
-                SheriffId = newSheriffId
+                CourtAdminId = newCourtAdminId
             };
 
             await Db.Duty.AddAsync(fromDuty);
@@ -375,7 +375,7 @@ namespace tests.controllers
             await Db.Duty.AddAsync(toDuty);
             await Db.SaveChangesAsync();
 
-            var controllerResult = await _controller.MoveSheriffFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6));
+            var controllerResult = await _controller.MoveCourtAdminFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6));
             var newDuty = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
             Assert.Equal(startDate.AddHours(6),newDuty.DutySlots.FirstOrDefault().StartDate);
@@ -412,7 +412,7 @@ namespace tests.controllers
             await Db.Duty.AddAsync(toDuty);
             await Db.SaveChangesAsync();
             
-            controllerResult = await _controller.MoveSheriffFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6));
+            controllerResult = await _controller.MoveCourtAdminFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6));
             newDuty = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
             Assert.Equal(startDate.AddHours(6), newDuty.DutySlots.FirstOrDefault().StartDate);
@@ -442,7 +442,7 @@ namespace tests.controllers
                         DutyId = 50001,
                         StartDate = startDate.Date.AddHours(16),
                         EndDate = startDate.Date.AddHours(17),
-                        SheriffId = newSheriffId,
+                        CourtAdminId = newCourtAdminId,
                         LocationId = locationId
                     }
                 }
@@ -450,7 +450,7 @@ namespace tests.controllers
             await Db.Duty.AddAsync(toDuty);
             await Db.SaveChangesAsync();
 
-            controllerResult = await _controller.MoveSheriffFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6));
+            controllerResult = await _controller.MoveCourtAdminFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6));
             newDuty = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
             Assert.Equal(startDate.AddHours(6), newDuty.DutySlots.FirstOrDefault(ds => ds.Id != 50001).StartDate);
@@ -476,7 +476,7 @@ namespace tests.controllers
             await Db.Duty.AddAsync(toDuty);
             await Db.SaveChangesAsync();
 
-            controllerResult = await _controller.MoveSheriffFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6));
+            controllerResult = await _controller.MoveCourtAdminFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6));
             newDuty = HttpResponseTest.CheckForValid200HttpResponseAndReturnValue(controllerResult);
 
             Assert.Equal(startDate.AddHours(6), newDuty.DutySlots.FirstOrDefault().StartDate);
@@ -506,7 +506,7 @@ namespace tests.controllers
                         DutyId = 50001,
                         StartDate = startDate,
                         EndDate = endDate,
-                        SheriffId = newSheriffId,
+                        CourtAdminId = newCourtAdminId,
                         LocationId = locationId
                     }
                 }
@@ -514,11 +514,11 @@ namespace tests.controllers
             await Db.Duty.AddAsync(toDuty);
             await Db.SaveChangesAsync();
 
-            await Assert.ThrowsAsync<BusinessLayerException>(async () => await _controller.MoveSheriffFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6)));
+            await Assert.ThrowsAsync<BusinessLayerException>(async () => await _controller.MoveCourtAdminFromDutySlot(fromDutySlot.Id, toDuty.Id, startDate.AddHours(6)));
         }
-        private async Task<Guid> CreateSheriff(int locationId)
+        private async Task<Guid> CreateCourtAdmin(int locationId)
         {
-            var newSheriff = new Sheriff
+            var newCourtAdmin = new CourtAdmin
             {
                 FirstName = "Ted",
                 LastName = "Tums",
@@ -526,9 +526,9 @@ namespace tests.controllers
                 IsEnabled = true
             };
 
-            await Db.Sheriff.AddAsync(newSheriff);
+            await Db.CourtAdmin.AddAsync(newCourtAdmin);
             await Db.SaveChangesAsync();
-            return newSheriff.Id;
+            return newCourtAdmin.Id;
         }
 
         private async Task<int> CreateLocation()

@@ -431,7 +431,7 @@
             this.$http.get(url)
                 .then(response => {
                     if(response.data){
-						const selectedCardsName = this.selectedShifts.map(shift => shift.sheriff+' on ('+shift.date+' )')
+						const selectedCardsName = this.selectedShifts.map(shift => shift.courtAdmin+' on ('+shift.date+' )')
 						const multiShifts = selectedCardsName.filter((e, i, a) => a.indexOf(e) !== i)
 												
 						const selectedCardsIds =  this.selectedShifts.map(shift => shift.id)						
@@ -561,7 +561,7 @@
 					endDate: newEndDate,
 					timezone: shift.timezone,
 					locationId: shift.locationId ,     
-					sheriffId: shift.sheriffId,
+					courtAdminId: shift.courtAdminId,
 					overtimeHours: shift.overtimeHours
 				};
 
