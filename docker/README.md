@@ -58,7 +58,7 @@ Since the services are started interactively, you will have to issue this comman
 
 ## Access to the Application
 
-The database will need your user ID in the "User" table. The user ID is the IDIR you are using. In addition, a row in "UserRole" is required. The SQL to do this would be something similar to this:
+The database will need your user ID in the "User" table. Access to the Docker DB can be done using pgAdmin or similar tool. The user ID is the IDIR you are using. In addition, a row in "UserRole" is required. The SQL to do this would be something similar to this:
 ```
 INSERT INTO public."User"(
 	"Id", "IdirName", "IdirId", "KeyCloakId", "IsEnabled", "FirstName", "LastName", "Email", "Discriminator")
