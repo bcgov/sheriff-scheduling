@@ -56,6 +56,19 @@ This will shut down and clean up all of the containers in the project.  This is 
 
 Since the services are started interactively, you will have to issue this command from another shell window.  This command can also be run after shutting down the services using the `Ctrl-C` method to clean up any services that may not have shutdown correctly.
 
+## Access to the Application
+
+The database will need your user ID in the "User" table. The user ID is the IDIR you are using. In addition, a row in "UserRole" is required. The SQL to do this would be something similar to this:
+```
+INSERT INTO public."User"(
+	"Id", "IdirName", "IdirId", "KeyCloakId", "IsEnabled", "FirstName", "LastName", "Email", "Discriminator")
+	VALUES ('00000000-0000-0000-0000-000000000002', 'jontaylo', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', True, 'Jon', 'Taylor', 'jonathan.1.taylor@gov.bc.ca', 'User');
+insert into "UserRole" ("UserId", "RoleId", "EffectiveDate")
+values ('00000000-0000-0000-0000-000000000002', 1, '2024-01-01');
+```
+
+One last piece is to update the record in the "User" table so that the IdirId value is the proper uuid. This can be obtained by running the application locally as below, then decoding the token (use https://jwt.io/) from the Bearer token. You can get the proper value for the IdirId uuid for your IDIR and update the User table appropriately.
+
 ## Using the Application
 
 - The main UI is exposed at; https://localhost:8080/
