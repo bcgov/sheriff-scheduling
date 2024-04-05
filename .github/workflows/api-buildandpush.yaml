@@ -51,8 +51,10 @@ jobs:
       - name: Docker Build Backend Image
         working-directory: ${{env.WORKING_DIRECTORY}}api/
         run: |      
-          docker compose build backend
-          docker tag cas-api artifacts.developer.gov.bc.ca/cac1-cas-api/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+          docker build --tag api . 
+          docker tag api artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+          # docker compose build backend
+          # docker tag cas-api artifacts.developer.gov.bc.ca/cac1-cas-api/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           
       - name: Docker Push to Artifactory
         id: publish
