@@ -17,6 +17,8 @@ RUN dotnet tool install --tool-path /tools dotnet-dump
 WORKDIR /api
 
 COPY ["api.csproj", "api/"]
+COPY ["db.csproj", "db/"]
+COPY ["jc-interface-client.csproj", "jc-interface-client/"]
 RUN dotnet restore ./api/api.csproj
 COPY . .
 
