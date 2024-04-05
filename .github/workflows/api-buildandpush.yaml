@@ -1,0 +1,61 @@
+name: Build & Push API Image to Artifactory
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "cas-api"
+      - ".github/workflows/api-buildandpush.yaml"
+  workflow_dispatch:
+env:
+  IMAGE_NAME: cas-api
+  WORKING_DIRECTORY: ./
+jobs:
+  builds:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to Artifactory
+        uses: actions/setup-dotnet@v1
+        with:
+          registry: artifacts.developer.gov.bc.ca
+          username: ${{ secrets.CAS_ARTIFACTORY_USERNAME }}
+          password: ${{ secrets.CAS_ARTIFACTORY_PASSWORD }}
+          dotnet-version: 3.1.101
+
+      # Get SHORT_SHA to tag images
+      - name: Get short SHA
+        id: short_sha
+        run: |
+          echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
+          echo "Short SHA: $SHORT_SHA"
+
+      - name: Install dependencies
+        run: dotnet restore
+        working-directory: ${{env.WORKING_DIRECTORY}}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ${{env.WORKING_DIRECTORY}}
+
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+        working-directory: ${{env.WORKING_DIRECTORY}}
+
+      - name: Push to Artifactory
+        id: publish
+        run: dotnet push artifacts.developer.gov.bc.ca/cac1-cas-api/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+
+      # - name: Docker Build Backend Image
+      #   working-directory: ${{env.WORKING_DIRECTORY}}
+      #   run: |      
+      #     docker compose build backend
+      #     docker tag cas-api artifacts.developer.gov.bc.ca/cac1-cas-api/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+          
+      # - name: Docker Push to Artifactory
+      #   id: publish
+      #   run: |
+      #     docker push artifacts.developer.gov.bc.ca/cac1-cas-api/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+      
