@@ -23,7 +23,7 @@ jobs:
           registry: artifacts.developer.gov.bc.ca
           username: ${{ secrets.CAS_ARTIFACTORY_USERNAME }}
           password: ${{ secrets.CAS_ARTIFACTORY_PASSWORD }}
-          dotnet-version: 3.1.101
+          dotnet-version: 7.0.407
 
       # Get SHORT_SHA to tag images
       - name: Get short SHA
