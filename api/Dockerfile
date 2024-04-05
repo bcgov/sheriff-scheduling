@@ -14,10 +14,10 @@ RUN dotnet tool install --tool-path /tools dotnet-trace
 RUN dotnet tool install --tool-path /tools dotnet-counters
 RUN dotnet tool install --tool-path /tools dotnet-dump
 
-WORKDIR /db
-COPY ["db.csproj", "db/"]
 WORKDIR /api
-COPY ["api.csproj", "api/"]
+
+COPY ["./db/db.csproj", "db/"]
+COPY ["./api/api.csproj", "api/"]
 RUN dotnet restore ./api/api.csproj
 COPY . .
 
