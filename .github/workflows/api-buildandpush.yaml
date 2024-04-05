@@ -4,7 +4,7 @@ on:
   push:
     branches: [develop]
     paths:
-      - "cas-api"
+      - "api"
       - ".github/workflows/api-buildandpush.yaml"
   workflow_dispatch:
 env:
