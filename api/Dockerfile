@@ -16,9 +16,9 @@ RUN dotnet tool install --tool-path /tools dotnet-dump
 
 WORKDIR /api
 
-COPY ["./db/db.csproj", "db/"]
-COPY ["./api/api.csproj", "api/"]
+COPY ["api.csproj", "api/"]
 RUN dotnet restore ./api/api.csproj
+RUN dotnet restore ./db/db.csproj
 COPY . .
 
 # Install Node.js and npm 
