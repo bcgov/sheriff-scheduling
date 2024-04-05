@@ -80,7 +80,7 @@ build-api() {
     -e "CORS_DOMAIN=http://localhost:8080" \
     -e "DOTNET_STARTUP_PROJECT=./api/api.csproj" \
     '..' \
-    'registry.redhat.io/rhel8/dotnet-70' \
+    'registry.access.redhat.com/ubi8/dotnet-70' \
     'cas-api'
   echo -e "===================================================================================================="
 }
@@ -111,7 +111,7 @@ build-web() {
     --copy \
      -e "WEB_BASE_HREF=${WEB_BASE_HREF-/court-admin-scheduling/}" \
     '../web' \
-    'registry.redhat.io/rhel8/nodejs-16' \
+    'centos/nodejs-10-centos7:10' \
     'cas-web-artifacts'
   echo -e "===================================================================================================="
 
@@ -142,7 +142,7 @@ build-web-dev() {
   ${S2I_EXE} build \
     -e "DEV_MODE=true" \
     '../web' \
-    'registry.redhat.io/rhel8/nodejs-16' \
+    'centos/nodejs-10-centos7:10' \
     'cas-web-dev'
   echo -e "===================================================================================================="
 }
