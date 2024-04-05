@@ -49,7 +49,7 @@ jobs:
       #   run: dotnet push artifacts.developer.gov.bc.ca/cac1-cas-api/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
 
       - name: Docker Build Backend Image
-        working-directory: ${{env.WORKING_DIRECTORY}}
+        working-directory: /docker/nginx-runtime/  # ${{env.WORKING_DIRECTORY}}
         run: |      
           docker compose build backend
           docker tag cas-api artifacts.developer.gov.bc.ca/cac1-cas-api/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
