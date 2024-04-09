@@ -16,6 +16,10 @@ RUN dotnet tool install --tool-path /tools dotnet-dump
 
 WORKDIR /web
 
+COPY package.json /usr/src/app/
+RUN npm install
+CMD [ "npm", "start" ]
+
 COPY ["web.njsproj", "web/"]
 COPY . .
 
