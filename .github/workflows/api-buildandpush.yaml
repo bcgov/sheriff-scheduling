@@ -2,7 +2,7 @@ name: Build & Push API Image to Artifactory
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
     paths:
       - "api"
       - ".github/workflows/api-buildandpush.yaml"
