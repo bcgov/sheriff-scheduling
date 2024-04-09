@@ -29,10 +29,7 @@ RUN npm install -g autorest
 # run unit tests
 #RUN dotnet test -c Release
 
-# run build
-RUN dotnet build "api/api.csproj" -c Release -o /app/build
-
-# publish
+# build
 FROM build AS publish
 RUN dotnet publish "api/api.csproj" -c Release -o /app/publish 
 # --runtime linux-musl-x64 --no-self-contained
