@@ -29,7 +29,7 @@ RUN npm install -g autorest
 
 # build
 FROM build AS publish
-RUN dotnet publish "web/web.csproj" -c Release -o /app/publish 
+RUN dotnet publish "web/web.njsproj" -c Release -o /app/publish 
 # --runtime linux-musl-x64 --no-self-contained
 
 FROM base AS final
