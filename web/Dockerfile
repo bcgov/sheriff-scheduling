@@ -16,7 +16,7 @@ RUN dotnet tool install --tool-path /tools dotnet-dump
 
 WORKDIR /web
 
-COPY ["web.csproj", "web/"]
+COPY ["web.njsproj", "web/"]
 COPY . .
 
 # Install Node.js and npm 
