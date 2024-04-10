@@ -18,7 +18,8 @@ WORKDIR /
 
 COPY ["api/api.csproj", "api/"]
 COPY ["db/db.csproj", "db/"]
-# COPY ["jc-interface-client/jc-interface-client.csproj", "jc-interface-client/"]
+COPY ["jc-interface-client/jc-interface-client.csproj", "jc-interface-client/"]
+
 RUN dotnet restore ./api/api.csproj
 #RUN dotnet restore ./db/db.csproj
 COPY . .
