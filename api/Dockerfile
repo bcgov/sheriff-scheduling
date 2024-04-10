@@ -14,11 +14,11 @@ RUN dotnet tool install --tool-path /tools dotnet-trace
 RUN dotnet tool install --tool-path /tools dotnet-counters
 RUN dotnet tool install --tool-path /tools dotnet-dump
 
-WORKDIR /api
+WORKDIR /
 
-COPY ["api.csproj", "api/"]
-COPY ["db.csproj", "db/"]
-COPY ["jc-interface-client.csproj", "jc-interface-client/"]
+COPY ["api/api.csproj", "api/"]
+COPY ["db/db.csproj", "db/"]
+# COPY ["jc-interface-client/jc-interface-client.csproj", "jc-interface-client/"]
 RUN dotnet restore ./api/api.csproj
 #RUN dotnet restore ./db/db.csproj
 COPY . .
