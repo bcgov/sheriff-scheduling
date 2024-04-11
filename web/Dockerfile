@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://*:8080
@@ -7,7 +7,7 @@ ENV DOTNET_gcServer=1
 ARG VERSION
 ENV VERSION=$VERSION
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 # install diagnostics tools
 RUN dotnet tool install --tool-path /tools dotnet-trace
@@ -15,8 +15,6 @@ RUN dotnet tool install --tool-path /tools dotnet-counters
 RUN dotnet tool install --tool-path /tools dotnet-dump
 
 WORKDIR /web
-
-COPY package.json /usr/src/app/
 
 COPY ["web.njsproj", "web/"]
 COPY . .
