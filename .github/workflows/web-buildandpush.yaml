@@ -27,7 +27,7 @@ jobs:
           dotnet-version: 7.0.407
 
       - run: npm ci
-        working-directory: ${{env.working-directory}}
+       #  working-directory: ${{env.working-directory}}
       - run: npm run build --if-present
         working-directory: ${{env.working-directory}}
         
