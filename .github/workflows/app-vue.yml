@@ -27,13 +27,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
         working-directory: ${{env.working-directory}}
-      - run: npm run build --if-present  --tag web .
+      - run: npm run build --if-present  --tag web
         working-directory: ${{env.working-directory}}
 
       - name: Docker Build Backend Image
         working-directory: ${{env.WORKING_DIRECTORY}}
         run: |      
-          docker build --tag web
+          docker build --tag web .
           docker tag web artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           # docker compose build backend
           # docker tag cas-web artifacts.developer.gov.bc.ca/cac1-cas-web/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
