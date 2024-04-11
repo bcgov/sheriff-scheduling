@@ -14,7 +14,7 @@ RUN dotnet tool install --tool-path /tools dotnet-trace
 RUN dotnet tool install --tool-path /tools dotnet-counters
 RUN dotnet tool install --tool-path /tools dotnet-dump
 
-WORKDIR /web
+WORKDIR /
 
 COPY ["web.njsproj", "web/"]
 COPY . .
