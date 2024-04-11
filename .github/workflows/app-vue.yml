@@ -33,7 +33,7 @@ jobs:
       - name: Docker Build Backend Image
         working-directory: ${{env.WORKING_DIRECTORY}}
         run: |      
-          docker build --tag web . 
+          docker build --tag web
           docker tag web artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           # docker compose build backend
           # docker tag cas-web artifacts.developer.gov.bc.ca/cac1-cas-web/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
