@@ -56,9 +56,8 @@ jobs:
           # docker compose build backend
           # docker tag cas-api artifacts.developer.gov.bc.ca/ac1cc8-tools-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           
-      - name: Docker Push to Artifactory
+      - name: Docker Push to Artifactory ${{env.WORKING_DIRECTORY}}
         id: publish
         run: |
-          name: ${{ secrets.CAS_ARTIFACTORY_USERNAME }}
           docker push artifacts.developer.gov.bc.ca/ac1cc8-tools-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
       
