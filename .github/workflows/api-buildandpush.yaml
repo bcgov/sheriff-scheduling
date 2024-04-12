@@ -60,7 +60,4 @@ jobs:
         id: publish
         run: |
           docker push artifacts.developer.gov.bc.ca/ac1cc8-tools-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
-          with:
-            username: ${{ secrets.CAS_ARTIFACTORY_USERNAME }}
-            password: ${{ secrets.CAS_ARTIFACTORY_PASSWORD }}
       
