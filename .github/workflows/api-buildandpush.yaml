@@ -52,7 +52,7 @@ jobs:
         working-directory: ${{env.WORKING_DIRECTORY}}
         run: |      
           docker build --tag api . --file api/Dockerfile
-          docker tag api artifacts.developer.gov.bc.ca/ac1cc8-tools/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+          docker tag api artifacts.developer.gov.bc.ca/ac1cc8-tools-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           # docker compose build backend
           # docker tag cas-api artifacts.developer.gov.bc.ca/ac1cc8-tools-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           
@@ -60,5 +60,5 @@ jobs:
         id: publish
         # if: github.repository_owner == 'bcgov-c'
         run: |
-          docker push artifacts.developer.gov.bc.ca/ac1cc8-tools/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+          docker push artifacts.developer.gov.bc.ca/ac1cc8-tools-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
       
