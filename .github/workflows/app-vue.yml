@@ -3,22 +3,16 @@ name: APP (Vue)
 on:
   push:
     branches: [main]
-    paths:
-      - "web"
-      - ".github/workflows/app-vue.yml"
   pull_request:
     branches: [main]
   workflow_dispatch:
-env:
-  IMAGE_NAME: cas-web
-  WORKING_DIRECTORY: ./
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       CI: true
-      # working-directory: ./web
+      working-directory: ./web
       codeCov-token: ${{ secrets.CodeCov }}
 
     strategy:
