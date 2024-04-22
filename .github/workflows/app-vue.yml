@@ -35,6 +35,10 @@ jobs:
         run: |      
           docker build --tag web . --file web/Dockerfile
           docker tag web artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
-          # docker compose build backend
-          # docker tag cas-web artifacts.developer.gov.bc.ca/cac1-cas-web/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           
+      - name: Docker Push to Artifactory
+        id: publish
+        run: |
+          docker push artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+
+      
