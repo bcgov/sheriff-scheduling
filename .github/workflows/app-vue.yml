@@ -33,7 +33,7 @@ jobs:
       - name: Docker Build Backend Image
         working-directory: ${{env.working-directory}}
         run: |      
-          docker build --tag web . --file web/Dockerfile
+          docker build --tag web . --file Dockerfile
           docker tag web artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           
       - name: Docker Push to Artifactory
