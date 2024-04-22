@@ -30,6 +30,13 @@ jobs:
       - run: npm run build --if-present  --tag web
         working-directory: ${{env.working-directory}}
 
+      # Get SHORT_SHA to tag images
+      - name: Get short SHA
+        id: short_sha
+        run: |
+          echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
+          echo "Short SHA: $SHORT_SHA"
+
       - name: Docker Build Backend Image
         working-directory: ${{env.working-directory}}
         run: |      
