@@ -2,9 +2,12 @@ name: APP (Vue)
 
 on:
   push:
-    branches: [master]
+    branches: [main]
+    paths:
+      - "web"
+      - ".github/workflows/app-vue.yml"
   pull_request:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 env:
   IMAGE_NAME: cas-web
@@ -15,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      working-directory: ./web
+      # working-directory: ./web
       codeCov-token: ${{ secrets.CodeCov }}
 
     strategy:
@@ -34,7 +37,7 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: Docker Build Backend Image
-        working-directory: ${{env.WORKING_DIRECTORY}}
+        working-directory: ${{env.working-directory}}
         run: |      
           docker build --tag web . --file web/Dockerfile
           docker tag web artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
