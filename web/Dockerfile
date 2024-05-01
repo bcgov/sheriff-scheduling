@@ -27,16 +27,16 @@ RUN npm install -g autorest
 # run unit tests
 #RUN dotnet test -c Release
 
-## build
-#FROM build AS publish
-#RUN dotnet publish "web/web.njsproj" -c Release -o /app/publish 
-## --runtime linux-musl-x64 --no-self-contained
+# build
+FROM build AS publish
+RUN dotnet publish "web/web.njsproj" -c Release -o /app/publish 
+# --runtime linux-musl-x64 --no-self-contained
 
-#FROM base AS final
-## copy diagnostics tools
-#WORKDIR /tools
-#COPY --from=build /tools .
-## copy app
-#WORKDIR /app
-#COPY --from=publish /app/publish .
-#ENTRYPOINT ["dotnet", "web.dll"]
+FROM base AS final
+# copy diagnostics tools
+WORKDIR /tools
+COPY --from=build /tools .
+# copy app
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "web.dll"]
