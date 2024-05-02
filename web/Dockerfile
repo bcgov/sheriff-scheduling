@@ -28,9 +28,9 @@ RUN npm install -g autorest
 #RUN dotnet test -c Release
 
 # build
-RUN dotnet build "web/web.njsproj" -c Release -o /app/publish
-FROM build AS publish
 RUN dotnet restore "web/web.njsproj"
+RUN msbuild "web/web.njsproj" -c Release -o /app/publish
+FROM build AS publish
 RUN dotnet publish "web/web.njsproj" -c Release -o /app/publish 
 # --runtime linux-musl-x64 --no-self-contained
 
