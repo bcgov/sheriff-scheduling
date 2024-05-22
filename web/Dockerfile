@@ -16,12 +16,7 @@ RUN dotnet tool install --tool-path /tools dotnet-dump
 
 WORKDIR /
 
-COPY ["api/api.csproj", "api/"]
-COPY ["db/db.csproj", "db/"]
-COPY ["jc-interface-client/jc-interface-client.csproj", "jc-interface-client/"]
-
-RUN dotnet restore ./api/api.csproj
-#RUN dotnet restore ./db/db.csproj
+COPY ["web.njsproj", "web/"]
 COPY . .
 
 # Install Node.js and npm 
@@ -33,8 +28,10 @@ RUN npm install -g autorest
 #RUN dotnet test -c Release
 
 # build
+RUN dotnet restore "web/web.njsproj"
+RUN dotnet build "web/web.njsproj" -c Release -o /app/publish
 FROM build AS publish
-RUN dotnet publish "api/api.csproj" -c Release -o /app/publish 
+RUN dotnet publish "web/web.njsproj" -c Release -o /app/publish 
 # --runtime linux-musl-x64 --no-self-contained
 
 FROM base AS final
@@ -44,4 +41,4 @@ COPY --from=build /tools .
 # copy app
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "api.dll"]
+ENTRYPOINT ["dotnet", "web.dll"]
