@@ -29,9 +29,10 @@ jobs:
           echo "Short SHA: $SHORT_SHA"
         
       - name: Docker Build Image
+        working-directory: ${{env.WORKING_DIRECTORY}}
         run: |          
-          docker build --tag ${{ env.IMAGE_NAME }} -f api/Dockerfile . 
-          docker tag ${{ env.IMAGE_NAME }} artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+          docker build --tag api . -f api/Dockerfile
+          docker tag api artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           docker push artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
 
       - name: Checkout ArgoCD Repo
