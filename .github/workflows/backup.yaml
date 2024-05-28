@@ -35,8 +35,8 @@ jobs:
         run: |
           cd docker
           docker build --tag ${{ env.IMAGE_NAME }} . 
-          docker tag ${{ env.IMAGE_NAME }} artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:latest
-          docker push artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}
+          docker tag ${{ env.IMAGE_NAME }} artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+          docker push artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
 
       - name: Checkout ArgoCD Repo
         id: gitops
