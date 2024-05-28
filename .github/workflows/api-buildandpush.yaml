@@ -1,20 +1,24 @@
-name: API
+name: Build & Push API Image to Artifactory
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "api"
+      - ".github/workflows/api-buildandpush.yaml"
   workflow_dispatch:
 env:
   IMAGE_NAME: cas-api
   WORKING_DIRECTORY: ./
 jobs:
-  build:
+  builds:
     runs-on: ubuntu-latest
 
-    steps:      
-
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v2
 
       - name: Login to Artifactory
+        # if: github.repository_owner == 'bcgov-c'
         uses: docker/login-action@v1
         with:
           registry: artifacts.developer.gov.bc.ca
@@ -27,14 +31,19 @@ jobs:
         run: |
           echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
           echo "Short SHA: $SHORT_SHA"
-        
-      - name: Docker Build Image
-        working-directory: ${{env.WORKING_DIRECTORY}}
-        run: |          
-          docker build --tag api . -f api/Dockerfile
-          docker tag api artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
-          docker push artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
 
+      - name: Docker Build Backend Image
+        working-directory: ${{env.WORKING_DIRECTORY}}
+        run: |      
+          docker build --tag api . --file api/Dockerfile
+          docker tag api artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+          
+      - name: Docker Push to Artifactory
+        id: publish
+        # if: github.repository_owner == 'bcgov-c'
+        run: |
+          docker push artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
+      
       - name: Checkout ArgoCD Repo
         id: gitops
         uses: actions/checkout@v4
