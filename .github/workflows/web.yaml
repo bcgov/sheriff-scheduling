@@ -19,7 +19,14 @@ jobs:
 
       - name: Checkout Repo
         uses: actions/checkout@v4                            
-          
+
+      # Get SHORT_SHA to tag images
+      - name: Get short SHA
+        id: short_sha
+        run: |
+          echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
+          echo "Short SHA: $SHORT_SHA"
+
       - name: Checkout ArgoCD Repo
         id: gitops
         uses: actions/checkout@v4
