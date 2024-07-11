@@ -26,4 +26,5 @@ FROM base AS final
 # copy app
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --from=build /src/db/sql /src/db/sql
 ENTRYPOINT ["dotnet", "api.dll"]
