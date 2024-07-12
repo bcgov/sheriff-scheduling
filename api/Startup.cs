@@ -42,6 +42,8 @@ namespace CAS.API
             CurrentEnvironment = env;
             DevelopmentMode = CurrentEnvironment.IsDevelopment() &&
                               Configuration.GetNonEmptyValue("ByPassAuthAndUseImpersonatedUser").Equals("true");
+
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         private IConfiguration Configuration { get; }
@@ -50,7 +52,7 @@ namespace CAS.API
         {
             //for debugging purposes
             //IdentityModelEventSource.ShowPII = true;
-            
+
             services.AddLogging(options =>
             {
                 options.AddConsole(c =>
@@ -143,10 +145,10 @@ namespace CAS.API
             });
 
             services.AddSwaggerGenNewtonsoftSupport();
-            
-            services.AddQuartz(q =>  
-            {     
-                q.AddJobAndTrigger<TrainingNotification>(Configuration);                           
+
+            services.AddQuartz(q =>
+            {
+                q.AddJobAndTrigger<TrainingNotification>(Configuration);
             });
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
@@ -206,7 +208,7 @@ namespace CAS.API
 
             app.UseEndpoints(endpoints =>
             {
-                //Note this will allow access everywhere for local development. 
+                //Note this will allow access everywhere for local development.
                 if (DevelopmentMode)
                     endpoints.MapControllers().WithMetadata(new AllowAnonymousAttribute());
                 else
