@@ -1,4 +1,4 @@
-﻿namespace CAS.API.helpers
+﻿namespace SS.Api.helpers
 {
     public static class XForwardedForHelper
     {
