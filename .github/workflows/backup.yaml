@@ -1,36 +1,29 @@
-name: Build & Push web Image to Artifactory
+name: Backup
 
 on:
-  push:
-    branches: [develop]
-    paths:
-      - "web"
-      - ".github/workflows/web-buildandpush.yaml"
   workflow_dispatch:
 env:
-  IMAGE_NAME: cas-web
+  IMAGE_NAME: backup
   WORKING_DIRECTORY: ./
 jobs:
-  builds:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Login to Artifactory
+        uses: docker/login-action@v1
         with:
-          node-version: ${{ matrix.node-version }}
           registry: artifacts.developer.gov.bc.ca
           username: ${{ secrets.CAS_ARTIFACTORY_USERNAME }}
           password: ${{ secrets.CAS_ARTIFACTORY_PASSWORD }}
-          dotnet-version: 7.0.407
 
-      - run: npm ci
-       #  working-directory: ${{env.working-directory}}
-      - run: npm run build --if-present
-        working-directory: ${{env.working-directory}}
-        
+      - name: Checkout Schema Spy Repo
+        uses: actions/checkout@v4
+        with:
+          repository: BCDevOps/backup-container.git
+          ref: '2.6.1'
+
       # Get SHORT_SHA to tag images
       - name: Get short SHA
         id: short_sha
@@ -38,17 +31,13 @@ jobs:
           echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
           echo "Short SHA: $SHORT_SHA"
 
-      - name: Docker Build Web Image
-        working-directory: ${{env.WORKING_DIRECTORY}}web/
-        run: |      
-          docker build --tag web . --file web/Dockerfile
-          docker tag web artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
-          
-      - name: Docker Push to Artifactory
-        id: publish
+      - name: Docker Build Backup Image
         run: |
+          cd docker
+          docker build --tag ${{ env.IMAGE_NAME }} .
+          docker tag ${{ env.IMAGE_NAME }} artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           docker push artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
-      
+
       - name: Checkout ArgoCD Repo
         id: gitops
         uses: actions/checkout@v4
@@ -63,20 +52,23 @@ jobs:
         if: steps.gitops.outcome == 'success'  # Only run if the previous step (publish) was successful
         run: |
           # Clone the GitOps deployment configuration repository
-          # Navigate to the directory containing your Helm values file for the environment develop -> DEV, test -> test and 
+          # Navigate to the directory containing your Helm values file for the environment develop -> DEV, test -> test and
           cd gitops/charts
 
           # Update the Helm values file with the new image tag and version
           DATETIME=$(date +'%Y-%m-%d %H:%M:%S')  # Get current date and time
 
-          sed -i "s/apitag: .*/apitag: dev-${{ steps.short_sha.outputs.SHORT_SHA }} # Image Updated on $DATETIME/" ../deploy/dev_values.yaml
+          sed -i "s/backuptag: .*/backuptag: dev-${{ steps.short_sha.outputs.SHORT_SHA }} # Image Updated on $DATETIME/" ../deploy/dev_values.yaml
 
-          sed -i "s/apitag: .*/apitag: dev-${{ steps.short_sha.outputs.SHORT_SHA }} # Image Updated on $DATETIME/" web/values.yaml
-          
+          sed -i "s/backuptag: .*/backuptag: dev-${{ steps.short_sha.outputs.SHORT_SHA }} # Image Updated on $DATETIME/" backup/values.yaml
+
           # Commit and push the changes
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          
+
           git add .
-          
+
           git add ../deploy/dev_values.yaml
+
+          git commit -m "Update Dev Web image tag"
+          git push origin develop  # Update the branch name as needed

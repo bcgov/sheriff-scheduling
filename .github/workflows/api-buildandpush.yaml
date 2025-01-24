@@ -32,29 +32,11 @@ jobs:
           echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
           echo "Short SHA: $SHORT_SHA"
 
-      # - name: Install dependencies
-      #   run: dotnet restore
-      #   working-directory: ${{env.WORKING_DIRECTORY}}
-
-      # - name: Build
-      #   run: dotnet build --configuration Release --no-restore
-      #   working-directory: ${{env.WORKING_DIRECTORY}}
-
-      # - name: Test
-      #   run: dotnet test --no-restore --verbosity normal
-      #   working-directory: ${{env.WORKING_DIRECTORY}}
-
-      # - name: Push to Artifactory
-      #   id: publish
-      #   run: dotnet push artifacts.developer.gov.bc.ca/cac1-cas-api/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
-
       - name: Docker Build Backend Image
         working-directory: ${{env.WORKING_DIRECTORY}}
         run: |      
           docker build --tag api . --file api/Dockerfile
           docker tag api artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
-          # docker compose build backend
-          # docker tag cas-api artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
           
       - name: Docker Push to Artifactory
         id: publish
@@ -62,3 +44,36 @@ jobs:
         run: |
           docker push artifacts.developer.gov.bc.ca/cac1-cas/${{ env.IMAGE_NAME }}:dev-${{ steps.short_sha.outputs.SHORT_SHA }}
       
+      - name: Checkout ArgoCD Repo
+        id: gitops
+        uses: actions/checkout@v4
+        with:
+          repository: bcgov-c/tenant-gitops-ac1cc8
+          ref: develop
+          token: ${{ secrets.GIT_OPS_SSH_KEY }} # `GH_PAT` is a secret that contains your PAT
+          path: gitops
+
+      - name: Update Helm Values and Commit
+        id: helm
+        if: steps.gitops.outcome == 'success'  # Only run if the previous step (publish) was successful
+        run: |
+          # Clone the GitOps deployment configuration repository
+          # Navigate to the directory containing your Helm values file for the environment develop -> DEV, test -> test and 
+          cd gitops/charts
+
+          # Update the Helm values file with the new image tag and version
+          DATETIME=$(date +'%Y-%m-%d %H:%M:%S')  # Get current date and time
+
+          sed -i "s/apitag: .*/apitag: dev-${{ steps.short_sha.outputs.SHORT_SHA }} # Image Updated on $DATETIME/" ../deploy/dev_values.yaml
+
+          sed -i "s/apitag: .*/apitag: dev-${{ steps.short_sha.outputs.SHORT_SHA }} # Image Updated on $DATETIME/" api/values.yaml
+          
+          # Commit and push the changes
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          
+          git add .
+          
+          git add ../deploy/dev_values.yaml
+          git commit -m "Update Dev Api image tag"
+          git push origin develop  # Update the branch name as needed
