@@ -2,7 +2,7 @@ name: Build & Push web Image to Artifactory
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
     paths:
       - "web"
       - ".github/workflows/web-buildandpush.yaml"
