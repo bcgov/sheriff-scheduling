@@ -184,24 +184,34 @@
                         <b-badge :variant="data.item['_rowVariant']" style="width:6rem;" >{{data.value}}</b-badge>                        
                     </template>
                     <template v-slot:cell(expiryDate) ="data">{{data.value | beautify-date}}</template>
+                    <template v-slot:cell(region) ="data">{{data.value}}</template>
                     <template v-slot:cell(excluded) ="data"><b-form-checkbox v-model="data.item.excluded" @change="excludeFromReports(true, data.item.sheriffId)"/></template>
                 </b-table>
 
-                <b-row class="mt-5 mx-0">                
-                    <b-button                        
-                        style="margin:0 0 0 auto; padding: 0.25rem 1rem;" 
-                        :disabled="generatingReport"                   
-                        variant="primary"
-                        @click="downloadReport()"
-                        ><spinner color="#FFF" v-if="generatingReport" style="margin:0; padding: 0; height:2rem; transform:translate(0px,-24px);"/>
-                            <b-row class="mx-1" style="font-size: 18px;" v-else>
-                                <b-icon-download class="mr-2"/>                            
-                                Download CSV File
-                                <div style="line-height:1rem; transform:translate(5px,6px)">        
-                                    <i style="font-size:20pt;" class="mdi mdi-file-excel"></i>
-                                </div>
-                            </b-row>
-                    </b-button>                
+                <b-row class="mt-5 mx-0">
+                    <b-col cols="auto" class="ml-auto d-flex align-items-center">
+                        <b-form-checkbox
+                            v-model="sortByRegion"
+                            class="mr-3"
+                            switch
+                        >
+                            Sort by Region
+                        </b-form-checkbox>
+                        <b-button                        
+                            style="padding: 0.25rem 1rem;" 
+                            :disabled="generatingReport"                   
+                            variant="primary"
+                            @click="downloadReport()"
+                            ><spinner color="#FFF" v-if="generatingReport" style="margin:0; padding: 0; height:2rem; transform:translate(0px,-24px);"/>
+                                <b-row class="mx-1" style="font-size: 18px;" v-else>
+                                    <b-icon-download class="mr-2"/>                            
+                                    Download CSV File
+                                    <div style="line-height:1rem; transform:translate(5px,6px)">        
+                                        <i style="font-size:20pt;" class="mdi mdi-file-excel"></i>
+                                    </div>
+                                </b-row>
+                        </b-button>
+                    </b-col>                
                 </b-row>
             </div>
         </b-card>
@@ -308,6 +318,7 @@
         trainingFields = [
             {key:"excluded",     label:"Excuse",                    thClass: 'border-bottom align-middle text-center', tdClass:'align-middle text-center', sortable: false,thStyle:'width:5%; line-height:1rem;'},
             {key:"name",         label:"Name",                      thClass: 'border-bottom align-middle text-center', tdClass:'align-middle text-center', sortable: true, thStyle:'width:25%;'},
+            {key:"region",       label:"Region",                    thClass: 'border-bottom align-middle text-center', tdClass:'align-middle text-center', sortable: true, thStyle:'width:20%;'},            
             {key:"trainingType", label:"Training Type",             thClass: 'border-bottom align-middle text-center', tdClass:'align-middle text-center', sortable: true, thStyle:'width:35%;'},            
             {key:"end",          label:"Completion Date",           thClass: 'border-bottom align-middle text-center', tdClass:'align-middle text-center', sortable: true, thStyle:'width:10%;'},
             {key:"expiryDate",   label:"Certification Expiry Date", thClass: 'border-bottom align-middle text-center', tdClass:'align-middle text-center', sortable: true, thStyle:'width:15%;'},
@@ -315,6 +326,8 @@
         ];
 
         sheriffList: sheriffOption[] = [];
+        
+        sortByRegion = false;
         
         mounted() {   
             this.dataReady = false;
@@ -421,7 +434,6 @@
         }
 
         public downloadReport(){ 
-
             this.generatingReport = true;
 
             const fileName = 'Training Report';
@@ -436,7 +448,7 @@
                 useTextFile: false,
                 useBom: true,
                 useKeysAsHeaders: false,
-                headers: ['Location', 'Name', 'Training Type', 'End Date', 'Expiry Date', 'Status']
+                headers: ['Region', 'Location', 'Name', 'Training Type', 'End Date', 'Expiry Date', 'Status']
             };
 
             const reportData: trainingReportInfoType[] = [];
@@ -450,11 +462,12 @@
                 trainingInfo.end = trainingData.end?.length>0?Vue.filter('beautify-date')(trainingData.end):'';
                 trainingInfo.expiryDate = trainingData.expiryDate?.length>0?Vue.filter('beautify-date')(trainingData.expiryDate):''; 
                 trainingInfo.status = this.beautifyTrainingStatusForExcel(trainingData.status);
+                trainingInfo.region = trainingData.region;
                 reportData.push(trainingInfo)                
             }
 
             const csvExporter = new ExportToCsv(options);
-            csvExporter.generateCsv(_.sortBy(reportData, 'name'));
+            csvExporter.generateCsv(this.sortByRegion ? _.sortBy(reportData, 'region') : _.sortBy(reportData, 'name'));
             this.generatingReport = false;
         }
 

@@ -116,6 +116,7 @@ export interface trainingReportInfoType {
     excluded?: boolean;
     sheriffId?: string;
     location?: string;
+    region?: string;
     status?: string;
 }
 

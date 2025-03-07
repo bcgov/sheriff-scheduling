@@ -12,6 +12,7 @@ namespace SS.Api.models.dto
         public Guid sheriffId { get; set; }
         public string status { get; set; }
         public string location { get; set; }
+        public string region { get; set; }
         public string _rowVariant { get; set; }
     }
 }
