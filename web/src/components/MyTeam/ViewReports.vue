@@ -318,7 +318,6 @@
         
         mounted() {   
             this.dataReady = false;
-            this.getSheriffs();
             this.clearReports();
             this.reportParameters.region = 'All';     
             this.reportParameters.location = 'All';
@@ -404,8 +403,12 @@
                             this.find();
                         }
                     }
+                    
+                    this.dataReady = true;
                 },err => {
-                    console.log(err.response)
+                    console.log(err.response);
+                    
+                    this.dataReady = true;
                 })
         }
 
@@ -473,11 +476,14 @@
                         this.trainingTypeOptions = response.data;                  
                     }
                     this.reportParameters.reportSubtype = this.trainingTypeOptions.map(t => t.id)
-                    this.dataReady = true;
+
+                    // get sheriffs after getting the training types
+                    this.getSheriffs();
                    
                 },err => {
                     console.log(err.response)
-                    this.dataReady = true; 
+                    // try gettin sheriffs after getting the training types
+                    this.getSheriffs(); 
                 })                   
         }
 
