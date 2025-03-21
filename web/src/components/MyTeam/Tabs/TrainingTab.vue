@@ -119,29 +119,6 @@
                         >&times;</b-button>
                     </template>
                 </b-modal>
-                <b-modal v-model="confirmOverride" id="bv-modal-confirm-override" header-class="bg-warning text-light">
-                    <template v-slot:modal-title>
-                            <h2 class="mb-0 text-light">Conflicting Event</h2>                    
-                    </template>
-                    <h4>The following events conflict with this training</h4>
-                    <ul>
-                        <li v-for="event in overlappingList"
-                            :key="event"
-                            class="mb-1"> {{event}}
-                        </li>
-                    </ul>
-                    <h4 class="mt-4 mb-0 text-danger">Do you want to override or allow the conflicting event(s) listed above? </h4>
-                    <template v-slot:modal-footer>
-                        <b-button variant="primary" @click="saveTraining(trainingToSave, create, false, true)">Allow Conflicts</b-button>
-                        <b-button variant="danger" @click="saveTraining(trainingToSave, create, true, false)">Override</b-button>
-                        <b-button variant="primary" @click="cancelTrainingOverride()">Cancel</b-button>
-                    </template>            
-                    <template v-slot:modal-header-close>                 
-                        <b-button variant="outline-warning" class="text-light closeButton" @click="cancelTrainingOverride()"
-                        >&times;</b-button>
-                    </template>
-                </b-modal> 
-
             </div>                                     
         </b-card>
 
@@ -208,7 +185,6 @@
         updateTable = 0;
 
         confirmDelete = false;
-        confirmOverride = false;
         trainingToDelete = {} as userTrainingInfoType;
         
         assignedTrainings: userTrainingInfoType[] = [];
@@ -373,52 +349,36 @@
             }  
         }
 
-        public saveTraining(body, iscreate, overrideConflicts, allowConflictingEvents){
-                this.trainingError   = false; 
-                body['sheriffId']= this.userToEdit.id;
-                const method = iscreate? 'post' :'put';            
-                
-                let url;
-                if (allowConflictingEvents) {
-                    url = 'api/sheriff/training?allowConflictingEvents=true';
-                } else {
-                    url = overrideConflicts?'api/sheriff/training?overrideConflicts=true':'api/sheriff/training';  
-                }
-
-                const options = { method: method, url:url, data:body}
-               
-                this.$http(options)
-                    .then(response => {
-                        if(iscreate) 
-                            this.addToAssignedTrainingList(response.data);
-                        else
-                            this.modifyAssignedTrainingList(response.data);
-                        if (overrideConflicts){
-                            this.cancelTrainingOverride();
-                            this.closeTrainingForm();
-                            this.$emit('refresh', this.userToEdit.id)
-                        }
-                        if (allowConflictingEvents) this.cancelTrainingOverride();
-                        this.closeTrainingForm();
-                    }, err=>{
-                        const errMsg = err.response.data.error;
-                        this.trainingErrorMsg = errMsg;
-                        this.trainingErrorMsgDesc = errMsg;
-                        if (errMsg.toLowerCase().includes("overlaps")) {
-                            //console.log("overlap")
-                            this.overlappingList = this.trainingErrorMsg.split('||');
-                            this.trainingToSave = body;
-                            this.create = iscreate;
-                            this.confirmOverride = true;
-                        } else {
-                            this.trainingError = true;
-                            location.href = '#TrainingError'
-                        }
-                    });                
-        }
-
-        public cancelTrainingOverride() {
-            this.confirmOverride = false;
+        public saveTraining(body, iscreate){
+            this.trainingError   = false; 
+            body['sheriffId']= this.userToEdit.id;
+            const method = iscreate? 'post' :'put';            
+            
+            const url = 'api/sheriff/training?allowConflictingEvents=true';
+            
+            const options = { method: method, url:url, data:body}
+            
+            this.$http(options)
+                .then(response => {
+                    if(iscreate) 
+                        this.addToAssignedTrainingList(response.data);
+                    else
+                        this.modifyAssignedTrainingList(response.data);
+                    this.closeTrainingForm();
+                }, err=>{
+                    const errMsg = err.response.data.error;
+                    this.trainingErrorMsg = errMsg;
+                    this.trainingErrorMsgDesc = errMsg;
+                    if (errMsg.toLowerCase().includes("overlaps")) {
+                        //console.log("overlap")
+                        this.overlappingList = this.trainingErrorMsg.split('||');
+                        this.trainingToSave = body;
+                        this.create = iscreate;
+                    } else {
+                        this.trainingError = true;
+                        location.href = '#TrainingError'
+                    }
+                });                
         }
 
         public modifyAssignedTrainingList(modifiedTrainingInfo){            
