@@ -13,6 +13,7 @@ using SS.Api.models.types;
 using SS.Common.helpers.extensions;
 using ss.db.models;
 using Microsoft.Extensions.Logging;
+using SS.Db.models.auth;
 
 namespace SS.Api.services.usermanagement
 {
@@ -83,10 +84,14 @@ namespace SS.Api.services.usermanagement
                 .ThenInclude(t => t.TrainingType)
                 .Include(s => s.HomeLocation)
                 .ThenInclude(h => h.Region)
+                .Include(s => s.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                    .ThenInclude(r => r.RolePermissions)
+                    .ThenInclude(rp => rp.Permission)
                 .Where(s => trainingReportSearch.regionId == null || s.HomeLocation.RegionId==trainingReportSearch.regionId);
 
             var sheriffs = await sheriffQuery.ToListAsync();
-
+            sheriffs = sheriffs.Where(s => !s.Permissions.Any(p => p.Name == Permission.ExemptFromTraining)).ToList();
             List<LookupCode> mandatoryTrainings = await ManageTypesService.GetAllForReports(trainingReportSearch.reportSubtypeIds, LookupTypes.TrainingType, null, true, false);
             List<LookupCode> optionalTrainings = await ManageTypesService.GetAllForReports(trainingReportSearch.reportSubtypeIds, LookupTypes.TrainingType, null, false, false);
 

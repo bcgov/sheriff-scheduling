@@ -12,6 +12,7 @@ using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;
 using Microsoft.Extensions.Logging;
+using Quartz.Logging;
 
 namespace tests.controllers
 {
@@ -33,7 +34,8 @@ namespace tests.controllers
             var shiftService = new ShiftService(Db, sheriffService, environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration,
                 shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
-            _controller = new SheriffController(sheriffService, dutyRosterService, shiftService, new UserService(Db), environment.Configuration, Db)
+            var trainingService = new TrainingService(new SS.Api.services.ManageTypesService(Db), Db, environment.LogFactory.CreateLogger<TrainingService>());
+            _controller = new SheriffController(sheriffService, dutyRosterService, shiftService, new UserService(Db), trainingService, environment.Configuration, Db)
             {
                 ControllerContext = HttpResponseTest.SetupMockControllerContext()
             };
