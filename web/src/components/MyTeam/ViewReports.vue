@@ -13,7 +13,7 @@
             <b-row class="ml-1 mt-n2 mx-0">
                 <b-col cols="4">
                     <v-app class="vuetify">
-                        <label class="h4 p-0 float-left mr-auto"> Sheriff </label>
+                        <label class="h4 p-0 float-left mr-auto"> Name </label>
                         <v-autocomplete class="mt-2" v-model="reportParameters.sheriffId" :items="sheriffList" item-text="fullName" item-value="id" solo>
                             <template v-slot:item="data">
                                 <template>
