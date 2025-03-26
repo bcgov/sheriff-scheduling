@@ -53,7 +53,57 @@ namespace SS.Api.services.usermanagement
             sheriff.IsEnabled = true;
             await Db.Sheriff.AddAsync(sheriff);
             await Db.SaveChangesAsync();
+
+            await PopulateStandardTrainings(sheriff);
+            
             return sheriff;
+        }
+
+        // https://jira.justice.gov.bc.ca/browse/SS-818
+        private async Task PopulateStandardTrainings(Sheriff sheriff)
+        {
+            var standardTrainings = new List<SheriffTraining>
+            {
+                // Emergency Vehicle Operator Course - Motor Vehicle Act (Justice Institute of British Columbia)
+                new SheriffTraining { TrainingTypeId = 1718748, ExpiryDate = DateTime.UtcNow.AddYears(100) },
+                // NARCAN Training
+                new SheriffTraining { TrainingTypeId = 1716961, ExpiryDate = new DateTime(DateTime.UtcNow.Year, 12, 31, 23, 59, 59) },
+                // CEW, Conductive Energy Weapon (Canadian Police Knowledge Network)
+                new SheriffTraining { TrainingTypeId = 1718646, ExpiryDate =  new DateTime(DateTime.UtcNow.Year, 12, 31, 23, 59, 59) },
+                // Annual Review of Standards of Conduct
+                new SheriffTraining { TrainingTypeId = 1716948, ExpiryDate = DateTime.UtcNow.Month > 5 || (DateTime.UtcNow.Month == 5 && DateTime.UtcNow.Day > 31) 
+                    ? new DateTime(DateTime.UtcNow.Year + 1, 5, 31, 23, 59, 59) 
+                    : new DateTime(DateTime.UtcNow.Year, 5, 31, 23, 59, 59) },
+                // Legal Studies Refresher
+                new SheriffTraining { TrainingTypeId = 1716960, ExpiryDate = new DateTime(DateTime.UtcNow.Year + 1, 12, 31, 23, 59, 59) },
+                // Bullying and Harassment (BCSS – In-Service)
+                new SheriffTraining { TrainingTypeId = 1716951, ExpiryDate = new DateTime(DateTime.UtcNow.Year + 1, 12, 31, 23, 59, 59) },
+                // First Aid (external providers)
+                new SheriffTraining { TrainingTypeId = 1716955, ExpiryDate = new DateTime(DateTime.UtcNow.Year + 2, 12, 31, 23, 59, 59) },
+                // Critical Incident De-Escalation (Canadian Police Knowledge Network)
+                new SheriffTraining { TrainingTypeId = 1718650, ExpiryDate = new DateTime(DateTime.UtcNow.Year + 2, 12, 31, 23, 59, 59) },
+                // Fraud Awareness and Prevention (LearningHub)
+                new SheriffTraining { TrainingTypeId = 1716956, ExpiryDate = new DateTime(DateTime.UtcNow.Year + 2, 12, 31, 23, 59, 59) },
+                // IM 117 (Learning Center)
+                new SheriffTraining { TrainingTypeId = 1716958, ExpiryDate = new DateTime(DateTime.UtcNow.Year + 1, 12, 31, 23, 59, 59) },
+                // Diversity and Inclusion Essentials (LearningHub)
+                new SheriffTraining { TrainingTypeId = 1716954, ExpiryDate = DateTime.UtcNow.AddYears(100) },
+                // @Waiting for response from Client: Building Capacity in Indigenous Relations: We are all here to stay (LearningHub)
+                // new SheriffTraining { TrainingTypeId = , ExpiryDate = DateTime.UtcNow.AddYears(100) }
+            };
+
+            var sheriffTrainings = standardTrainings.Select(standardTraining => new SheriffTraining
+            {
+                SheriffId = sheriff.Id,
+                TrainingTypeId = standardTraining.TrainingTypeId,
+                StartDate = DateTimeOffset.UtcNow,
+                EndDate = DateTimeOffset.UtcNow,
+                ExpiryDate = standardTraining.ExpiryDate,
+                Timezone = "UTC"
+            }).ToList();
+
+            await Db.SheriffTraining.AddRangeAsync(sheriffTrainings);
+            await Db.SaveChangesAsync();
         }
 
         public async Task<Sheriff> GetSheriff(Guid? id,
