@@ -158,7 +158,7 @@
                         <b class="p-0 h6" style="margin: 0.75rem 0.5rem 0 0.7rem; float:left;">Note:</b>
                         <b-form-group class="p-0 mr-2 mt-1 mb-0" style="float:left; width: 41rem">                        
                             <b-form-input
-                                tabindex="7"
+                                tabindex="9"
                                 v-model="selectedComment"
                                 size="sm"
                                 type="text"
