@@ -175,6 +175,6 @@
 <style scoped>   
 
     ul >>> .dropdown-menu {
-        width: 250px !important;
+        width: 270px !important;
     }
 </style>

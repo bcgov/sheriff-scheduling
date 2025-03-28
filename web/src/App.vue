@@ -220,7 +220,7 @@
 
         public extractRegionInfo(regionListJson){ 
                       
-            const regions: regionInfoType[] = regionListJson.filter(region=>(region.justinId > 0)); 
+            const regions: regionInfoType[] = regionListJson.filter(region => (region.justinId > 0) || (region.justinId === undefined) || (region.justinId === null)); 
 
             const vancouverIndex = regions.findIndex((region => region.name == 'Vancouver'));
 

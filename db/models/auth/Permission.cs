@@ -44,6 +44,7 @@ namespace SS.Db.models.auth
         public const string ViewOtherProfiles = nameof(ViewOtherProfiles);
         public const string GenerateReports = nameof(GenerateReports);
         public const string AdjustTrainingExpiry = nameof(AdjustTrainingExpiry);
+        public const string ExemptFromTraining = nameof(ExemptFromTraining);
 
         [Key]
         public int Id { get; set; }
