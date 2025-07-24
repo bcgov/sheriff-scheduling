@@ -44,6 +44,7 @@ namespace SS.Db.models
         public virtual DbSet<SheriffAwayLocation> SheriffAwayLocation { get; set; }
         public virtual DbSet<SheriffActingRank> SheriffActingRank { get; set; }
         public virtual DbSet<SheriffTraining> SheriffTraining { get; set; }
+        public virtual DbSet<SheriffStandardTraining> SheriffStandardTraining { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserRole> UserRole { get; set; }
         public virtual DbSet<Permission> Permission { get; set; }
