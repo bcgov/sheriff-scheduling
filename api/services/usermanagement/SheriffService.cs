@@ -67,48 +67,96 @@ namespace SS.Api.services.usermanagement
             return sheriff;
         }
 
+        /// <summary>
+        /// Calculate Training Certification Expiry Dates for the Sheriff Standard Trainings.
+        /// This is done only once when the Sheriff is created.
+        /// </summary>
+        private DateTime CalculateExpiryDate(SheriffStandardTraining standardTraining)
+        {
+            if (standardTraining.ConditionOn != null && standardTraining.ConditionOperator != null && standardTraining.ConditionValue != null)
+            {
+                // If the condition is met, return the expiry date.
+                int currentDateValue = 0;
+                switch (standardTraining.ConditionOn)
+                {
+                    case "Month":
+                        currentDateValue = DateTime.Now.Month;
+                        break;
+                    case "Year":
+                        currentDateValue = DateTime.Now.Year;
+                        break;
+                }
+
+                bool conditionMet = false;
+                switch (standardTraining.ConditionOperator)
+                {
+                    case ">":
+                        if (currentDateValue > standardTraining.ConditionValue)
+                            conditionMet = true;
+                        break;
+                    case "<":
+                        if (currentDateValue < standardTraining.ConditionValue)
+                            conditionMet = true;
+                        break;
+                }
+                // You can use conditionValue as needed below
+                return conditionMet ? new DateTime(DateTime.Now.Year + standardTraining.ConditionExpiryInYears ?? 0, standardTraining.ConditionExpiryMonth ?? 0, standardTraining.ConditionExpiryDate ?? 0, 23, 59, 59, DateTimeKind.Local) :
+                new DateTime(DateTime.Now.Year + standardTraining.ExpiryInYears ?? 0, standardTraining.ExpiryMonth ?? 0, standardTraining.ExpiryDate ?? 0, 23, 59, 59, DateTimeKind.Local);
+            }
+
+            return new DateTime(DateTime.Now.Year + standardTraining.ExpiryInYears ?? 0, standardTraining.ExpiryMonth ?? 0, standardTraining.ExpiryDate ?? 0, 23, 59, 59, DateTimeKind.Local);
+        }
+
         // https://jira.justice.gov.bc.ca/browse/SS-818
         private async Task PopulateStandardTrainings(Sheriff sheriff)
         {
-            var standardTrainingCodes = new List<StandardTrainingLookup>
-            {
-                new() { LookupCode = "Emergency Vehicle Operator (JIBC Website)", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 100, 12, 31, 23, 59, 59, DateTimeKind.Local) },
-                new() { LookupCode = "Narcan", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59, DateTimeKind.Local) },
-                new() { LookupCode = "CEW Training (Taser)", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59, DateTimeKind.Local) },
-                new() { LookupCode = "Annual Review of Standards of Conduct and Oath of Employment", TrainingCertificationExpiry = DateTime.Now.Month > 5 || (DateTime.Now.Month == 5 && DateTime.Now.Day > 31)
-                    ? new DateTime(DateTime.Now.Year + 1, 5, 31, 23, 59, 59)
-                    : new DateTime(DateTime.Now.Year, 5, 31, 23, 59, 59) },
-                new() { LookupCode = "Legal Studies Refresher", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
-                new() { LookupCode = "Bullying and Harassment (Respectful Workplace)", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
-                new() { LookupCode = "First Aid", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59, DateTimeKind.Local) },
-                new() { LookupCode = "CID - Critical Incident De-escalation", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59) },
-                new() { LookupCode = "Fraud Awareness and Prevention", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59) },
-                new() { LookupCode = "IM 117", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
-                new() { LookupCode = "Diversity and Inclusion Essentials", TrainingCertificationExpiry = DateTime.Now.AddYears(100) },
-                new() { LookupCode = "Indigenous Cultural Awareness (ICAP)", TrainingCertificationExpiry = DateTime.Now.AddYears(100) }
-            };
+            // var standardTrainingCodes = new List<StandardTrainingLookup>
+            // {
+            //     // Emergency Vehicle Operator (JIBC Website)
+            //     new() { LookupCode = "1718748", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 100, 12, 31, 23, 59, 59, DateTimeKind.Local) },
+            //     // Narcan  
+            //     new() { LookupCode = "1716961", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59, DateTimeKind.Local) },
+            //     // CEW Training (Taser)
+            //     new() { LookupCode = "1718646", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59, DateTimeKind.Local) },
+            //     // Annual Review of Standards of Conduct and Oath of Employment
+            //     new() { LookupCode = "1716948", TrainingCertificationExpiry = DateTime.Now.Month > 5 || (DateTime.Now.Month == 5 && DateTime.Now.Day > 31)
+            //         ? new DateTime(DateTime.Now.Year + 1, 5, 31, 23, 59, 59)
+            //         : new DateTime(DateTime.Now.Year, 5, 31, 23, 59, 59) },
+            //     // Legal Studies Refresher
+            //     new() { LookupCode = "1716960", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
+            //     // Bullying and Harassment (Respectful Workplace)
+            //     new() { LookupCode = "1716951", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
+            //     // First Aid
+            //     new() { LookupCode = "1716955", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59, DateTimeKind.Local) },
+            //     // CID - Critical Incident De-escalation
+            //     new() { LookupCode = "1718650", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59) },
+            //     // Fraud Awareness and Prevention
+            //     new() { LookupCode = "1716956", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59) },
+            //     // IM 117
+            //     new() { LookupCode = "1716958", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
+            //     // Diversity and Inclusion Essentials
+            //     new() { LookupCode = "1716954", TrainingCertificationExpiry = DateTime.Now.AddYears(100) },
+            //     // Indigenous Cultural Awareness (ICAP)
+            //     new() { LookupCode = "1716959", TrainingCertificationExpiry = DateTime.Now.AddYears(100) }
+            // };
 
             // Get all matching lookup codes and their IDs
-            var foundStandardTrainings = await Db.LookupCode
+            var foundStandardTrainings = await Db.SheriffStandardTraining
                 .AsNoTracking()
-                .Where(lc => lc.Type == LookupTypes.TrainingType && standardTrainingCodes.Select(st => st.LookupCode).Contains(lc.Code))
-                .Select(lc => new { lc.Id, lc.Code })
                 .ToListAsync();
 
             var sheriffTrainings = foundStandardTrainings
                 .Select(foundTraining =>
-                {
-                    var trainingCertificationExpiry = standardTrainingCodes.First(st => st.LookupCode == foundTraining.Code).TrainingCertificationExpiry;
-                    return new SheriffTraining
+                    new SheriffTraining
                     {
                         SheriffId = sheriff.Id,
-                        TrainingTypeId = foundTraining.Id,
+                        TrainingTypeId = foundTraining.TrainingTypeId,
                         StartDate = DateTimeOffset.Now,
                         EndDate = DateTimeOffset.Now,
-                        TrainingCertificationExpiry = trainingCertificationExpiry,
+                        TrainingCertificationExpiry = CalculateExpiryDate(foundTraining),
                         Timezone = "America/Vancouver"
-                    };
-                })
+                    }
+                )
                 .ToList();
 
             if (sheriffTrainings.Count > 0)
