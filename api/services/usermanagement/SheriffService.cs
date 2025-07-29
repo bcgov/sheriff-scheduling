@@ -110,36 +110,6 @@ namespace SS.Api.services.usermanagement
         // https://jira.justice.gov.bc.ca/browse/SS-818
         private async Task PopulateStandardTrainings(Sheriff sheriff)
         {
-            // var standardTrainingCodes = new List<StandardTrainingLookup>
-            // {
-            //     // Emergency Vehicle Operator (JIBC Website)
-            //     new() { LookupCode = "1718748", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 100, 12, 31, 23, 59, 59, DateTimeKind.Local) },
-            //     // Narcan  
-            //     new() { LookupCode = "1716961", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59, DateTimeKind.Local) },
-            //     // CEW Training (Taser)
-            //     new() { LookupCode = "1718646", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59, DateTimeKind.Local) },
-            //     // Annual Review of Standards of Conduct and Oath of Employment
-            //     new() { LookupCode = "1716948", TrainingCertificationExpiry = DateTime.Now.Month > 5 || (DateTime.Now.Month == 5 && DateTime.Now.Day > 31)
-            //         ? new DateTime(DateTime.Now.Year + 1, 5, 31, 23, 59, 59)
-            //         : new DateTime(DateTime.Now.Year, 5, 31, 23, 59, 59) },
-            //     // Legal Studies Refresher
-            //     new() { LookupCode = "1716960", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
-            //     // Bullying and Harassment (Respectful Workplace)
-            //     new() { LookupCode = "1716951", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
-            //     // First Aid
-            //     new() { LookupCode = "1716955", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59, DateTimeKind.Local) },
-            //     // CID - Critical Incident De-escalation
-            //     new() { LookupCode = "1718650", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59) },
-            //     // Fraud Awareness and Prevention
-            //     new() { LookupCode = "1716956", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 2, 12, 31, 23, 59, 59) },
-            //     // IM 117
-            //     new() { LookupCode = "1716958", TrainingCertificationExpiry = new DateTime(DateTime.Now.Year + 1, 12, 31, 23, 59, 59) },
-            //     // Diversity and Inclusion Essentials
-            //     new() { LookupCode = "1716954", TrainingCertificationExpiry = DateTime.Now.AddYears(100) },
-            //     // Indigenous Cultural Awareness (ICAP)
-            //     new() { LookupCode = "1716959", TrainingCertificationExpiry = DateTime.Now.AddYears(100) }
-            // };
-
             // Get all matching lookup codes and their IDs
             var foundStandardTrainings = await Db.SheriffStandardTraining
                 .AsNoTracking()
