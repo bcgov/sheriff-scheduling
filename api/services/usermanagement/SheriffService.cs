@@ -22,12 +22,6 @@ using SS.Db.models.sheriff;
 
 namespace SS.Api.services.usermanagement
 {
-    class StandardTrainingLookup
-    {
-        public string TrainingTypeId { get; set; }
-        public string LookupCode { get; set; }
-        public DateTime TrainingCertificationExpiry { get; set; }
-    }
 
     /// <summary>
     /// Since the Sheriff is a derived class of User, this should handle the Sheriff side of things.
