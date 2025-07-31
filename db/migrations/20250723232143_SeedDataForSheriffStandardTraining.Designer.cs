@@ -3,6 +3,7 @@ using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SS.Db.models;
@@ -10,9 +11,10 @@ using SS.Db.models;
 namespace SS.Db.Migrations
 {
     [DbContext(typeof(SheriffDbContext))]
-    partial class SheriffDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250723232143_SeedDataForSheriffStandardTraining")]
+    partial class SeedDataForSheriffStandardTraining
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,8 +141,7 @@ namespace SS.Db.Migrations
                             ConcurrencyToken = 0u,
                             CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
                             CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Integrated Threat Assessment Unit",
-                            RegionId = 100,
+                            Name = "ITAU",
                             Timezone = "America/Vancouver"
                         },
                         new
@@ -151,7 +152,6 @@ namespace SS.Db.Migrations
                             CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
                             CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Name = "Office of the Chief Sheriff",
-                            RegionId = 101,
                             Timezone = "America/Vancouver"
                         },
                         new
@@ -163,39 +163,6 @@ namespace SS.Db.Migrations
                             CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             JustinCode = "4882",
                             Name = "South Okanagan Escort Centre",
-                            Timezone = "America/Vancouver"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AgencyId = "SS7",
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Training Section",
-                            RegionId = 100,
-                            Timezone = "America/Vancouver"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AgencyId = "SS9",
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Recruitment Office",
-                            RegionId = 100,
-                            Timezone = "America/Vancouver"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AgencyId = "SS10",
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Provincial Programs",
-                            RegionId = 100,
                             Timezone = "America/Vancouver"
                         });
                 });
@@ -566,14 +533,6 @@ namespace SS.Db.Migrations
                             CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Description = "Adjust Training Expiry Dates based on new rules",
                             Name = "AdjustTrainingExpiry"
-                        },
-                        new
-                        {
-                            Id = 45,
-                            ConcurrencyToken = 0u,
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Exempt from Training",
-                            Name = "ExemptFromTraining"
                         });
                 });
 
@@ -1794,7 +1753,7 @@ namespace SS.Db.Migrations
                     b.Property<DateTimeOffset?>("ExpiryDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("JustinId")
+                    b.Property<int>("JustinId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -1816,24 +1775,6 @@ namespace SS.Db.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("Region");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 100,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Central Programs"
-                        },
-                        new
-                        {
-                            Id = 101,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Office of the Chief Sheriff"
-                        });
                 });
 
             modelBuilder.Entity("ss.db.models.LookupCode", b =>

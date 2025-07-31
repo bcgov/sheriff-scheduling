@@ -3,6 +3,7 @@ using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SS.Db.models;
@@ -10,9 +11,10 @@ using SS.Db.models;
 namespace SS.Db.Migrations
 {
     [DbContext(typeof(SheriffDbContext))]
-    partial class SheriffDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250723225821_AddSherifStandardTraining")]
+    partial class AddSherifStandardTraining
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,8 +141,7 @@ namespace SS.Db.Migrations
                             ConcurrencyToken = 0u,
                             CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
                             CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Integrated Threat Assessment Unit",
-                            RegionId = 100,
+                            Name = "ITAU",
                             Timezone = "America/Vancouver"
                         },
                         new
@@ -151,7 +152,6 @@ namespace SS.Db.Migrations
                             CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
                             CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Name = "Office of the Chief Sheriff",
-                            RegionId = 101,
                             Timezone = "America/Vancouver"
                         },
                         new
@@ -163,39 +163,6 @@ namespace SS.Db.Migrations
                             CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             JustinCode = "4882",
                             Name = "South Okanagan Escort Centre",
-                            Timezone = "America/Vancouver"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AgencyId = "SS7",
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Training Section",
-                            RegionId = 100,
-                            Timezone = "America/Vancouver"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AgencyId = "SS9",
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Recruitment Office",
-                            RegionId = 100,
-                            Timezone = "America/Vancouver"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AgencyId = "SS10",
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Provincial Programs",
-                            RegionId = 100,
                             Timezone = "America/Vancouver"
                         });
                 });
@@ -566,14 +533,6 @@ namespace SS.Db.Migrations
                             CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             Description = "Adjust Training Expiry Dates based on new rules",
                             Name = "AdjustTrainingExpiry"
-                        },
-                        new
-                        {
-                            Id = 45,
-                            ConcurrencyToken = 0u,
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Exempt from Training",
-                            Name = "ExemptFromTraining"
                         });
                 });
 
@@ -1485,7 +1444,7 @@ namespace SS.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn()
-                        .HasIdentityOptions(2000L, null, null, null, null, null);
+                        .HasIdentityOptions(200L, null, null, null, null, null);
 
                     b.Property<uint>("ConcurrencyToken")
                         .IsConcurrencyToken()
@@ -1548,146 +1507,6 @@ namespace SS.Db.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("SheriffStandardTraining");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 100,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1718748
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 0,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1716961
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 0,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1718646
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ConcurrencyToken = 0u,
-                            ConditionExpiryDate = 31,
-                            ConditionExpiryInYears = 1,
-                            ConditionExpiryMonth = 5,
-                            ConditionOn = "Month",
-                            ConditionOperator = ">",
-                            ConditionValue = 5,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 0,
-                            ExpiryMonth = 5,
-                            TrainingTypeId = 1716948
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 1,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1716960
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 1,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1716951
-                        },
-                        new
-                        {
-                            Id = 7,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 2,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1716955
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 2,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1718650
-                        },
-                        new
-                        {
-                            Id = 9,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 2,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1716956
-                        },
-                        new
-                        {
-                            Id = 10,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 1,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1716958
-                        },
-                        new
-                        {
-                            Id = 11,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 100,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1716954
-                        },
-                        new
-                        {
-                            Id = 12,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ExpiryDate = 31,
-                            ExpiryInYears = 100,
-                            ExpiryMonth = 12,
-                            TrainingTypeId = 1716959
-                        });
                 });
 
             modelBuilder.Entity("SS.Db.models.sheriff.SheriffTraining", b =>
@@ -1794,7 +1613,7 @@ namespace SS.Db.Migrations
                     b.Property<DateTimeOffset?>("ExpiryDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("JustinId")
+                    b.Property<int>("JustinId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -1816,24 +1635,6 @@ namespace SS.Db.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("Region");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 100,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Central Programs"
-                        },
-                        new
-                        {
-                            Id = 101,
-                            ConcurrencyToken = 0u,
-                            CreatedById = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedOn = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Name = "Office of the Chief Sheriff"
-                        });
                 });
 
             modelBuilder.Entity("ss.db.models.LookupCode", b =>

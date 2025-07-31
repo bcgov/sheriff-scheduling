@@ -12,6 +12,7 @@ using tests.api.helpers;
 using tests.api.Helpers;
 using Xunit;
 using Microsoft.Extensions.Logging;
+using SS.Api.services;
 using Quartz.Logging;
 
 namespace tests.controllers
@@ -30,11 +31,13 @@ namespace tests.controllers
         {
             var environment = new EnvironmentBuilder("LocationServicesClient:Username", "LocationServicesClient:Password", "LocationServicesClient:Url");
             var httpContextAccessor = new HttpContextAccessor { HttpContext = HttpResponseTest.SetupHttpContext() };
+            var managedTypesService = new ManageTypesService(Db);
+            var trainingService = new TrainingService(managedTypesService, Db, environment.LogFactory.CreateLogger<TrainingService>());
             var sheriffService = new SheriffService(Db, environment.Configuration, httpContextAccessor);
             var shiftService = new ShiftService(Db, sheriffService, environment.Configuration);
             var dutyRosterService = new DutyRosterService(Db, environment.Configuration,
                 shiftService, environment.LogFactory.CreateLogger<DutyRosterService>());
-            var trainingService = new TrainingService(new SS.Api.services.ManageTypesService(Db), Db, environment.LogFactory.CreateLogger<TrainingService>());
+
             _controller = new SheriffController(sheriffService, dutyRosterService, shiftService, new UserService(Db), trainingService, environment.Configuration, Db)
             {
                 ControllerContext = HttpResponseTest.SetupMockControllerContext()

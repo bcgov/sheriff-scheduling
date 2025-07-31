@@ -2,7 +2,7 @@ using System.Net;
 using System.Collections.Generic;
 using System;
 using Bogus;
-using Scv.Api.Helpers;
+using SS.Api.helpers;
 using Xunit;
 
 namespace tests.api.Helpers

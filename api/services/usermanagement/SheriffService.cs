@@ -16,11 +16,13 @@ using SS.Api.services.scheduling;
 using SS.Common.helpers.extensions;
 using SS.Db.models;
 using SS.Db.models.auth;
+using SS.Db.models.lookupcodes;
 using SS.Db.models.scheduling;
 using SS.Db.models.sheriff;
 
 namespace SS.Api.services.usermanagement
 {
+
     /// <summary>
     /// Since the Sheriff is a derived class of User, this should handle the Sheriff side of things.
     /// </summary>
@@ -53,7 +55,79 @@ namespace SS.Api.services.usermanagement
             sheriff.IsEnabled = true;
             await Db.Sheriff.AddAsync(sheriff);
             await Db.SaveChangesAsync();
+
+            await PopulateStandardTrainings(sheriff);
+
             return sheriff;
+        }
+
+        /// <summary>
+        /// Calculate Training Certification Expiry Dates for the Sheriff Standard Trainings.
+        /// This is done only once when the Sheriff is created.
+        /// </summary>
+        private DateTime CalculateExpiryDate(SheriffStandardTraining standardTraining)
+        {
+            if (standardTraining.ConditionOn != null && standardTraining.ConditionOperator != null && standardTraining.ConditionValue != null)
+            {
+                // If the condition is met, return the expiry date.
+                int currentDateValue = 0;
+                switch (standardTraining.ConditionOn)
+                {
+                    case "Month":
+                        currentDateValue = DateTime.Now.Month;
+                        break;
+                    case "Year":
+                        currentDateValue = DateTime.Now.Year;
+                        break;
+                }
+
+                bool conditionMet = false;
+                switch (standardTraining.ConditionOperator)
+                {
+                    case ">":
+                        if (currentDateValue > standardTraining.ConditionValue)
+                            conditionMet = true;
+                        break;
+                    case "<":
+                        if (currentDateValue < standardTraining.ConditionValue)
+                            conditionMet = true;
+                        break;
+                }
+                // You can use conditionValue as needed below
+                return conditionMet ? new DateTime(DateTime.Now.Year + standardTraining.ConditionExpiryInYears ?? 0, standardTraining.ConditionExpiryMonth ?? 0, standardTraining.ConditionExpiryDate ?? 0, 23, 59, 59, DateTimeKind.Local) :
+                new DateTime(DateTime.Now.Year + standardTraining.ExpiryInYears ?? 0, standardTraining.ExpiryMonth ?? 0, standardTraining.ExpiryDate ?? 0, 23, 59, 59, DateTimeKind.Local);
+            }
+
+            return new DateTime(DateTime.Now.Year + standardTraining.ExpiryInYears ?? 0, standardTraining.ExpiryMonth ?? 0, standardTraining.ExpiryDate ?? 0, 23, 59, 59, DateTimeKind.Local);
+        }
+
+        // https://jira.justice.gov.bc.ca/browse/SS-818
+        private async Task PopulateStandardTrainings(Sheriff sheriff)
+        {
+            // Get all matching lookup codes and their IDs
+            var foundStandardTrainings = await Db.SheriffStandardTraining
+                .AsNoTracking()
+                .ToListAsync();
+
+            var sheriffTrainings = foundStandardTrainings
+                .Select(foundTraining =>
+                    new SheriffTraining
+                    {
+                        SheriffId = sheriff.Id,
+                        TrainingTypeId = foundTraining.TrainingTypeId,
+                        StartDate = DateTimeOffset.Now,
+                        EndDate = DateTimeOffset.Now,
+                        TrainingCertificationExpiry = CalculateExpiryDate(foundTraining),
+                        Timezone = "America/Vancouver"
+                    }
+                )
+                .ToList();
+
+            if (sheriffTrainings.Count > 0)
+            {
+                await Db.SheriffTraining.AddRangeAsync(sheriffTrainings);
+                await Db.SaveChangesAsync();
+            }
         }
 
         public async Task<Sheriff> GetSheriff(Guid? id,
