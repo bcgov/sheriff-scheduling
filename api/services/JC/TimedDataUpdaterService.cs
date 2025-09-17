@@ -60,7 +60,7 @@ namespace SS.Api.services.jc
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "An error happened while syncing regions/locations/courtrooms.");
+                Logger.LogError($"An error happened while syncing regions/locations/courtrooms: {e}");
             }
         }
 

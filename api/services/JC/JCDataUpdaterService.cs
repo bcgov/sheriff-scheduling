@@ -195,7 +195,10 @@ namespace SS.Api.services.jc
             var regionDictionary = new Dictionary<int, ICollection<int>>();
             //RegionsRegionIdLocationsCodesAsync returns a LIST of locationIds.
             foreach (var region in Db.Region)
+            {
+                if (region.JustinId == null) continue;
                 regionDictionary[region.Id] = await LocationClient.RegionsRegionIdLocationsCodesAsync(region.JustinId.ToString());
+            }
 
             //Reverse the dictionary and flatten.
             var locationToRegion = new Dictionary<string, int>();
